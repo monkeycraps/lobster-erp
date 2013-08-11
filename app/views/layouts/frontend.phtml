@@ -1,0 +1,30 @@
+<?php use Helper\Html ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>合道电器 - <?php echo $this->title?:null?></title>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
+        <?= Html::css('/css/style.css')?>
+    </head>
+    <body>
+    	<?php require( dirname( __FILE__ ). "/analyticstracking.php") ?>
+        <?php echo $_content_;?>
+        
+        <?= Html::javascript('/sea-modules/seajs/seajs/2.1.1/sea.js')?>
+        <script>
+        // seajs 的简单配置
+        seajs.config({
+          base: "/sea-modules",
+          alias: {
+            "$": "zepto/zepto/1.0.0/zepto",
+            "underscore": "gallery/underscore/1.4.4/underscore", 
+            "backbone": "gallery/backbone/1.0.0/backbone"
+          }
+        })
+        // 加载入口模块
+        seajs.use("$")
+        seajs.use("/src/app")
+        </script>
+    </body>
+</html>

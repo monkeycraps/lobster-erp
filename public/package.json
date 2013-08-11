@@ -1,0 +1,11 @@
+{
+    "family": "lepture",
+    "name": "hedao",
+    "version": "1.0.0",
+    "description": "hedao",
+    "spm": {
+        "alias": {
+        },
+        "output": ["app"]
+    }
+}
