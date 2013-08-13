@@ -4,6 +4,6 @@ class IndexController extends ApplicationController {
 
 	public function indexAction() {
 		
-		$this->display( 'index' );
+		$this->show( 'index' );
 	}
 }

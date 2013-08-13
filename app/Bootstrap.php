@@ -30,6 +30,9 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 	public function _initPlugins(Yaf\Dispatcher $dispatcher) {
 
 		$dispatcher->registerPlugin ( new LogPlugin () );
+		$user = new UserPlugin ();
+		$dispatcher->registerPlugin ( $user );
+		Yaf\Application::app()->user = $user;
 		
 		$this->config->application->protect_from_csrf && $dispatcher->registerPlugin ( new AuthTokenPlugin () );
 	}
@@ -67,7 +70,7 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		$layout = new Layout ( $this->config->application->layout->directory );
 		$dispatcher->setView ( $layout );
 		
-		\Yaf\Dispatcher::getInstance()->disableView();
+		\Yaf\Dispatcher::getInstance ()->disableView ();
 	}
 
 	/**
@@ -98,7 +101,7 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		if (error_reporting () === 0)
 			return;
 		
-		\Yaf\Dispatcher::getInstance()->enableView();
+		\Yaf\Dispatcher::getInstance ()->enableView ();
 		throw new ErrorException ( $errstr, 0, $errno, $errfile, $errline );
 	}
 
@@ -113,5 +116,12 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		RedBean_ModelHelper::setModelFormatter ( $formatter );
 		
 		R::setup ( $params ['link'], $params ['user'], $params ['pwd'] );
+	}
+
+	function _initRbac() {
+
+		$config = new Yaf\Config\Ini ( APP_PATH . '/config/rbac.ini' );
+		$logger = eYaf\Logger::getLogger();
+		$logger->log( $config->toArray() );
 	}
 }

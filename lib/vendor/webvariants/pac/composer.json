@@ -1,0 +1,27 @@
+{
+    "name": "webvariants/pac",
+    "description": "a simple role-based access control implementation",
+    "authors": [
+        {
+            "name": "Christian Zozmann"
+        }
+    ],
+    "keywords": [
+        "rbac"
+    ],
+    "homepage": "http://www.sallycms.de/",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.2.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "pac_": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-default": "1.x-dev"
+        }
+    }
+}

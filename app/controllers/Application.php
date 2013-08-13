@@ -42,6 +42,9 @@ class ApplicationController extends Yaf\Controller_Abstract {
      *
      * @return void
      */
+
+	public $user;
+
 	public function init() {
 		// Set the layout.
 		$this->getView ()->setLayout ( $this->layout );
@@ -57,6 +60,8 @@ class ApplicationController extends Yaf\Controller_Abstract {
 		
 		// Assign config file to views
 		$this->getView ()->config = $this->config;
+
+		$this->user = Yaf\Application::app ()->user;
 	}
 
 	/**
@@ -99,5 +104,11 @@ class ApplicationController extends Yaf\Controller_Abstract {
      */
 	public function notFoundAction() {
 
+	}
+
+	function show( $action_name ,$tpl_vars = NULL ){
+		!$tpl_vars && $tpl_vars = array();
+		$tpl_vars = array_merge( $tpl_vars, array( 'controller'=>$this ) );
+		$this->display( $action_name, $tpl_vars );
 	}
 }

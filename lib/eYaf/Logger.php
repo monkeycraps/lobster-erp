@@ -49,6 +49,9 @@ class Logger extends \SplFileObject {
 
 	public function log($string) {
 
+		if( is_array( $string ) ){
+			$string = print_r( $string, 1 );
+		}
 		$this->fwrite ( $string . "\n" );
 	}
 
