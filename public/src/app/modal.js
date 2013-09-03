@@ -2,6 +2,17 @@ define(function(require, exports, module){
 
 	var _ = require( 'underscore' );
 	var Backbone = require( 'backbone' );
+
+	var ModalLogin = Backbone.View.extend({
+		el: $('#modal-login'), 
+		events: {
+		},
+		show_modal: function(){
+			this.$el.modal()
+		}
+	})
+
+	var modal_login = new ModalLogin();
 	
 	var ModalManager = {
 		init: function(){
@@ -11,7 +22,8 @@ define(function(require, exports, module){
 			if( $( '#modal-'+ id ).length < 1 ){
 				return
 			}
-			$( '#modal-'+ id ).modal();
+			eval( 'modal_'+ id.replace( new RegExp('-',"gm"), '_' ) + '.show_modal()' )
+			return;
 		}
 	}
 

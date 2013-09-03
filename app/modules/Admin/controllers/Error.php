@@ -32,18 +32,24 @@ class ErrorController extends \Yaf\Controller_Abstract {
             case YAF\ERR\NOTFOUND\CONTROLLER:
             case YAF\ERR\NOTFOUND\ACTION:
                 header('HTTP/1.1 404 Not Found');
+                echo '404 not found';
                 break;
             case 401:
                 $this->forward('Index','application','accessDenied');
                 header('HTTP/1.1 401 Unauthorized');
                 Yaf\Dispatcher::getInstance()->disableView(); 
-                echo $this->render('accessdenied');
+                echo $this->render('accessdenied', array( 'message'=>$exception->getMessage() ));
                 break; 
             default:
                 header("HTTP/1.1 500 Internal Server Error");
+                echo $exception->getMessage();
                 break;
         }
-        
+
         eYaf\Logger::stopLogging();
+
+//         $this->display( 'error', array( 'controller'=>$this ) );
+	
+		exit();
     }
 }

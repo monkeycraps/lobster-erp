@@ -1,29 +1,27 @@
-<?php use Helper\Html ?>
+<?php use Helper\Html?>
 <!DOCTYPE html>
 <html lang="zh-cn">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>合道电器 - <?php echo $this->title?:null?></title>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>合道电器 - <?php echo $this->title?:null?></title>
         <?= Html::css('/bootstrap/3.0/css/bootstrap.min.css')?>
         <?= Html::css('/bootstrap/3.0/css/bootstrap-glyphicons.css')?>
         <?= Html::css('/bootstrap/3.0/css/docs.css')?>
         <?= Html::css('/css/main.css')?>
+        <?= Html::javascript('/js/jquery-1.10.2.min.js')?>
+        <?= Html::javascript('/sea-modules/seajs/seajs/2.1.1/sea.js')?>
+        <script>
+         var pageBind = {};
+        </script>
     </head>
     <body>
         <?php $this->display( 'layouts/analyticstracking.php', array( 'controller'=>$controller ) ); ?>
-        
         <?php $this->display( 'layouts/header.php', array( 'controller'=>$controller ) ); ?>
-    	
-    	<div class="na" id="layout">
-		    <div class="pure-u" id="nav">
-                <?php $this->display( 'layouts/menu.php', array( 'controller'=>$controller ) ); ?>
-		    </div>
-        	<?php echo $_content_;?>
-        </div>
+        
+        <?php echo $_content_;?>
         <?php $this->display( 'layouts/modal_list.php', array( 'controller'=>$controller ) ); ?>
         
-        <?= Html::javascript('/sea-modules/seajs/seajs/2.1.1/sea.js')?>
         <script>
         // seajs 的简单配置
         seajs.config({
@@ -36,13 +34,22 @@
           }
         })
         // 加载入口模块
-        var app_data = <?php $this->display( 'app_json.php', array( 'controller'=>$controller ) ); ?>;
-        seajs.use("$", function(){
-            seajs.use("bootstrap")
-            seajs.use("/src/app", function(App){
-                App.init( app_data );
-            })
-        });
+      	var app_data = <?php $this->display( 'app_json.php', array( 'controller'=>$controller ) ); ?>;
+ 		$().ready(function(){
+ 			seajs.use("backbone", function(Backbone){	
+ 				seajs.use("bootstrap", function(){
+ 					seajs.use("/src/app", function(App){	
+ 						App.init();
+
+ 						for( key in pageBind ){
+ 							if( typeof pageBind[key] == 'function' ){
+ 								pageBind[key]();
+ 							}
+ 						}
+ 					})
+ 				})
+ 			})
+ 		});
         </script>
     </body>
 </html>

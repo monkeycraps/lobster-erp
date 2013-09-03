@@ -1,0 +1,45 @@
+<?php use Helper\Html?>
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>合道电器 - <?php echo $this->title?:null?></title>
+        <?= Html::css('/bootstrap/3.0/css/bootstrap.min.css')?>
+        <?= Html::css('/bootstrap/3.0/css/bootstrap-glyphicons.css')?>
+        <?= Html::css('/bootstrap/3.0/css/docs.css')?>
+        <?= Html::css('/css/admin/admin.css')?>
+        <?= Html::javascript('/sea-modules/seajs/seajs/2.1.1/sea.js')?>
+        <script>
+        seajs.config({
+          base: "/sea-modules",
+          alias: {
+            "$": "/js/jquery-1.10.2.min.js",
+            "underscore": "gallery/underscore/1.4.4/underscore", 
+            "backbone": "gallery/backbone/1.0.0/backbone", 
+            "bootstrap": "/bootstrap/3.0/js/bootstrap.min.js"
+          }
+        })
+        // 加载入口模块
+        seajs.use("$", function(){
+            $().ready(function(){
+	            seajs.use("bootstrap")
+	            seajs.use("/src/test", function(Test){
+	            })
+            });
+        });
+        </script>
+</head>
+<body>
+<form method='post'>
+<input name='a' />
+<input type='submit'>
+</form>
+	<div id='test-view'>
+	</div>
+	<script type="text/template" id="test">
+   		hello: <%= name %>
+		<input type='button' class='btn' />
+   	</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<div class="bs-sidebar">
+	<ul class="nav bs-sidenav">
+		<li class="<?php echo $controller->nav == 'mission' ? 'active' : ''?>">
+			<a class='mission-add' href="/admin/mission/index"><i
+				class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;任务查看</a>
+			<ul class="nav">
+			<?php $list = \rbac\MissionType::getMissionTypeTop(); 
+				foreach( $list as $one ){ ?>
+				<li class='<?php if( $one['id'] == $controller->subnav )echo 'active'?>' ><a href="/admin/mission/list/id/<?php echo $one['id']?>"><?php echo $one['name']?></a></li>					
+			<?php } ?>
+			</ul>
+		</li>
+		<li class="<?php echo $controller->nav == 'analyse' ? 'active' : ''?>">
+			<a class='mission-add' href="/admin/mission/analyse"><i
+				class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;数据统计</a>
+		</li>
+		<li class="<?php echo $controller->nav == 'user' ? 'active' : ''?>">
+			<a class='mission-add' href='/admin/user/index' ><i
+				class='glyphicon glyphicon-user'></i>&nbsp;&nbsp;账户管理</a>
+		</li>
+		<li class="<?php echo $controller->nav == 'product' ? 'active' : ''?>">
+			<a class='mission-add' href='/admin/product/index' ><i
+				class='glyphicon glyphicon-gift'></i>&nbsp;&nbsp;产品管理</a>
+		</li>
+		<li class="<?php echo $controller->nav == 'announce' ? 'active' : ''?>">
+			<a class='mission-add' href='/admin/announce/index' ><i
+				class='glyphicon glyphicon-list-alt'></i>&nbsp;&nbsp;公告管理</a>
+		</li>
+	</ul>
+</div>

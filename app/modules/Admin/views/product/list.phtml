@@ -1,0 +1,92 @@
+<?php use Helper\Html ?>
+<div class="">
+	<ul id="myTab" class="nav nav-tabs">
+		<li class="active"><a href="#product" data-toggle="tab">产品管理</a></li>
+		<li class=""><a href="#cate" data-toggle="tab">类目管理</a></li>
+		<li class='pull-right'>
+			<span href="#" class='btn cate-create'><i class='glyphicon glyphicon-list-alt'></i>&nbsp;&nbsp;新建类目</span>
+			<span href="#" class='btn product-create'><i class='glyphicon glyphicon-gift'></i>&nbsp;&nbsp;新建产品</span>
+		</li>
+	</ul>
+	<div id="myTabContent" class="tab-content">
+		<div class="tab-pane fade active in" id="product">
+			<table class='table table-hover'>
+				<thead>
+					<tr>
+						<th class='col-1'>#</th>
+						<th>产品</th>
+						<th class='col-2'>类目</th>
+						<th class='col-3'>创建时间</th>
+						<th class='col-2'>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					$products = $controller->products; 
+					foreach( $products as $one ){?>
+						<tr class='' id='listitem-product-<?=$one['id']?>'>
+							<td><?=$one['id']?></td>
+							<td class='name'><?=$one['name']?></td>
+							<td><?=$one['category']?></td>
+							<td><?=Html::date( $one['created'] )?></td>
+							<td>
+								<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+								<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+							</td>
+						</tr>
+					<?php }?>
+				</tbody>
+				<script type='text/template' id='template-product-listitem'>
+				<tr class='' id='listitem-product-<%=id%>'>
+					<td><%=id%></td>
+					<td class='name'><%=name%></td>
+					<td><%=category%></td>
+					<td><%=created%></td>
+					<td>
+						<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+						<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+					</td>
+				</tr>
+				</script>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="cate">
+			<table class='table table-hover'>
+				<thead>
+					<tr>
+						<th class='col-1'>#</th>
+						<th>类目</th>
+						<th class='col-3'>创建时间</th>
+						<th class='col-2'>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php 
+					$categories = $controller->categories;
+					foreach( $categories as $one ){?>
+						<tr class='' id='listitem-cate-<?=$one['id']?>'>
+							<td><?=$one['id']?></td>
+							<td class='name'><?=$one['name']?></td>
+							<td><?=Html::date( $one['created'] )?></td>
+							<td>
+								<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+								<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+							</td>
+						</tr>
+					<?php }?>
+				</tbody>
+				<script type='text/template' id='template-cate-listitem'>
+				<tr class='' id='listitem-cate-<%=id%>'>
+					<td><%=id%></td>
+					<td class='name'><%=name%></td>
+					<td><%=created%></td>
+					<td>
+						<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+						<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+					</td>
+				</tr>
+				</script>
+			</table>
+		</div>
+	</div>
+</div>

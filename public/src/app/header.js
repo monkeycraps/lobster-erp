@@ -7,15 +7,26 @@ define(function(require, exports, module){
 	var Header = Backbone.View.extend({
 		el: $('header'), 
 		events: {
-			'click #login': 'login'
+			'click #login': 'login', 
+			'click .mission-add': 'mission_add'
 		},
 		initialize: function(){
 
 		}, 
 		login: function(){
 			ModalManager.modal( 'login' )
+		}, 
+		mission_add: function(){
+
+		}, 
+		showFormSuccess: function( msg ){
+			if( msg == undefined || msg == '' ){
+				msg = '保存成功'
+			}
+			this.$( '.form-success' ).html( msg ).show().fadeOut( 10000 );
 		}
 	});
 
-	module.exports = Header
+	var header = new Header();
+	module.exports = header
 });

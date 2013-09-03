@@ -1,0 +1,37 @@
+<div class="container">
+
+	<form action="" method="post" id="login-form" class="form-signin">
+		<input type="hidden" name="csrfmiddlewaretoken"
+			value="e44APAG0Bq2futeBOK16Z31peEPNETac">
+		<h2 class="form-signin-heading">合道管理后台</h2>
+
+		<?php echo Helper\Html::authToken(); ?>
+		<?php echo Helper\Html::formMessage( $this ); ?>
+
+		<input type="hidden" name="csrfmiddlewaretoken"
+			value="e44APAG0Bq2futeBOK16Z31peEPNETac">
+		<div id="div_id_username" class="control-group">
+			<label for="id_username" class="control-label requiredField"> 用户名<span
+				class="asteriskField">*</span></label>
+			<div class="controls">
+				<input class="textinput textInput" id="id_username" maxlength="254"
+					name="username" type="text">
+			</div>
+		</div>
+		<div id="div_id_password" class="control-group">
+			<label for="id_password" class="control-label requiredField"> 密码<span
+				class="asteriskField">*</span></label>
+			<div class="controls">
+				<input class="textinput textInput" id="id_password" name="password"
+					type="password">
+			</div>
+		</div>
+		<input id="id_this_is_the_login_form" name="this_is_the_login_form"
+			type="hidden" value="1"> <input type="hidden"
+			name="this_is_the_login_form" value="1"> <input type="hidden"
+			name="next" value="/xadmin/">
+
+		<button class="btn btn-large btn-primary btn-block" type="submit">登录</button>
+	</form>
+
+</div>

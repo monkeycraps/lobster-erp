@@ -1,16 +1,10 @@
 <?php
-class IndexController extends ApplicationController {
+
+class IndexController extends AdminBaseController {
 	protected $layout = 'admin';
-
-	public function init() {
-
-		parent::init ();
-		
-		$this->getView ()->setLayoutPath ( $this->getConfig ()->application->directory . "/modules" . "/Admin" . "/views" . "/layouts" );
-	}
 
 	public function indexAction() {
 
-		$this->heading = "wulala";
+		$this->show( 'index' );
 	}
 }

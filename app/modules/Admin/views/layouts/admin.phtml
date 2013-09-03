@@ -1,13 +1,64 @@
-<?php use Helper\Html ?>
+<?php use Helper\Html?>
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Admin Panel</title>
-        <?= Html::css('/css/admin/style.css')?>
-    </head>
-    <body>
-        <?= $_content_ ?>
-        <footer>Yaf v<?=Yaf\VERSION?></footer>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>合道电器 - <?php echo $this->title?:null?></title>
+        <?= Html::css('/bootstrap/3.0/css/bootstrap.min.css')?>
+        <?= Html::css('/bootstrap/3.0/css/bootstrap-glyphicons.css')?>
+        <?= Html::css('/bootstrap/3.0/css/docs.css')?>
+        <?= Html::css('/css/admin/admin.css')?>
+        <?= Html::javascript('/js/jquery-1.10.2.min.js')?>
+        <?= Html::javascript('/sea-modules/seajs/seajs/2.1.1/sea.js')?>
+        <script>
+         var pageBind = {};
+        </script>
+</head>
+<body>
+        <?php $this->display( 'layouts/header.phtml', array( 'controller'=>$controller ) ); ?>
+    	
+    	<div id="layout">
+		<div class='row'>
+			<div class='col-2 border' id='admin-menu'>
+                    <?php echo $this->render( 'layouts/menu.phtml', array( 'controller'=>$controller ) )?>
+                </div>
+			<div class='col-10' id='admin-body'>
+                    <?php echo $_content_;?>
+                </div>
+		</div>
+	</div>
+        <?php $this->display( 'layouts/modal_list.phtml', array( 'controller'=>$controller ) ); ?>
+        
+        <script>
+        // seajs 的简单配置
+        seajs.config({
+          base: "/sea-modules",
+          alias: {
+            "$": "/js/jquery-1.10.2.min.js",
+            "underscore": "gallery/underscore/1.4.4/underscore", 
+            "backbone": "gallery/backbone/1.0.0/backbone", 
+            "bootstrap": "/bootstrap/3.0/js/bootstrap.min.js"
+          }
+        })
+        // 加载入口模块
+       var app_data = <?php $this->display( 'app_json.phtml', array( 'controller'=>$controller ) ); ?>;
+		$().ready(function(){
+			seajs.use("backbone", function(Backbone){	
+				seajs.use("bootstrap", function(){
+					seajs.use("/src/admin", function(Admin){	
+						Admin.init();
+
+						for( key in pageBind ){
+							if( typeof pageBind[key] == 'function' ){
+								pageBind[key]();
+							}
+						}
+					})
+				})
+			})
+		});
+        </script>
+        
     </body>
 </html>

@@ -37,7 +37,7 @@ class Logger extends \SplFileObject {
 			return static::$logger_instance;
 		$env = $env ?  : \Yaf\ENVIRON;
 		$filename = APP_PATH . '/log' . DS . $env . '.log';
-		static::$logger_instance = new static ( $filename, $open_mode );
+		static::$logger_instance = new Logger ( $filename, $open_mode );
 		return static::$logger_instance;
 	}
 
@@ -50,7 +50,7 @@ class Logger extends \SplFileObject {
 	public function log($string) {
 
 		if( is_array( $string ) ){
-			$string = print_r( $string, 1 );
+			$string = var_export( $string, 1 );
 		}
 		$this->fwrite ( $string . "\n" );
 	}

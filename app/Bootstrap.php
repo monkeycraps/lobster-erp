@@ -7,6 +7,9 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 
 	public function _initErrorHandler(Yaf\Dispatcher $dispatcher) {
 
+		error_reporting ( E_ALL & ~E_NOTICE & ~E_DEPRECATED );
+		ini_set( 'allow_call_time_pass_reference', 1 );
+
 		$dispatcher->setErrorHandler ( array (
 			get_class ( $this ),
 			'error_handler' 
@@ -33,7 +36,8 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		$user = new UserPlugin ();
 		$dispatcher->registerPlugin ( $user );
 		Yaf\Application::app()->user = $user;
-		
+
+		$dispatcher->registerPlugin ( new ViewPlugin () );
 		$this->config->application->protect_from_csrf && $dispatcher->registerPlugin ( new AuthTokenPlugin () );
 	}
 
@@ -69,8 +73,8 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 
 		$layout = new Layout ( $this->config->application->layout->directory );
 		$dispatcher->setView ( $layout );
-		
-		\Yaf\Dispatcher::getInstance ()->disableView ();
+		// $dispatcher->autoRender( true );
+		// \Yaf\Dispatcher::getInstance ()->disableView ();
 	}
 
 	/**
@@ -87,6 +91,7 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
      * @throws ErrorException
      */
 	public static function error_handler($errno, $errstr, $errfile, $errline) {
+
 		// Do not throw exception if error was prepended by @
 		//
 		// See {@link http://www.php.net/set_error_handler}
@@ -101,21 +106,24 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		if (error_reporting () === 0)
 			return;
 		
-		\Yaf\Dispatcher::getInstance ()->enableView ();
+		// \Yaf\Dispatcher::getInstance ()->enableView ();
 		throw new ErrorException ( $errstr, 0, $errno, $errfile, $errline );
 	}
 
 	public function _initDefaultDbAdapter() {
 
-		require_once ($this->config->application->library->directory . '/redbean/rb.php');
-		require_once ($this->config->application->library->directory . '/redbean/MyModelFormatter.php');
+		require_once ($this->config->application->library->directory . '/RedBean/rb.php');
+		require_once ($this->config->application->library->directory . '/RedBean/MyModelFormatter.php');
+		require_once ($this->config->application->library->directory . '/RedBean/RedBean_FileLogger.php');
 		
 		$params = Yaf\Application::app ()->getConfig ()->database->params->toArray ();
 		
 		$formatter = new MyModelFormatter ();
 		RedBean_ModelHelper::setModelFormatter ( $formatter );
-		
 		R::setup ( $params ['link'], $params ['user'], $params ['pwd'] );
+		R::setStrictTyping( false );
+		R::debug(true, new RedBean_FileLogger() );
+		R::freeze(True);
 	}
 
 	function _initRbac() {
@@ -123,5 +131,9 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		$config = new Yaf\Config\Ini ( APP_PATH . '/config/rbac.ini' );
 		$logger = eYaf\Logger::getLogger();
 		$logger->log( $config->toArray() );
+	}
+
+	function _initHistory(){
+		history\History::set();
 	}
 }

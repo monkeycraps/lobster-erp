@@ -1,6 +1,5 @@
 <?php
 
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 namespace Helper;
 
 use Yaf\ViewInterface;
@@ -9,6 +8,7 @@ use Yaf\ViewInterface;
  * Description of Html Helper
  *
  * @author Andreas Kollaros
+ * @author Kenny Lin
  */
 class Html {
 	protected static $encoding;
@@ -161,5 +161,42 @@ class Html {
 				$o .= ' ' . $k . '="' . self::encode ( $v ) . '"';
 		}
 		return ' ' . $o;
+	}
+
+	static function authToken() {
+
+		return '<input name="_auth_token" value="' . \Yaf\Session::getInstance ()->get ( 'auth_token' ) . '" type="hidden" />';
+	}
+
+	static function formMessage($view) {
+
+		return $view->render ( 'layouts/error.phtml', array (
+			'errors' => $view->errors 
+		) );
+	}
+
+	static function date($timestamp) {
+
+		$logger = \eYaf\Logger::getLogger();
+		$logger->log( $timestamp );
+
+		if( !$timestamp ) return;
+
+		if( date ( 'Y-m-d', strtotime ( $timestamp ) ) == date( 'Y-m-d' ) ){
+			return date( 'H:i', strtotime ( $timestamp ) );
+		}
+
+		return date ( 'Y-m-d', strtotime ( $timestamp ) );
+	}
+
+	static function renderPager($path = '/layouts/pager') {
+
+		$app = \Yaf\Application::app ();
+		$controller = $app->controller;
+		$controller->renderPartial ( $path, array () );
+	}
+
+	static function now(){
+		return date( 'Y-m-d H:i:s' );
 	}
 }

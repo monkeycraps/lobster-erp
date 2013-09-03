@@ -1,0 +1,39 @@
+<div id='history'>
+	<table class='table'>
+		<thead>
+			<tr>
+				<th>修改内容</th>
+				<th>修改人</th>
+				<th>时间</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach( $history as $one ) { ?>
+				<tr>
+					<td><ul class='list-unstyled'>
+						<?php $changed = json_decode( $one['changed'], true );
+						if( $changed ){
+							foreach( $changed as $one1 ){ 
+								$action = isset( $one1['add'] ) ? '增加': ( 
+									isset( $one1['change'] ) ? '修改' : ( 
+										isset( $one1['delete'] ) ? '删除': '异常记录' ) );
+								$key1 = isset( $one1['add'] ) ? 'add': ( 
+									isset( $one1['change'] ) ? 'change' : ( 
+										isset( $one1['delete'] ) ? 'delete': 'unknow' ) );
+								if( 'unknow' === $key1 ){
+									debug( '异常记录：'. var_export($one1, 1) );
+									continue;
+								}
+							?>
+								<li><?php echo '【'. $action. '】'. $one1['key']. ' - '. (isset( $one1[$key1] ) ? $one1[$key1] : '异常记录') ?></li>
+							<?php }
+						}
+						?>
+					</ul></td>
+					<td><?php echo UserModel::getName( $one['uid'] )?></td>
+					<td><?php echo Helper\Html::date( $one['created'] )?></td>
+				</tr>
+			<? }?>
+		</tbody>
+	</table>
+</div>

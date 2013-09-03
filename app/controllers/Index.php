@@ -4,6 +4,7 @@ class IndexController extends ApplicationController {
 
 	public function indexAction() {
 		
+		$this->ishome = 1;
 		$this->show( 'index' );
 	}
 }

@@ -1,3 +1,3 @@
 <?php
-class PagesController extends IndexController {
+class PagesController extends AdminController {
 }

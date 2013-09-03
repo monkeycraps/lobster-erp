@@ -291,7 +291,7 @@ class Layout implements \Yaf\View_Interface {
 	public function render($tpl, $tpl_vars = array()) {
 
 		$tpl_vars = array_merge ( $this->tpl_vars, $tpl_vars );
-		if( !preg_match( '/\.phtml$/i', $tpl ) ){
+		if (! preg_match ( '/\.phtml$/i', $tpl )) {
 			$tpl .= '.phtml';
 		}
 		

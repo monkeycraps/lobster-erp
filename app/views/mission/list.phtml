@@ -1,0 +1,100 @@
+<?php use Helper\Html ?>
+<ul id="myTab" class="nav nav-tabs">
+	<li class="active"><a href="#waiting" data-toggle="tab">待处理</a></li>
+	<li class=""><a href="#done" data-toggle="tab">处理中</a></li>
+	<li class=""><a href="#doing" data-toggle="tab">已处理</a></li>
+	<li class=""><a href="#closed" data-toggle="tab">已关闭</a></li>
+	<li class='pull-right'>
+	</li>
+</ul>
+<div id="myTabContent" class="tab-content">
+	<div class="tab-pane fade active in" id="waiting">
+		<table class='table table-hover'>
+			<thead>
+				<tr>
+					<th class=''>#</th>
+					<th class=''>类型</th>
+					<th class='col-3'>订单号</th>
+					<th class='col-2'>旺旺ID</th>
+					<th class='col-1'>店铺</th>
+					<th class='col-2'>修改时间</th>
+					<th class=''></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$waiting_list = $controller->waiting_list; 
+				foreach( $waiting_list as $one ){?>
+					<tr class='' id='listitem-<?=$one['id']?>'>
+						<td><?=$one['id']?></td>
+						<td><?=$one['sub_category']?></td>
+						<td><?=isset( $one['order_num_list'] ) ? implode( "<br/>", $one['order_num_list'] ): ''?></td>
+						<td><?=$one['wanwan']?></td>
+						<td><?=$one['store']?></td>
+						<td><?=Html::date( $one['created'] )?></td>
+						<td>
+							<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+						</td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<script type='text/template' id='template-waiting-listitem'>
+			<tr class='' id='listitem-<%=id%>'>
+				<td><%=id%></td>
+				<td class='name'><%=name%></td>
+				<td><%=category%></td>
+				<td><%=created%></td>
+				<td>
+					<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+					<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+				</td>
+			</tr>
+			</script>
+		</table>
+	</div>
+	<div class="tab-pane fade in" id="done">
+		<table class='table table-hover'>
+			<thead>
+				<tr>
+					<th class='col-1'>#</th>
+					<th>类别</th>
+					<th class=''>类型</th>
+					<th class='col-2'>订单号</th>
+					<th class='col-2'>旺旺ID</th>
+					<th class='col-2'>店铺</th>
+					<th class='col-2'>修改时间</th>
+					<th class='col-1'>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$done_list = $controller->done_list; 
+				foreach( $done_list as $one ){?>
+					<tr class='' id='listitem-<?=$one['id']?>'>
+						<td><?=$one['id']?></td>
+						<td><?=$one['category']?></td>
+						<td><?=$one['sub_category']?></td>
+						<td><?=$one['wanwan']?></td>
+						<td><?=$one['store']?></td>
+						<td><?=Html::date( $one['created'] )?></td>
+						<td>
+							<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+						</td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<script type='text/template' id='template-waiting-listitem'>
+			<tr class='' id='listitem-<%=id%>'>
+				<td><%=id%></td>
+				<td class='name'><%=name%></td>
+				<td><%=category%></td>
+				<td><%=created%></td>
+				<td>
+					<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+					<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+				</td>
+			</tr>
+			</script>
+		</table>
+	</div>
+</div>

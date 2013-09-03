@@ -39,7 +39,7 @@ class AuthTokenPlugin extends Yaf\Plugin_Abstract {
 			$post = $request->getPost ();
 			
 			if (! isset ( $post ['_auth_token'] ) || $post ['_auth_token'] !== $this->auth_token ()) {
-				throw new \Exception ( 'Invalid authenticity token!' );
+				throw new \Exception ( 'Invalid authenticity token!', 401 );
 			} else {
 				$session = Yaf\Session::getInstance ();
 				$session->auth_token = NULL;

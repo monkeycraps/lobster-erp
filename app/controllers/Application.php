@@ -9,6 +9,10 @@
  * This controller uses Layout class (@see lib/Layout.php)
  */
 class ApplicationController extends Yaf\Controller_Abstract {
+	
+	public $nav;
+	public $subnav;
+	
 	/**
      * The name of layout file.
      *
@@ -33,7 +37,7 @@ class ApplicationController extends Yaf\Controller_Abstract {
      * @var Yaf\Config\Ini
      */
 	private $config;
-
+	
 	/**
      * Initialize layout and session.
      *
@@ -42,8 +46,8 @@ class ApplicationController extends Yaf\Controller_Abstract {
      *
      * @return void
      */
-
 	public $user;
+	public $m = array ();
 
 	public function init() {
 		// Set the layout.
@@ -60,8 +64,10 @@ class ApplicationController extends Yaf\Controller_Abstract {
 		
 		// Assign config file to views
 		$this->getView ()->config = $this->config;
-
+		
 		$this->user = Yaf\Application::app ()->user;
+		Yaf\Application::app ()->controller = $this;
+		
 	}
 
 	/**
@@ -75,8 +81,18 @@ class ApplicationController extends Yaf\Controller_Abstract {
      */
 	public function __set($name, $value) {
 
-		$this->$name = $value;
+		$this->m [$name] = $value;
 		$this->getView ()->assignRef ( $name, $value );
+	}
+
+	public function __get($name) {
+
+		if (strtolower ( substr ( $name, 0, 3 ) ) == 'yaf')
+			return;
+		if (! isset ( $this->m [$name] )) {
+			throw new Exception ( "{$name} not defined", 500 );
+		}
+		return $this->m [$name];
 	}
 
 	public function getConfig() {
@@ -106,9 +122,88 @@ class ApplicationController extends Yaf\Controller_Abstract {
 
 	}
 
-	function show( $action_name ,$tpl_vars = NULL ){
-		!$tpl_vars && $tpl_vars = array();
-		$tpl_vars = array_merge( $tpl_vars, array( 'controller'=>$this ) );
-		$this->display( $action_name, $tpl_vars );
+	function show($action_name, $tpl_vars = NULL) {
+
+		! $tpl_vars && $tpl_vars = array ();
+		foreach( $tpl_vars as $key=>$val ){
+			$this->$key = $val;
+		}
+		$tpl_vars = array_merge ( $tpl_vars, array (
+			'controller' => $this 
+		) );
+		$this->display ( $action_name, $tpl_vars );
+	}
+
+	function renderPartial($path, $tpl_vars = NULL) {
+
+		! $tpl_vars && $tpl_vars = array ();
+		$tpl_vars = array_merge ( $tpl_vars, array (
+			'controller' => $this 
+		) );
+		extract( $tpl_vars );
+		$config = $this->config->get ( 'application' );
+		$ext = '.'.$config->view->ext;
+		if( preg_match('/\.(php|phtml)$/i', $path) ){
+			$ext = '';
+		}
+		if (substr ( $path, 0, 1 ) == '/') {
+			require( $this->getConfig ()->application->directory . "/views/". $path. $ext );
+		} else {
+			require( $this->getViewPath(). '/'. strtolower( $this->getRequest()->getControllerName() ). '/'. $path. $ext );
+		}
+	}
+
+	function renderJson( $array ) {
+		
+		$json = json_encode( $array ); 
+		$this->getView ()->setScriptPath ( $this->getConfig ()->application->directory . "/views" );
+		header( 'Content-Type: application/json;' );
+		echo $json;
+		return false;
+	}
+
+	function get($key, $default_val = null) {
+
+		$request = $this->getRequest ();
+		return $request->get ( $key, $default_val );
+	}
+	
+	function post($key, $default_val = null) {
+
+		$request = $this->getRequest ();
+		return $request->post ( $key, $default_val );
+	}
+	
+	function put($key, $default_val = null) {
+
+		$request = $this->getRequest ();
+		return $request->put ( $key, $default_val );
+	}
+
+	function log($obj) {
+
+		eYaf\Logger::getLogger ()->log ( $obj );
+	}
+
+	function addError($value, $key = null) {
+
+		! isset ( $this->m ['errors']  ) && $this->errors = array ();
+		if (! $key) {
+			$this->errors = array_merge ( $this->errors, array (
+				$value 
+			) );
+		} else {
+			$this->errors = array_merge ( $this->errors, array (
+				$key => $value 
+			) );
+		}
+	}
+
+	function getErrors(){
+		return isset( $this->m ['errors'] ) ? $this->errors : array();
+	}
+	
+	function isAjax(){
+		return (isset ( $_SERVER ['HTTP_X_REQUESTED'] ) && $_SERVER ['HTTP_X_REQUESTED'] === 'JSON') || (isset ( $_GET ['_X_REQUESTED_'] ) && $_GET ['_X_REQUESTED_'] == 'JSON') || strtolower($_SERVER['CONTENT_TYPE']) == 'application/json';
 	}
 }
