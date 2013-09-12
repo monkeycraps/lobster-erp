@@ -12,7 +12,6 @@ define(function(require, exports, module) {
 		user: null, 
 		header: null, 
 		init: function(){
-			console.log( 'app init' )
 			require.async(['/src/admin/layout'], function(Layout){
 				Admin.layout = new Layout.Layout();
 				Admin.menu = new Layout.Menu();

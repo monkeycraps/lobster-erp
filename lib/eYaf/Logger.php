@@ -27,7 +27,7 @@ class Logger extends \SplFileObject {
 
 	public static function stopLogging() {
 
-		$buffer = self::COLOR_SEQ . self::GREEN . "Completed in " . number_format ( (microtime ( true ) - self::$start_time) * 1000, 0 ) . "ms | " . "Mem Usage: (" . number_format ( (memory_get_usage ( true ) - self::$memory) / (1024), 0, ",", "." ) . " kb)" . self::RESET_SEQ;
+		$buffer = self::COLOR_SEQ . self::GREEN . "Completed in " . number_format ( (microtime ( true ) - self::$start_time) * 1000, 0 ) . "ms | " . "Mem Usage: (" . number_format ( (memory_get_usage ( true ) - self::$memory) / (1024), 0, ",", "," ) . " kb)" . self::RESET_SEQ;
 		static::getLogger ()->log ( $buffer );
 	}
 

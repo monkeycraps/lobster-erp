@@ -1,0 +1,16 @@
+{
+    "name": "root/lobster-erp",
+    "description": "erp for taobao",
+    "authors": [
+        {
+            "name": "kenny lin",
+            "email": "monkeycraps.lin@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "vandpibe/emoji": "dev-master",
+        "fuelphp/upload": "dev-master",
+        "hd-deman/short-message": "dev-master"
+    }
+}

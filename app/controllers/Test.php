@@ -24,8 +24,23 @@ class TestController extends ApplicationController {
 
 		// i18n\Trans::getCategory( 'form' );
 
-		$model = R::findOne( 'mission', 'id=85' );
-		var_dump( $model->ownMissionExt );die;
+		// $ext = current(R::find( 'mission_ext', 'mission_id = ?', array( 1700 ) ));
+		// dump( $ext );die;
 
+		// $arr = R::getRow( 'select m.id, sub.id as sub_id, m.name, sub.name as sub_name from mission_type m inner join mission_type sub on m.id = sub.pid where sub.id = ? ', array( 12 ) );
+		// var_export( $arr );
+		// var_export( array_values($arr) );
+		// list( $category_id, $sub_category_id, $category, $sub_category ) = array_values($arr);
+		// echo $sub_category;
+
+		// $arr = R::getAssoc( 'select m.id, sub.id as sub_id, m.name, sub.name as sub_name from mission_type m inner join mission_type sub on m.id = sub.pid where sub.id = ? ', array( 12 ) );
+		// var_export( $arr );
+
+		// $arr = R::getCell( 'select sub.name as sub_name from mission_type m inner join mission_type sub on m.id = sub.pid where sub.id = ? ', array( 12 ) );
+		// var_export( $arr );
+
+
+
+		$this->show( 'test' );
 	}
 }

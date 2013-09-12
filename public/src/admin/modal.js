@@ -18,7 +18,6 @@ define(function(require, exports, module){
 		change_cate: function( event ){
 			var mission_type = app_data.user.role.mission_type;
 			var mtid = $( event.target ).val()
-			console.log( mtid );
 			if( typeof mission_type[mtid] == 'undefined' || typeof mission_type[mtid].children == 'undefined' ){
 				$( '.select-subcate', this.$el ).hide()
 				$( '.label-subcate', this.$el ).hide()

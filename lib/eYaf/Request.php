@@ -50,7 +50,8 @@ class Request extends \Yaf\Request\Http {
 		if( !$data ){
 			return;
 		}
-		$func = function( &$val, $key, &$arr ){
+		foreach( $data as $key=>$val ){
+
 			if( false !== strpos( $key, '[' ) ){
 				preg_match( '/([^\[]*)(\[[^\]]+\])?(\[[^\]]+\])?(\[[^\]]+\])?/', $key, $matches );
 				$len = count( $matches ) - 2;
@@ -59,15 +60,14 @@ class Request extends \Yaf\Request\Http {
 					$brr = array( $matches[$len+1]=>$brr );
 					$len--;
 				}
-				if( isset( $arr[$matches[1]] ) ){
-					$arr[$matches[1]] = array_merge_recursive( $arr[$matches[1]], $brr );
+				if( isset( $data[$matches[1]] ) ){
+					$data[$matches[1]] = array_merge_recursive( $data[$matches[1]], $brr );
 				}else{
-					$arr[$matches[1]] = $brr;
+					$data[$matches[1]] = $brr;
 				}
-				unset( $arr[$key] );
+				unset( $data[$key] );
 			}
-		};
-		array_walk($data, $func, $data);
+		}
 
 		return $this->resetKey($data);
 	}
@@ -155,4 +155,24 @@ class Request extends \Yaf\Request\Http {
 		
 		return $params;
 	}
+
+	public function getIp(){
+
+		$remote_ip = null;
+		if( isset($_SERVER['REMOTE_ADDR']) ){
+		  $remote_ip = $_SERVER['REMOTE_ADDR'];
+		}
+
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) // 支持反向代理传递的客户端地址
+		  $remote_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+
+		if(isset($_SERVER['HTTP_X_REAL_IP'])) // 支持反向代理传递的客户端地址
+		  $remote_ip = $_SERVER['HTTP_X_REAL_IP'];
+
+		if(isset($_SERVER['X-Real-IP']))  // 支持反向代理传递的客户端地址
+		  $remote_ip = $_SERVER['X-Real-IP'];
+
+		return $remote_ip;
+	}
+
 }

@@ -37,7 +37,6 @@ define(function(require, exports, module){
 			this.$('#forminner-view').html(this.template( _.extend( this.model.toJSON(), {} ) ));
 		}, 
 		change_category: function( event ){
-			console.log( 'change_category' );
 			var id = event.currentTarget.value	;
 			this.$( 'select[name="send_product_id"]' ).empty();
 			_.each( product_list[id], function(val, key){

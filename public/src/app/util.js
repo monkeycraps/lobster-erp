@@ -1,7 +1,7 @@
 define(function(require, exports, module){
 
 	var _ = require( 'underscore' );
-	var header = require( '/src/app/header' );
+	require( 'ikj/serialize-object/1.0.0/serialize-object-debug' )
 
 	var Util = {
 		buildStore: function( select, selected ){
@@ -20,24 +20,24 @@ define(function(require, exports, module){
 				control.addClass( 'unfold' );
 			})
 		}, 
-		showFormSuccess: function( msg ){
-			header.showFormSuccess( msg );
-		}, 
-		formJson: function( form ){  
-            var serializeObj={};  
-            var array=form.serializeArray();  
-            $(array).each(function(){  
-                if(serializeObj[this.name]){  
-                    if($.isArray(serializeObj[this.name])){  
-                        serializeObj[this.name].push(this.value);  
-                    }else{  
-                        serializeObj[this.name]=[serializeObj[this.name],this.value];  
-                    }  
-                }else{  
-                    serializeObj[this.name]=this.value;   
-                }  
-            });  
-            return serializeObj;  
+		formJson: function( form ){
+            // var serializeObj = {};
+            // var array = form.serializeArray();
+            // $(array).each(function(){  
+            //     if(serializeObj[this.name]){  
+            //         if($.isArray(serializeObj[this.name])){  
+            //             serializeObj[this.name].push(this.value);  
+            //         }else{  
+            //             serializeObj[this.name]=[serializeObj[this.name],this.value];  
+            //         }  
+            //     }else{  
+            //         serializeObj[this.name]=this.value;   
+            //     }  
+            // });
+            // return serializeObj;
+            // console.log( form.serializeArray() )
+            // this.$( 'form' ) 会缓存，需要处理掉
+            return form.serializeObject();
         }
 	}
 

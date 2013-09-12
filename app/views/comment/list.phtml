@@ -1,0 +1,18 @@
+<?php foreach( $list as $commission_id => $one ){ ?>
+	<li class='' data-id='<?php echo $one['id']?>' >
+		<div class='col-lg-10 wrapper'>
+			<div class='content col-lg-12'>
+				<div class='content col-lg-12'>
+					<?php echo Comment\Comment::show( $one['content'], isset( $one['attach'] ) ? $one['attach'] : array() ) ?>
+				</div>
+			</div>
+			<div class='subject col-lg-12'>
+				<span class='author col-lg-6'><?php echo $one['uname'] ?> - <?php echo Helper\Html::date( $one['created'] ) ?></span>
+				<span class='attach col-lg-6'></span>
+			</div>
+		</div>
+		<div class='col-lg-2 op'>
+			<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+		</div>
+	</li>
+<?php }?>

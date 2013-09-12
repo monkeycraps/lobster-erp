@@ -7,7 +7,7 @@ class CategoryModel extends RedBean_SimpleModel {
 		
 		$pager = new pager\Pager ();
 		$tmp = R::getAll ( 'select * from category 
-				where status <> 102
+				where state <> 102
 				order by id asc limit :offset, :limit', array (
 			':offset' => ($page - 1) * $limit,
 			':limit' => $limit 

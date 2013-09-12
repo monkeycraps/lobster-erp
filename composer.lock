@@ -1,0 +1,139 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "d8094e08802a884a58cc9aa8b8ba56d4",
+    "packages": [
+        {
+            "name": "fuelphp/upload",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fuelphp/upload.git",
+                "reference": "68bfab6f732af326ff0b364b996b15c250014a8b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fuelphp/upload/zipball/68bfab6f732af326ff0b364b996b15c250014a8b",
+                "reference": "68bfab6f732af326ff0b364b996b15c250014a8b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Fuel\\Upload": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "FuelPHP Development Team",
+                    "email": "team@fuelphp.com"
+                }
+            ],
+            "description": "Uploaded file processing.",
+            "homepage": "https://github.com/fuelphp/upload",
+            "keywords": [
+                "file uploads",
+                "upload"
+            ],
+            "time": "2013-08-15 21:55:11"
+        },
+        {
+            "name": "hd-deman/short-message",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hd-deman/ShortMessage.git",
+                "reference": "b18595fa11fcff34d3d6dbb95dc1011bcbcd09ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hd-deman/ShortMessage/zipball/b18595fa11fcff34d3d6dbb95dc1011bcbcd09ac",
+                "reference": "b18595fa11fcff34d3d6dbb95dc1011bcbcd09ac",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ShortMessage": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitry Tsoy",
+                    "email": "hd.deman@gmail.com",
+                    "homepage": "http://lacroco.ru/"
+                }
+            ],
+            "description": "Lightweight Sms sender",
+            "homepage": "https://github.com/hd-deman/ShortMessage",
+            "keywords": [
+                "devino",
+                "sms"
+            ],
+            "time": "2013-08-08 11:32:55"
+        },
+        {
+            "name": "vandpibe/emoji",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Vandpibe/Emoji.git",
+                "reference": "92d56477f1c88b4f70de0db4e86a1c8420ce892d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Vandpibe/Emoji/zipball/92d56477f1c88b4f70de0db4e86a1c8420ce892d",
+                "reference": "92d56477f1c88b4f70de0db4e86a1c8420ce892d",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Vandpibe\\Emoji": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2012-12-05 10:26:51"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "vandpibe/emoji": 20,
+        "fuelphp/upload": 20,
+        "hd-deman/short-message": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

@@ -21,9 +21,6 @@ define(function(require, exports, module){
 			form.showModel();
 		}, 
 		add: function(model){
-			console.log( "add" )
-			console.log( _.template( $('#template-user-listitem').html(), model.toJSON() ) );
-			console.log( this.$( 'table tbody' ).length );
 			this.$( 'table tbody' ).append( _.template( $('#template-user-listitem').html(), model.toJSON() ) );
 			this.listenTo( model, 'change', this.renderItem );
 		}, 
@@ -134,21 +131,18 @@ define(function(require, exports, module){
 			
 			var html;
 			if( model.isNew() ){
-				console.log( 'isnew' )
 				html = _.template( $( '#user-template' ).html(), _.extend( model.toJSON(), {'title': '新建用户'} ) );
 			}else{
-				console.log( 'edit' )
 				html = _.template( $( '#user-template' ).html(), _.extend( model.toJSON(), {'title': '编辑用户 - '+ model.get('username')} ) );
 			}
 			this.model = model;
 			this.$('#form-inner').html( html );
 		}, 
-		save: function(){
+		save: function( event ){
 			try{
 				var changed = {};
 				
 				if( this.model == undefined ){
-					console.log( 'no model' )
 					return;
 				}
 				
@@ -173,7 +167,7 @@ define(function(require, exports, module){
 				console.log(ex.description)
 				console.log(ex.number)
 			}
-			return false;
+			event.stopPropagation()
 		}, 
 		showSuccess: function(){
 			this.$( '.success' ).show().fadeOut(2000);
@@ -196,6 +190,5 @@ define(function(require, exports, module){
 	list = new List();
 	form = new Form();
 	var user;
-//	console.log( 'form created' );
 	$('.user-create').click();
 });

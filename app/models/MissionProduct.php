@@ -3,7 +3,7 @@
 class MissionProductModel extends RedBean_SimpleModel {
 
 	const TYPE_BACK = 1;
-	const TYPE_OUT = 2;
+	const TYPE_TO = 2;
 
 	const STATE_NEW = 1;
 	const STATE_DONE = 2;

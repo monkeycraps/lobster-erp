@@ -7,7 +7,8 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 	public $role_id;
 	public $name; 
 	public $username; 
-	public $message;
+
+	private $v = array();
 
 	/**
 	 * @override
@@ -24,7 +25,6 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 		$this->name = $session->get( 'name' );
 		$this->username = $session->get( 'username' );
 		$this->role_id = $session->get( 'role_id' );
-		$this->message = $session->get( 'message' );
 		$this->adminid = $session->get( 'adminid' );
 	}
 
@@ -36,7 +36,6 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 		$session->set( 'name', $user->name );
 		$session->set( 'username', $user->username );
 		$session->set( 'role_id', $user->role_id );
-		$session->set( 'message', $user->ownMessage );
 
 		$this->update();
 	}
@@ -84,4 +83,16 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 			exit();
 		}
 	}
+
+	function __get( $key ){
+		if( !isset( $this->v[$key] ) ){
+			throw new Exception( 'not defined key: '. $key );
+		}
+		return $this->v[$key];
+	}
+
+	function __set( $key, $value ){
+		$this->v[$key] = $value;
+	}
+
 }

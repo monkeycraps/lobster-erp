@@ -22,12 +22,12 @@
 				$users = $controller->users;
 				foreach ( $users as $one ) {
 					?>
-					<tr class='<?php echo $one['status'] == 101 ? 'baned' : '' ?>' id='listitem-user-<?=$one['id']?>'>
+					<tr class='<?php echo $one['state'] == 101 ? 'baned' : '' ?>' id='listitem-user-<?=$one['id']?>'>
 						<td><?=$one['id']?></td>
 						<td class='username'><?=$one['username']?></td>
 						<td class='name'><?=$one['name']?></td>
 						<td class='role_name'><?=$one['role_name']?></td>
-						<td class='status_name'><?=$one['status_name']?></td>
+						<td class='state_name'><?=$one['state_name']?></td>
 						<td><?=Html::date( $one['logined'] )?></td>
 						<td>
 							<a href='#' class='op ban'><i class='glyphicon glyphicon-ban-circle'></i></a> 
@@ -44,7 +44,7 @@
 					<td class='username'><%=username%></td>
 					<td class='name'><%=name%></td>
 					<td class='role_name'><%=role_name%></td>
-					<td class='status_name'><%=status_name%></td>
+					<td class='state_name'><%=state_name%></td>
 					<td><%=logined%></td>
 					<td>
 						<a href='#' class='op ban'><i class='glyphicon glyphicon-ban-circle'></i></a> 

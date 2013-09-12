@@ -1,3 +1,11 @@
+<h1><?php echo $category ?> - <?php echo $sub_category ?> - #<?php echo $model->id ?></h1>
+<div class='state'>
+	<ul class='list-inline'>
+		<li><label>发起人：</label><?php echo $create_uname ?><?php echo $model->create_uid == $model->kf_uid ? '' : ' => '. $kf_uname ?></li>
+		<li><label>发起时间：</label><?php echo $created ?></li>
+	</ul>
+</div>
+
 <div id='history'>
 	<table class='table'>
 		<thead>
@@ -11,7 +19,8 @@
 			<?php foreach( $history as $one ) { ?>
 				<tr>
 					<td><ul class='list-unstyled'>
-						<?php $changed = json_decode( $one['changed'], true );
+						<?php 
+						$changed = json_decode( $one['changed'], true );
 						if( $changed ){
 							foreach( $changed as $one1 ){ 
 								$action = isset( $one1['add'] ) ? '增加': ( 
@@ -33,7 +42,8 @@
 					<td><?php echo UserModel::getName( $one['uid'] )?></td>
 					<td><?php echo Helper\Html::date( $one['created'] )?></td>
 				</tr>
-			<? }?>
+			<? 
+			}?>
 		</tbody>
 	</table>
 </div>

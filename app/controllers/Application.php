@@ -136,21 +136,16 @@ class ApplicationController extends Yaf\Controller_Abstract {
 
 	function renderPartial($path, $tpl_vars = NULL) {
 
+		// $layout_o = $this->getView()->getLayout();
+		// $this->getView()->setLayout(null);
+
 		! $tpl_vars && $tpl_vars = array ();
+
 		$tpl_vars = array_merge ( $tpl_vars, array (
 			'controller' => $this 
 		) );
-		extract( $tpl_vars );
-		$config = $this->config->get ( 'application' );
-		$ext = '.'.$config->view->ext;
-		if( preg_match('/\.(php|phtml)$/i', $path) ){
-			$ext = '';
-		}
-		if (substr ( $path, 0, 1 ) == '/') {
-			require( $this->getConfig ()->application->directory . "/views/". $path. $ext );
-		} else {
-			require( $this->getViewPath(). '/'. strtolower( $this->getRequest()->getControllerName() ). '/'. $path. $ext );
-		}
+		// return $this->render( $path, $tpl_vars );
+		return $this->getView()->renderPartial( $path, $tpl_vars );
 	}
 
 	function renderJson( $array ) {

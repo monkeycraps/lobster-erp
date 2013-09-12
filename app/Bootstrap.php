@@ -21,6 +21,11 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 		$this->config = Yaf\Application::app ()->getConfig ();
 	}
 
+	function _initComposer(Yaf\Dispatcher $dispatcher) {
+
+		require( APP_PATH. '/vendor/autoload.php' );
+	}
+
 	public function _initRequest(Yaf\Dispatcher $dispatcher) {
 
 		$dispatcher->setRequest ( new Request () );
@@ -39,6 +44,10 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 
 		$dispatcher->registerPlugin ( new ViewPlugin () );
 		$this->config->application->protect_from_csrf && $dispatcher->registerPlugin ( new AuthTokenPlugin () );
+
+		$message = new MessagePlugin ();
+		$dispatcher->registerPlugin ( $message );
+		$user->message = $message;
 	}
 
 	public function _initLoader(Yaf\Dispatcher $dispatcher) {

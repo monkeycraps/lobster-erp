@@ -319,6 +319,16 @@ class Layout implements \Yaf\View_Interface {
 		return $this->engine ()->render ( $this->getLayoutPath (), $tpl_vars );
 	}
 
+	function renderPartial( $tpl, $tpl_vars = array() ){
+		
+		$tpl_vars = array_merge ( $this->tpl_vars, $tpl_vars );
+		if (! preg_match ( '/\.phtml$/i', $tpl )) {
+			$tpl .= '.phtml';
+		}
+		
+		return $this->engine ()->render ( $tpl, $tpl_vars );
+	}
+
 	/**
      * Directly display the constens of a view / layout template.
      *

@@ -83,7 +83,6 @@ define(function(require, exports, module){
 			return false;
 		}, 
 		removeItem: function( model ){
-			console.log( model )
 			if( model.type == 'cate' ){
 				form.deleteCategory( model.id );
 			}else{
@@ -142,22 +141,17 @@ define(function(require, exports, module){
 		}, 
 		render: function(model, a, b, c){
 			
-			console.log( 'render' )
 			var html;
 			if( model.type == 'cate' ){
 				if( model.isNew() ){
-					console.log( 'isnew' )
 					html = _.template( $( '#cate-template' ).html(), _.extend( model.toJSON(), {'title': '新建类目'} ) );
 				}else{
-					console.log( 'edit' )
 					html = _.template( $( '#cate-template' ).html(), _.extend( model.toJSON(), {'title': '编辑类目'} ) );
 				}
 			}else{
 				if( model.isNew() ){
-					console.log( 'isnew' )
 					html = _.template( $( '#product-template' ).html(), _.extend( model.toJSON(), {'title': '新建产品', category_list: category_list} ) );
 				}else{
-					console.log( 'edit' )
 					html = _.template( $( '#product-template' ).html(), _.extend( model.toJSON(), {'title': '编辑产品', category_list: category_list} ) );
 				}
 			}
@@ -169,7 +163,6 @@ define(function(require, exports, module){
 				var changed = {};
 				
 				if( this.model == undefined ){
-					console.log( 'no model' )
 					return;
 				}
 				
@@ -234,6 +227,4 @@ define(function(require, exports, module){
 	form = new Form();
 	var cate;
 	var product;
-//	console.log( 'form created' );
-//	$('.product-create').click();
 });

@@ -1,7 +1,12 @@
 <?php
 class UserModel extends RedBean_SimpleModel {
+
+	const ROLE_KF = 1;
+	const ROLE_CG = 2;
+	const ROLE_DZ = 3;
+	const ROLE_FCG = 4;
 	
-	static $status_names = array(
+	static $state_names = array(
 		0 => '正常', 
 		101 => '暂停', 
 		102 => '删除', 
@@ -13,14 +18,14 @@ class UserModel extends RedBean_SimpleModel {
 
 		$pager = new pager\Pager ();
 		$list = R::getAll ( 'select u.* from user u 
-				where status <> 102
+				where state <> 102
 				order by u.id asc limit :offset, :limit', array (
 			':offset' => ($page - 1) * $limit,
 			':limit' => $limit 
 		) );
 		
 		foreach( $list as &$one ){
-			$one['status_name'] = self::getStatusName( $one['status'] );
+			$one['state_name'] = self::getStateName( $one['state'] );
 			$one['role_name'] = RoleModel::getRoleName( $one['role_id'] );
 		}		
 		return array (
@@ -29,8 +34,8 @@ class UserModel extends RedBean_SimpleModel {
 		);
 	}
 	
-	static function getStatusName( $status ){
-		return isset( self::$status_names[$status] ) ? self::$status_names[$status] : '异常';
+	static function getStateName( $state ){
+		return isset( self::$state_names[$state] ) ? self::$state_names[$state] : '异常';
 	}
 
 	static function getName( $id ){

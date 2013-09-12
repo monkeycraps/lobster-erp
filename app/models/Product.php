@@ -8,7 +8,7 @@ class ProductModel extends RedBean_SimpleModel {
 		$pager = new pager\Pager ();
 		$tmp = R::getAll ( 'select p.*, c.name as category from product p 
 				left join category c on p.category_id = c.id 
-				where p.status <> 102
+				where p.state <> 102
 				order by p.id asc limit :offset, :limit', array (
 			':offset' => ($page - 1)* $limit,
 			':limit' => $limit 

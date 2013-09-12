@@ -16,16 +16,49 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			$yaml['form'. $mission_type]
 		);
 
-		$changed = self::GetChanged( $is_new ? array() : $before, $now );
+		$user = Yaf\Application::app()->user;
 
-		$model = R::dispense( 'mission_change_log' );
-		$model->mission_id = $now['id'];
-		$model->changed = json_encode($changed);
-		$model->created = Helper\Html::now();
-		$model->updated = Helper\Html::now();
-		$model->uid = yaf\Application::app()->user->id;
-		R::store( $model );
+		if( $changed = self::GetChanged( $is_new ? array() : $before, $now ) ){
 
+			$model = R::dispense( 'mission_change_log' );
+			$model->mission_id = $now['id'];
+			$model->changed = json_encode($changed);
+			$model->created = Helper\Html::now();
+			$model->updated = Helper\Html::now();
+			$model->uid = yaf\Application::app()->user->id;
+			R::store( $model );
+
+			$omit = array(
+				'id', 'updated', 'created', 'state', 'closed'
+			);
+
+			// kefu mission 修改，记录为 is_changed
+			if( $user->role_id == UserModel::ROLE_KF ){
+
+				$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
+				foreach( $changed as $one ){
+					if( isset( $one['key'] ) ){
+						if( in_array( $one['key'], $omit ) ){
+							continue;
+						}
+						$mission->is_changed = 1;
+						R::store( $mission );
+						break;
+					}
+				}
+			}elseif( $user->role_id == UserModel::ROLE_CG ){
+				foreach( $changed as $one ){
+					if( isset( $one['key'] ) && $one['key'] == '动作' ){
+						if( isset( $one['change'] ) && $now['user_state'] == MissionUserModel::STATE_DONE ){
+							$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
+							$mission->is_changed = 0;
+							R::store( $mission );
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	static function getChanged( $before, $now ){
@@ -37,7 +70,9 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					$changed = self::getChangedExt( $changed, $before, $now  );
 					break;
 				case 'product':
-					$changed = self::getChangedProduct( $changed, $before, $now  );
+				case 'product_back':
+				case 'product_to':
+					$changed = self::getChangedProduct( $changed, $before, $now, $key );
 					break;
 				case 'order':
 					$changed = self::getChangedOrder( $changed, $before, $now );
@@ -48,10 +83,22 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					}
 					switch( $key ){
 						case 'mission_type_id':
+							if( isset( $before[$key] ) ){
+								$before[$key] = MissionTypeModel::getName( $before[$key] );
+							}
 							$one = MissionTypeModel::getName( $one );
 							break;
 						case 'store':
+							if( isset( $before[$key] ) ){
+								$before[$key] = StoreModel::getName( $before[$key] );
+							}
 							$one = StoreModel::getName( $one );
+							break;
+						case 'user_state':
+							if( isset( $before[$key] ) ){
+								$before[$key] = MissionUserModel::getStateName( $before[$key] );
+							}
+							$one = MissionUserModel::getStateName( $one );
 							break;
 					}
 					if( !isset( $before[$key] ) ){
@@ -63,7 +110,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 						if( self::diff( $before[$key], $one ) ){
 							$changed[] = array(
 								'key'=>self::getLabel($key),
-								'change'=>$one, 
+								'change'=>$before[$key]. '=>'. $one, 
 							);
 						}
 					}
@@ -83,6 +130,8 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					$changed = self::checkDelteExt( $changed, $before, $now );
 					break;
 				case 'product':
+				case 'product_back':
+				case 'product_to':
 					break;
 				case 'order':
 					break;
@@ -139,13 +188,13 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 	static function diff( $old, $new ){
 		if( $old === $new ){
-			return true;
+			return false;
 		}
+		return true;
 	}
 
 	static function getChangedExt( $changed, $before, $now ){
 
-		debug( $now['ext'] );
 		foreach( $now['ext'] as $key=>$one ){
 
 			switch( $key ){
@@ -166,7 +215,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 							if( self::diff( $before['ext']['other'][$key1], $one1 ) ){
 								$changed[] = array(
 									'key'=>self::getLabel($key1), 
-									'change'=>$one, 
+									'change'=>$before['ext']['other'][$key1]. '=>'. $one, 
 								);
 							}
 						}
@@ -177,7 +226,6 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					if( !self::getLabel($key) ){
 						continue;
 					}
-
 					if( !isset( $before['ext'][$key] ) ){
 						$changed[] = array(
 							'key'=>self::getLabel($key), 
@@ -187,7 +235,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 						if( self::diff( $before['ext'][$key], $one ) ){
 							$changed[] = array(
 								'key'=>self::getLabel($key), 
-								'change'=>$one, 
+								'change'=>$before['ext'][$key]. '=>' .$one, 
 							);
 						}
 					}
@@ -197,25 +245,25 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		return $changed;
 	}
 
-	static function getChangedProduct( $changed, $before, $now ){
+	static function getChangedProduct( $changed, $before, $now, $product_type ){
 		$is_new = $before ? false : true;
 
 		$product_old = array();
 		if( !$is_new ){
-			foreach( $before['product'] as $one ){
-				$product_old[$one['category_id'].'_'.$one['product_id']] = $one;
+			foreach( $before[$product_type] as $one ){
+				$product_old[$one['id']] = $one;
 			}
 		}
 
 		$product_new = array();
-		foreach( $now['product'] as $one ){
-			$product_old[$one['category_id'].'_'.$one['product_id']] = $one;
+		foreach( $now[$product_type] as $one ){
+			$product_new[$one['id']] = $one;
 		}
 
 		foreach( $product_new as $key=>$one ){
 			if( $is_new ){
 				$changed[] = array(
-					'key'=>self::getLabel('product'), 
+					'key'=>self::getLabel($product_type), 
 					'add'=>CategoryModel::getName( $one['category_id'] ). ' - '. 
 						ProductModel::getName( $one['product_id'] ). ' - '. 
 						$one['cnt'], 
@@ -223,7 +271,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			}else{
 				if( !isset( $product_old[$key] ) ){
 					$changed[] = array(
-						'key'=>self::getLabel('product'), 
+						'key'=>self::getLabel($product_type), 
 						'add'=>CategoryModel::getName( $one['category_id'] ). ' - '. 
 							ProductModel::getName( $one['product_id'] ). ' - '. 
 							$one['cnt'], 
@@ -231,10 +279,11 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 				}else{
 					if( $product_old[$key]['cnt'] != $one['cnt'] ){
 						$changed[] = array(
-							'key'=>self::getLabel('product'), 
-							'change'=>CategoryModel::getName( $one['category_id'] ). ' - '. 
+							'key'=>self::getLabel($product_type), 
+							'change'=>
+								CategoryModel::getName( $one['category_id'] ). ' - '. 
 								ProductModel::getName( $one['product_id'] ). ' - '. 
-								$one['cnt'], 
+								'('. $product_old[$key]['cnt']. '=>' .$one['cnt']. ')', 
 						);
 					}
 				}
@@ -244,7 +293,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		foreach( $product_old as $key=>$one ){
 			if( !isset($product_new[$key]) ){
 				$changed[] = array(
-					'key'=>self::getLabel('product'), 
+					'key'=>self::getLabel($product_type), 
 					'delete'=>CategoryModel::getName( $one['category_id'] ). ' - '. 
 						ProductModel::getName( $one['product_id'] ). ' - '. 
 						$one['cnt'], 
@@ -298,6 +347,8 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 	static function getAttrs( $mid ){
 
+		$user = Yaf\Application::app()->user;
+
 		if( !$model = R::findOne( 'mission', ' id = ? ', array( $mid ) ) ){
 			throw new Exception( 'no mission for mid: '. $mid );
 		}
@@ -323,28 +374,49 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			) );
 		}
 
-		if( $model->ownMissionProduct ){
+		$send_back_product_list = array();
+		$send_to_product_list = array();
+		$send_product_list = array();
+		if( $model->withCondition( 'deleted is null' )->ownMissionProduct ){
 
-			$product_list = array();
 			foreach( $model->ownMissionProduct as $one ){
-				$product_list[] = $one->getIterator()->getArrayCopy();
+				switch( $one->type ){
+					case MissionProductModel::TYPE_BACK:
+						$send_back_product_list[] = $one->getIterator()->getArrayCopy();
+						break;
+					case MissionProductModel::TYPE_TO:
+						$send_to_product_list[] = $one->getIterator()->getArrayCopy();
+						break;
+					default: 
+						$send_product_list[] = $one->getIterator()->getArrayCopy();
+						break;
+				}
 			}
-			$mission = array_merge( $mission, array(
-				'product'=>$product_list
-			) );
 		}
+		$mission = array_merge( $mission, array(
+			'product_back'=>$send_back_product_list, 
+			'product_to'=>$send_to_product_list, 
+			'product'=>$send_product_list, 
+		) );
 
-		if( $model->ownMissionOrder ){
+		$order_list = array();
+		if( $model->withCondition( 'deleted is null' )->ownMissionOrder ){
 
-			$order_list = array();
 			foreach( $model->ownMissionOrder as $one ){
 				$order_list[] = $one->getIterator()->getArrayCopy();
 			}
-			$mission = array_merge( $mission, array(
-				'order'=>$order_list
-			) );
 		}
+		$mission = array_merge( $mission, array(
+			'order'=>$order_list
+		) );
 
+		$mission_user = current( $model->withCondition( 'uid = ?', array( $user->id ) )->ownMissionUser );
+		if( !$mission_user ){
+			throw new Exception( 'no mission user' );
+		}
+		$mission = array_merge( $mission, array(
+			'user_state'=>$mission_user->state
+		) );
 
 		debug( $mission, 'mission' );
 		return $mission;

@@ -2,18 +2,40 @@ define(function(require, exports, module) {
 
 	var _ = require('underscore')
 	var Backbone = require('backbone')
-	// require('/src/app/user')
-	// require('/src/app/header')
-	// require('/src/app/name')
-	
+
 	var App = {
-		layout: null, 
-		user: null, 
 		init: function(){
-			console.log( 'app init' )
-			require.async(['/src/app/user', '/src/app/header', '/src/app/layout'], function(User, header, Layout){
-				App.user = User;
+			require.async(['/src/app/user', '/src/app/header', '/src/app/layout', '/src/app/notify'], function(User, header, Layout, Notify){
+				app.User = User;
+				app.Layout = Layout;
+				app.header = header;
+
+				Notify.checkDesktopNotification();
+				// Notify.show( '今晚上山打老虎' );
 			});
+
+			$('body').tooltip({
+		      selector: "[data-toggle=tooltip]",
+		      container: "body"
+		    })
+
+		    $('body').popover({
+		      selector: "[data-toggle=popover]",
+		      container: "body", 
+		      html: true, 
+		      placement: function( wrapper, trigger ){
+		      	return $(trigger).attr('data-placement');
+		      }, 
+		      content: function(){
+		      	return $(this).next('.popover').html();
+		      }
+		    })
+
+		    $( '#message-wrapper' ).load('/message/index', function(){
+		    	require.async('/src/app/message', function( Message ){
+		    		app.Message = Message;
+		    	})
+		    });
 		}
 	}
 	
@@ -34,8 +56,10 @@ define(function(require, exports, module) {
 				}catch(ex){
 					alert( '保存出错：'+ response.status + ':' + response.responseText )
 				}
+				app.layout.form_view.issaving = false;
 			}
 		}
+		options.wait = true
 		return Backbone.Model.prototype.save.apply( this, arguments );
 	}
 	
@@ -43,10 +67,11 @@ define(function(require, exports, module) {
 		if( options.error == undefined ){
 			options.error = function( model, response, options ){
 				try{
-					alert( '保存出错：'+ response.status + ':' + eval( "\'" + response.responseText + "\'") )
+					alert( '删除出错：'+ response.status + ':' + eval( "\'" + response.responseText + "\'") )
 				}catch(ex){
-					alert( '保存出错：'+ response.status + ':' + response.responseText )
+					alert( '删除出错：'+ response.status + ':' + response.responseText )
 				}
+				app.layout.form_view.issaving = false;
 			}
 		}
 		return Backbone.Model.prototype.destroy.apply( this, arguments );

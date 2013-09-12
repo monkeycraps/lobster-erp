@@ -472,3 +472,20 @@
 .mCS-dark-thin>.mCSB_scrollTools .mCSB_buttonRight{
 	background-position:-80px -56px;
 }
+
+
+
+.mCSB_scrollTools .mCSB_draggerRail{width:6px; 
+	background:#fff; /* rgba fallback */
+	background:rgba(255,255,255,0.75);
+	-webkit-border-radius:0; -moz-border-radius:0; border-radius:0;}
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{width:6px; 
+	background:#000; /* rgba fallback */
+	background:rgba(0,0,0,0.4);
+	-webkit-border-radius:0; -moz-border-radius:0; border-radius:0;}
+.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar,
+.mCSB_scrollTools .mCSB_dragger:active .mCSB_dragger_bar,
+.mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar{
+	background:#000; /* rgba fallback */
+	background:rgba(0,0,0,0.4);
+}

@@ -199,4 +199,12 @@ class Html {
 	static function now(){
 		return date( 'Y-m-d H:i:s' );
 	}
+
+	static function substr( $str, $beg, $limit ){
+		$fix = '';
+		if( mb_strlen( $str, 'utf-8' ) > $beg + $limit ){
+			$fix = '..';
+		}
+		return mb_substr( $str, $beg, $limit, 'utf-8' ). $fix;
+	}
 }

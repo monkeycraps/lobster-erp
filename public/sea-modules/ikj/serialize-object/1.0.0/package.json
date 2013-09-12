@@ -1,0 +1,14 @@
+{
+  "name": "serialize-object",
+  "family": "ikj",
+  "version": "1.0.0",
+  "description": "jquery插件,将form封装为json对象",
+  "keywords": ["widget"],
+  "author": "Stone Lee <istonelee@gmail.com> (http://stonelee.info)",
+  "spm": {
+    "alias": {
+      "$": "$"
+    },
+    "output": ["serialize-object.js"]
+  }
+}

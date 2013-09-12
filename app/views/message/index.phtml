@@ -1,0 +1,55 @@
+<div class="modal fade" id='message-inner'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">消息</h4>
+      </div>
+      <div class="modal-body">
+      	<?php 
+      		list( $list, $pager ) = $controller->user->message->getList(); ?>
+      	<?php if( $list ){ ?>
+      		<table class='table table-hover'>
+      			<thead>
+      				<th>#</th>
+      				<th>标题</th>
+      				<th class='col-lg-2'>时间</th>
+      				<th class='col-lg-1'>操作</th>
+      			</thead>
+      		<?php foreach( $list as $one ){ ?>
+      			<tbody>
+	      			<tr data-id='<?php echo $one['id'] ?>' class='<?php echo $one['readed'] ? 'readed' : '' ?>' >
+	      				<td><?php echo $one['id']?></td>
+	      				<td class='subject'>
+	      					<?php echo $one['title']?>
+	      					<div class='content m-hide'>
+	  							<?php echo $one['content']; ?>
+	      					</div>
+	      				</td>
+	      				<td><?php echo Helper\Html::date( $one['created'] ) ?></td>
+	      				<td>
+	      					<a class='op op-remove'><i class='glyphicon glyphicon-remove'></i></a>
+	      				</td>
+	      			</tr>
+	      		</tbody>
+      		<?php }?>
+      		</table>
+      		<?php echo $pager->render(); ?>
+      	<?php }?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger pull-left clear-all" >清空</button>
+        <button type="button" class="btn btn-success readed-all" >全部已读</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+<?php $message = $controller->user->message; ?>
+var message_init = {
+	cnt: parseInt( '<?php echo $message->new_count ?>' ), 
+	list: <?php echo json_encode( $message->new_list ) ?>
+}
+
+</script>

@@ -39,7 +39,7 @@ class ProductController extends AdminBaseController {
 		} elseif( $request->isDelete() ) {
 			$id = $this->get ( 'id' );
 			$model = R::load( 'product', $id ); 
-			$model->status = 102;
+			$model->state = 102;
 			R::store( $model );
 			return $this->renderJson(array('error'=> 0));
 		} else {
@@ -77,7 +77,7 @@ class ProductController extends AdminBaseController {
 		} elseif( $request->isDelete() ) {
 			$id = $this->get ( 'id' );
 			$model = R::load( 'category', $id ); 
-			$model->status = 102;
+			$model->state = 102;
 			R::store( $model );
 			return $this->renderJson(array('error'=> 0));
 		} else {

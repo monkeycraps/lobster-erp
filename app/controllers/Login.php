@@ -16,6 +16,10 @@ class LoginController extends ApplicationController {
 				$this->addError( '密码错误' );
 			}
 
+			$user->logined = Helper\Html::now();
+			$user->ip = $this->getRequest()->getIp();
+			R::store( $user );
+
 			if( !$this->getErrors() ){
 				$this->user->login( $user );
 				$this->redirect( '/mission' );

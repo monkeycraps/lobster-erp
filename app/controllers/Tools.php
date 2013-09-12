@@ -12,6 +12,6 @@ class ToolsController extends ApplicationController {
 		$cate_id = $this->get( 'cate' );
 		$sub_cate_id = $this->get( 'subcate' );
 
-		$this->renderPartial( 'form-'. $cate_id. '-'. $sub_cate_id );
+		echo $this->renderPartial( 'tools/form-'. $cate_id. '-'. $sub_cate_id );
 	}
 }

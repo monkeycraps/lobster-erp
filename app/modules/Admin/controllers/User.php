@@ -27,11 +27,11 @@ class UserController extends AdminBaseController {
 			}
 			switch( $action ){
 				case 'ban':
-					$model->status = 101;
+					$model->state = 101;
 					R::store( $model );
 					break;
 				case 'restore':
-					$model->status = 0;
+					$model->state = 0;
 					R::store( $model );
 					break;
 				default: 
@@ -64,12 +64,12 @@ class UserController extends AdminBaseController {
 				$model->role_id = $this->post ( 'role_id' );
 				$model->created = date ( 'Y-m-d' );
 				$model->updated = date ( 'Y-m-d' );
-				$model->status = 0;
+				$model->state = 0;
 				$id = R::store ( $model );
 			} elseif ($request->isDelete ()) {
 				$id = $this->get ( 'id' );
 				$model = R::load ( 'user', $id );
-				$model->status = 102;
+				$model->state = 102;
 				R::store( $model );
 				return $this->renderJson ( array (
 					'error' => 0 
@@ -84,10 +84,10 @@ class UserController extends AdminBaseController {
 		$model->created = Helper\Html::date( $model->created );
 		$model->logined = Helper\Html::date( $model->logined );
 		$role_name = RoleModel::getRoleName( $model->role_id );
-		$status_name = UserModel::getStatusName( $model->status );
+		$state_name = UserModel::getStateName( $model->state );
 		$this->renderJson ( array_merge ( $model->getIterator ()->getArrayCopy (), array (
 			'role_name' => $role_name, 
-			'status_name' => $status_name
+			'state_name' => $state_name
 		) ) );
 	}
 }
