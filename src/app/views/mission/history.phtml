@@ -24,8 +24,9 @@
 						if( $changed ){
 							foreach( $changed as $one1 ){ 
 								$action = MissionChangeLogModel::getAction( $one1 );
+								$value = MissionChangeLogModel::getValue( $one1 );
 							?>
-								<li><?php echo '【'. $action. '】'. $one1['key']. ' - ' ?></li>
+								<li><?php echo '【'. $action. '】'. $one1['key']. ' - '. $value ?></li>
 							<?php }
 						}
 						?>

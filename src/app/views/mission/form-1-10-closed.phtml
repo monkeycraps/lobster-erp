@@ -1,5 +1,4 @@
-
-<script type='text/template' id='template-formview-closed-1-7'>
+<script type='text/template' id='template-formview-closed-1-10'>
 <div class='mission-form-inner'>
 
 	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
@@ -23,7 +22,7 @@
 	</div>
 
 	<div class="form-group clearfix">
-		<label class="col-lg-2" for="ipt_order_num">发货产品：</label>
+		<label class="col-lg-2" for="ipt_order_num">退货产品：</label>
 		<div class='col-lg-10'>
 			<table class='table list_send_to_product'>
 			<tbody>
@@ -38,18 +37,17 @@
 			</tbody></table>
 		</div>
 	</div>
+
 	<div class="form-group">
-		<label class="col-lg-2" for="ipt_order_num">发货地址：</label>
+		<label class="col-lg-2" for="ipt_order_num">退款原因：</label>
 		<div class='col-lg-10'>
 			<%=mail_to_address%>
 		</div>
 	</div>
-	<div class="form-group">
-		<label class="col-lg-2" for="ipt_order_num">备注：</label>
-		<div class='col-lg-10'>
-			<%=remarks%>
-		</div>
-	</div>
+
+	<div class='split-line'></div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_profit_closed' ) ?>
 
 </div>
 </script>

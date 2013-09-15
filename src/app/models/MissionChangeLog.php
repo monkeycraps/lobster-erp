@@ -11,10 +11,13 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		$before && $is_new = false;
 
 		$yaml = yaml_parse_file( APP_PATH. '/config/form.ini' );
-		self::$label = array_merge(
-			$yaml['form'], 
-			$yaml['form'. $mission_type]
-		);
+		if( is_array( $yaml['form'. $mission_type] ) ){
+
+			self::$label = array_merge(
+				$yaml['form'], 
+				$yaml['form'. $mission_type]
+			);
+		}
 
 		$user = Yaf\Application::app()->user;
 
@@ -431,4 +434,17 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 				isset( $change['delete'] ) ? '删除': '异常记录' ) );
 		return $action;
 	}
+
+	static function getValue( $change ){
+		$key = isset( $change['add'] ) ? 'add': ( 
+			isset( $change['change'] ) ? 'change' : ( 
+				isset( $change['delete'] ) ? 'delete': 'unknow' ) );
+
+		if( $key == 'unknow' ){
+			return '';
+		}
+
+		return $change[$key];
+	}
+
 }
