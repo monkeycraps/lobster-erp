@@ -109,9 +109,9 @@ define(function(require, exports, module){
 			setTimeout( function(){ form_view.$el.mCustomScrollbar("scrollTo",'top'); }, 1000 );
 		}, 
 		checkFloatBoard: function( mcs ){
-			if( mcs.topPct > 98 ){
+			if( mcs.topPct > 95 ){
 				form_view.unfloatBoard();
-			}else if( mcs.topPct < 85 ){
+			}else if( mcs.topPct < 70 ){
 				form_view.floatBoard();
 			}
 		}, 
@@ -157,32 +157,50 @@ define(function(require, exports, module){
 		events: {
 		}, 
 		initialize: function(){
-			var mission_type = app_data.user.role.mission_type;
-			$( '.select-cate', this.$el ).empty()
-			for( key in mission_type ){
-				$( '.select-cate', this.$el ).append( '<option value="'+ key +'">'+ mission_type[key].data.name +'</option>' )
-			}
 
-			var selector = this.$( '.mission-add' ).on('shown.bs.popover', function () {
+			this.$( '.mission-add' ).on('shown.bs.popover', function () {
 
-				$( '.select-cate:visible', $('.popover.in') ).change(function(event){
-					menu_view.change_cate(event);
-				}).change();
-				$( '.btn-mission-add:visible' ).click(function(event){menu_view.do_mission_add(event)});
-				$( '.btn-mission-add-cancel:visible' ).click(function(event){menu_view.do_mission_add_cancel(event)});
+				var popover = $( '.popover:visible' );
+				$( 'form', popover ).show();
+
+				$( '.tab-pane .btn', popover ).click(function(){
+					$( '.tab-pane .btn', popover ).removeClass( 'btn-info' );
+					$( this ).addClass( 'btn-info' )
+					return false;
+				})
+
+				$('.nav a', popover).click(function (e) {
+					e.preventDefault()
+					$(this).tab('show')
+					$( '.tab-pane:visible', popover ).hide();
+					$( '.tab-pane[id="'+ ($( this ).attr( 'href' ).substr( 1 ) ) +'"]', popover ).show();
+				})
+
+				$( '.btn-mission-add', popover ).click(function(event){
+					menu_view.do_mission_add( event )
+				});
+				$( '.btn-mission-add-cancel', popover ).click(function(event){
+					menu_view.do_mission_add_cancel( event )
+				});
 			})
 		}, 
 		do_mission_add: function( event ){
 
-			var wrapper = $( event.target ).parents( '.popover.in' )
+			var wrapper = $( event.currentTarget ).parents( '.popover:first' );
 
-			var cate_id = $( '.select-cate', wrapper ).val()
-			var sub_cate_id = $( '.select-subcate', wrapper ).val()
+			var cate_id = $( 'li.active a', wrapper ).attr( 'data-id' )
+			var sub_cate_id = $( '.tab-pane .btn-info', wrapper ).attr( 'data-id' )
+
+			if( !sub_cate_id ){
+				alert( '还没选择具体任务' )
+				return ;
+			}
 			form_view.add( cate_id, sub_cate_id );
 
 			this.do_mission_add_cancel();
 		}, 
 		do_mission_add_cancel: function(){
+
 			this.$( '.mission-add' ).popover( 'hide' );
 		}, 
 		change_cate: function( event ){
@@ -210,9 +228,11 @@ define(function(require, exports, module){
 	var ListView = Backbone.View.extend({
 		el: $('#front-list'), 
 		events: {
+			'change thead .checkall': 'checkALlChange', 
 			'click tbody tr': 'list_item_select', 
 			'mouseover tbody tr': 'list_item_mouseover', 
 			'mouseleave tbody tr': 'list_item_mouseleave', 
+			'mouseleave tbody tr': 'list_item_mouseleave'
 		}, 
 		initialize: function(){
 			this.$el.mCustomScrollbar({
@@ -223,6 +243,51 @@ define(function(require, exports, module){
 			    scrollInertia : 150
 			});
 		},
+		batchSubmit: function(){
+			var action = this.$( '#myTab .active a' ).attr( 'href' ).substr( 10 )
+			switch( parseInt(action) ){
+				case 6:
+					this.batchSubmitDo( '/drawback/batch' )
+					break;
+				case 7:
+					this.batchSubmitDo( '/refundment/batch' )
+					break;
+				default: 
+					break;
+			}
+		}, 
+		batchSubmitDo: function( url ){
+			var view = this
+			var batch = []
+			$( 'tbody tr .checkbox:checked' ).each(function(){batch.push( this.value )});
+			if( batch.length == 0 ){
+				form_toolbar_view.showListMessage( '没有选中' );
+				return;
+			}
+			$.post( url, {batch: batch}, function(data){
+				if( !_.isObject( data ) ){
+					alert( '系统错误'+ data )
+					return;
+				}
+				if( 0 != data.error ) {
+					alert( data.msg )
+					return;
+				}
+				form_toolbar_view.showListSuccess( data.msg );
+				list_view.reload()
+			} )
+		}, 
+		checkClick: function( e ){
+			e.stopPropagation()
+		}, 
+		checkALlChange: function( e ){
+			var checked = $( e.currentTarget ).parent().find( '.checkall:checked' ).length > 0 ? true : false;
+			if( checked ){
+				this.$( 'tbody:visible tr .checkbox' ).each(function(){this.checked=true;}); 
+			}else{
+				this.$( 'tbody:visible tr .checkbox' ).each(function(){this.checked=false;}); 
+			}
+		}, 
 		search: function( key ){
 			var view = this;
 			this.$el.load( '/mission/search/key/' + key, {}, function(){
@@ -271,7 +336,6 @@ define(function(require, exports, module){
 
 		},
 		gotoList: function( show_type ){
-			alert( show_type )
 			this.$( '.list-toggller-'+ show_type ).find( 'a' ).click();
 		}, 
 		list_item_mouseover: function( event ){
@@ -378,6 +442,20 @@ define(function(require, exports, module){
 			}
 			this.$( '.bs-callout' ).hide();
 			this.$( '.form-message' ).html( msg ).show().fadeOut( 10000 );
+		}, 
+		showListSuccess: function( msg ){
+			if( !msg ){
+				msg = '保存成功'
+			}
+			this.$( '.bs-callout' ).hide();
+			this.$( '.list-success' ).html( msg ).show().fadeOut( 10000 );
+		}, 
+		showListMessage: function( msg ){
+			if( !msg ){
+				msg = '没设置消息'
+			}
+			this.$( '.bs-callout' ).hide();
+			this.$( '.list-message' ).html( msg ).show().fadeOut( 10000 );
 		}
 	});
 
@@ -421,5 +499,7 @@ define(function(require, exports, module){
 		form_view: form_view, 
 		form_toolbar_view: form_toolbar_view, 
 	};
+
+	form_view.add( 1, 9 )
 
 });

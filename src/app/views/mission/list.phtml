@@ -3,28 +3,28 @@
 	case UserModel::ROLE_DZ: ?>
 
 		<ul id="myTab" class="nav nav-tabs">
-			<li class="active list-toggller-1"><a href="#listitem-5" data-toggle="tab">待返现</a></li>
-			<li class="list-toggller-2"><a href="#listitem-6" data-toggle="tab">待退款</a></li>
-			<li class="list-toggller-3"><a href="#listitem-7" data-toggle="tab">未关闭</a></li>
-			<li class="list-toggller-4"><a href="#listitem-8" data-toggle="tab">已关闭</a></li>
+			<li class="active list-toggller-1"><a href="#listitem-6" data-toggle="tab">待返现</a></li>
+			<li class="list-toggller-2"><a href="#listitem-7" data-toggle="tab">待退款</a></li>
+			<li class="list-toggller-3"><a href="#listitem-8" data-toggle="tab">未关闭</a></li>
+			<li class="list-toggller-4"><a href="#listitem-9" data-toggle="tab">已关闭</a></li>
 			<li class='pull-right'>
 			</li>
 		</ul>
 
 		<div id="myTabContent" class="tab-content">
-			<div class="tab-pane fade active in" id="listitem-5" >
+			<div class="tab-pane fade active in" id="listitem-6" >
 				<?php echo $controller->renderPartial( 'mission/list-table-batch', array( 
 					'type'=>6, 'list'=>$controller->waiting_list_drawback ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-6">
+			<div class="tab-pane fade in" id="listitem-7">
 				<?php echo $controller->renderPartial( 'mission/list-table-batch', array( 
 					'type'=>7, 'list'=>$controller->waiting_list_refundment ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-7">
+			<div class="tab-pane fade in" id="listitem-8">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>8, 'list'=>$controller->unclosed_list ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-8">
+			<div class="tab-pane fade in" id="listitem-9">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>9, 'list'=>$controller->closed_list ) ); ?>
 			</div>

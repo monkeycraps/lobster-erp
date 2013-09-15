@@ -7,15 +7,33 @@
 			<div class="popover mchide">
 				<div class="arrow"></div>
 				<h3 class="popover-title" >新建任务</h3>
-				<div class="popover-content">
+				<div class="popover-content" style='width: 500px;'>
 					<form class='form-horizantal'>
-						<div class='form-group'>
-							<select class='select-cate'>
-							</select>
-						</div>
-						<div class='form-group'>
-							<select class='select-subcate'>
-							</select>
+						<ul class="nav nav-tabs" id="myTab">
+							<?php 
+							$mission_type_list = rbac\Role::getRoleActions( $controller->user->role_id );
+							$first = true; foreach( $mission_type_list as $one ) { ?>
+						  		<li class="<?php echo $first ? 'active' : '' ?>">
+						  			<a href="#mission-type-<?php echo $one['data']['id'] ?>" 
+						  				data-id='<?php echo $one['data']['id']?>'
+						  				>
+						  				<?php echo $one['data']['name'] ?></a></li>
+							<?php $first = false; }?>
+						</ul>
+						<div class="tab-content" style='padding: 10px 0 40px 0;'>
+							<?php $first = true; foreach( $mission_type_list as $one ) { ?>
+						  		<div class="tab-pane <?php echo $first ? 'active' : '' ?>" 
+						  			id="mission-type-<?php echo $one['data']['id']?>">
+						  			<?php 
+						  			sort( $one['children'] );
+						  			$children = $one['children'];
+						  			foreach( $children as $one1 ){ 
+						  				?>
+						  				<input class="btn btn-default" type="button" value="<?php echo $one1['name'] ?>" 
+						  				data-id='<?php echo $one1['id'] ?>'>
+						  			<?php } ?>
+						  		</div>
+							<?php $first = false; }?>
 						</div>
 						<div class='form-group '>
 							<input type='button' class='btn btn-primary btn-mission-add'

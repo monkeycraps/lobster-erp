@@ -4,11 +4,16 @@ class MissionExtModel extends RedBean_SimpleModel {
 
 	static function setExt( $mission_type, $mission_id, $data ){
 
-		$func = "setExt{$mission_type}";
+		switch( $mission_type ){
+
+			// $func = "setExt{$mission_type}";
+			default:
+				$func = "setExtNormal";
+		}
 		return self::$func( $mission_id, $data );
 	}
 
-	static function setExt12( $mission_id, $data ){
+	static function setExtNormal( $mission_id, $data ){
 
 		$form_ext = self::getFormExt( 12 );
 		$data_filter = self::filter( $data, $form_ext );

@@ -72,6 +72,8 @@ class MissionController extends ApplicationController {
 		
 		$cate_id = $this->get( 'cate' );
 		$sub_cate_id = $this->get( 'subcate' );
+		$this->form_name = MissionTypeModel::getName( $cate_id ) . ' - '. 
+					MissionTypeModel::getName( $sub_cate_id );
 
 		echo $this->renderPartial( 'mission/form-'. $cate_id. '-'. $sub_cate_id );
 	}
@@ -195,6 +197,10 @@ class MissionController extends ApplicationController {
 			$drawback = R::dispense( 'mission_drawback' );
 		}
 
+		if( !$refundment = R::findOne( 'mission_refundment', 'mission_id = ? and deleted is null ', array( $model->id ) ) ){
+			$refundment = R::dispense( 'mission_refundment' );
+		}
+
 		$this->renderJson ( array_merge ( $model->getIterator ()->getArrayCopy (), array (
 			'store' => $store, 
 			'category_id' => $category_id, 
@@ -218,7 +224,9 @@ class MissionController extends ApplicationController {
 			'drawback_zhifubao'=> $drawback->zhifubao, 
 			'drawback_reason'=> $drawback->reason, 
 			'drawback_state'=> $drawback->state, 
-			'drawback_state_name'=> MissionDrawbackModel::getStateName( $drawback->state ), 
+			'drawback_state_name'=> MissionRefundmentModel::getStateName( $drawback->state ), 
+			'refundment_state'=> $refundment->state, 
+			'refundment_state_name'=> MissionRefundmentModel::getStateName( $refundment->state ), 
 		), $ext ) );
 	}
 

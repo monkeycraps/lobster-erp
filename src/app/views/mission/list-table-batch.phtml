@@ -2,6 +2,7 @@
 <table class='table table-hover'>
 	<thead>
 		<tr>
+			<th class=''><input type='checkbox' class='checkbox checkall' /></th>
 			<th class=''>#</th>
 			<th class='col1'>状态</th>
 			<th class=''>类型</th>
@@ -17,6 +18,7 @@
 		foreach( $list as $one ){?>
 			<tr data-type='<?php echo $type?>' id='listitem-<?=$one['id']?>' cate-id='<?=$one['category_id']?>' 
 				sub-cate-id='<?=$one['sub_category_id']?>'>
+				<td><input type='checkbox' class='checkbox' name='' value='<?php echo $one['id'] ?>' /></td>
 				<td><?=$one['id']?></td>
 				<td class='mission_state'><?=$one['mission_state']?></td>
 				<td><?=$one['sub_category']?></td>
@@ -33,6 +35,7 @@
 	<script type='text/template' id='template-<?php echo $type?>-listitem'>
 		<tr data-type='<?php echo $type ?>' id='listitem-<%=id%>' cate-id='<%=category_id%>' 
 				sub-cate-id='<%=sub_category_id%>'>
+			<td><input type='checkbox' class='checkbox' name='batch[]' value='<%= id %>' /></td>
 			<td><%=id%></td>
 			<td class='mission_state'><%=mission_state%></td>
 			<td><%=sub_category%></td>

@@ -1,0 +1,54 @@
+
+<script type='text/template' id='template-formview-closed-1-9'>
+<div class='mission-form-inner'>
+
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<%=store%>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<%=wanwan%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<%=order_num_list%>
+		</div>
+	</div>
+
+	<div class="form-group clearfix">
+		<label class="col-lg-2" for="ipt_order_num">退货产品：</label>
+		<div class='col-lg-10'>
+			<table class='table list_send_to_product'>
+			<tbody>
+				<% if( 'undefined' != typeof(send_to_product_list) ){ _.each(send_to_product_list, function(val,key) { %>
+					<tr>
+						<td><%=val.category%></td>
+						<td><%=val.product%></td>
+						<td><%=val.cnt%></td>
+						<td><%=val.state_name%></td>
+					</tr>
+				<% });} %>
+			</tbody></table>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" for="ipt_order_num">退款原因：</label>
+		<div class='col-lg-10'>
+			<%=mail_to_address%>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_profit_closed' ) ?>
+
+</div>
+</script>

@@ -39,7 +39,8 @@ class TestController extends ApplicationController {
 		// $arr = R::getCell( 'select sub.name as sub_name from mission_type m inner join mission_type sub on m.id = sub.pid where sub.id = ? ', array( 12 ) );
 		// var_export( $arr );
 
-
+		// $sql = 'update mission_drawback set state = '. MissionDrawbackModel::STATE_DONE . ' where mission_id = ? and state = '. MissionDrawbackModel::STATE_APPLY;
+		// dump( R::exec( $sql, array( 189 ) ) );
 
 		$this->show( 'test' );
 	}

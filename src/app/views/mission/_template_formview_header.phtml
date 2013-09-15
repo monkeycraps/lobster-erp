@@ -1,0 +1,13 @@
+<div>
+	<h1 class='col-lg-7'>#<%= (typeof(id) == 'undefined' || id <= 0) ? '新建任务' : id %> - <?php echo $name ?></h1>
+	<div class='col-lg-5 pull-right' style='margin: 20px 0 10px; color: red; text-align: right; ' >客服：<%= kf_state_name %><%= cg_state ? '&nbsp;&nbsp;仓管：' + cg_state_name : '' %>
+	</div>
+</div>
+<div class='state' style='clear:both;'>
+	<ul class='list-inline'>
+		<li><label>发起人：</label><%=create_uname%><%= create_uid == kf_uid ? '' : ' => ' + kf_uname %></li>
+		<li><label>发起时间：</label><%=created%></li>
+	</ul>
+</div>
+
+<div class='split-line'></div>

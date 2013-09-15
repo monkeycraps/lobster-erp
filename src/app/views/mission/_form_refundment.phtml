@@ -1,0 +1,11 @@
+<div class="form-group mchide refundment_controller refundment_state_<%= refundment_state %>" >
+	<input type='hidden' name='refundment' value='1' />
+	<label class="col-lg-2" >退款状态：</label>
+	<div class='col-lg-10 '>
+		<%=refundment_state_name %>
+		<div class='pull-right'>
+			<a class='do-refundment word-btn word-btn-danger'>确认退款</a>
+			<a class='do-refundment-cancel word-btn word-btn-warning'>取消退款</a>
+		</div>
+	</div>
+</div>

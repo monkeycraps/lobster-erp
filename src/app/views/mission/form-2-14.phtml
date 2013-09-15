@@ -1,0 +1,225 @@
+<div id='forminner-mission'>
+	<form class="form form-horizontal" role="form" >
+		<div id='forminner-view'>
+
+		</div>
+		<div class='split-line'></div>
+
+		<?php echo $controller->renderPartial( 'mission/_form_board_and_comment' ) ?>
+
+	</form>
+</div>
+<script type='text/template' id='template-formview'>
+<div class='mission-form-inner'>
+	<div>
+		<h1 class='col-lg-6'>#<%= (typeof(id) == 'undefined' || id <= 0) ? '新建任务' : id %> - 退还补发 - 换货</h1>
+		<div class='col-lg-6 pull-right' style='margin: 20px 0 10px; color: red; text-align: right; ' >客服：<%= kf_state_name %><%= cg_state ? '&nbsp;&nbsp;仓管：' + cg_state_name : '' %>
+		</div>
+	</div>
+	<div class='state' style='clear:both;'>
+		<ul class='list-inline'>
+			<li><label>发起人：</label><%=create_uname%><%= create_uid == kf_uid ? '' : ' => ' + kf_uname %></li>
+			<li><label>发起时间：</label><%=created%></li>
+		</ul>
+	</div>
+
+	<div class='split-line'></div>
+
+	<input type='hidden' name='mission_type_id' value='<%=mission_type_id%>' />
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<select name='store_id' class='col-lg-10' class='store' ></select>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<input type="text" name='wanwan' class="form-control wanwan" value='<%=wanwan%>'
+				id='ipt_wanwan' placeholder="">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<input type="text" name='order_num' class="form-control" value='<%=order_num_list%>'
+				placeholder="多个订单号用空格分开">
+			<div class='help-block'>多个订单号用空格分开</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >时间点：</label>
+		<div class='col-lg-10'>
+			<select name='time_point' class='col-lg-4' >
+				<% _.each(time_point_list, function(val,key) { if( !time_point ) time_point = key %>
+					<option value='<%= val %>' <%= typeof(time_point) != 'undefined' && time_point == val ? 'selected' : '' %>><%= val %></option> <% }); %>
+			</select>
+			<div class='checkbox'>
+				<label>
+			    	<input type="checkbox" name='earlier_send' <%= ( typeof( earlier_send ) != 'undefined' && 
+			    		'on' == earlier_send ) ? 'checked' : '' %> 提前发货
+			    </label>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >换货原因：</label>
+		<div class='col-lg-10'>
+			<select name='huanhuo_reason' class='col-lg-4' >
+				<% _.each(huanhuo_reason_list, function(val,key) { if( !huanhuo_reason ) huanhuo_reason = key %>
+					<option value='<%= val %>' <%= typeof(huanhuo_reason) != 'undefined' && huanhuo_reason == val ? 'selected' : '' %>><%= val %></option> <% }); %>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >具体原因：</label>
+		<div class='col-lg-10'>
+			<textarea name='detail_reason' class='col-lg-12' rows='2' ><%=detail_reason%></textarea>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >寄回单号：</label>
+		<div class='col-lg-10'>
+			<input type="text" name='mail_back_num' class="form-control" value='<%=mail_back_num%>'
+				 placeholder="">
+		</div>
+	</div>
+
+	<div class="form-group clearfix">
+		<label class="col-lg-2" >原产品：</label>
+		<div class='col-lg-10'>
+			<select class='col-lg-3' name='send_back_category_id' >
+				<% category_id = 0; _.each(category_list, function(val,key) { if( !category_id ) category_id = key %>
+					<option value='<%= val.id %>' <%= typeof(category_id) != 'undefined' && category_id == val.category_id ? 'selected' : '' %>>
+					<%= val.name %></option> <% }); %>
+			</select>
+			<select class='col-lg-3' name='send_back_product_id'>
+				<% product_id = 0; _.each(product_list[category_id], function(val,key) { %>
+					<option value='<%= val.id %>' <%= typeof(product_id) != 'undefined' && product_id == val.product_id ? 'selected' : '' %>>
+					<%= val.name %></option> <% }); %>
+			</select>
+			<input name='send_back_cnt' value='1' style='width: 40px;' />
+			<button type="button" class='btn btn-success add_send_back_product'>
+				<i class='glyphicon glyphicon-plus'></i> 增加
+			</button>
+			<table class='table list_send_back_product'>
+			<tbody></tbody></table>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >寄出单号：</label>
+		<div class='col-lg-10'>
+			<input type="text" name='mail_to_num' class="form-control" value='<%=mail_to_num%>'
+				 placeholder="">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >地址：</label>
+		<div class='col-lg-10'>
+			<input type="text" name='mail_to_address' class="form-control" value='<%=mail_to_address%>'
+				 placeholder="">
+		</div>
+	</div>
+
+	<div class="form-group clearfix">
+		<label class="col-lg-2" >换出产品：</label>
+		<div class='col-lg-10'>
+			<select class='col-lg-3' name='send_to_category_id' >
+				<% category_id = 0; _.each(category_list, function(val,key) { if( !category_id ) category_id = key %>
+					<option value='<%= val.id %>' <%= typeof(category_id) != 'undefined' && category_id == val.category_id ? 'selected' : '' %>>
+					<%= val.name %></option> <% }); %>
+			</select>
+			<select class='col-lg-3' name='send_to_product_id'>
+				<% product_id = 0; _.each(product_list[category_id], function(val,key) { %>
+					<option value='<%= val.id %>' <%= typeof(product_id) != 'undefined' && product_id == val.product_id ? 'selected' : '' %>>
+					<%= val.name %></option> <% }); %>
+			</select>
+			<input name='send_to_cnt' value='1' style='width: 40px;' />
+			<button type="button" class='btn btn-success add_send_to_product'>
+				<i class='glyphicon glyphicon-plus'></i> 增加
+			</button>
+			<table class='table list_send_to_product'>
+			<tbody></tbody></table>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group fold-controller profit">
+		<label class="col-lg-12" >获取利润：
+			<i class='dofold glyphicon glyphicon-chevron-up'></i>
+			<i class='dounfold glyphicon glyphicon-chevron-down'></i>
+		</label>
+	</div>
+	<div class='fold-content mchide'>
+		<div class="form-group">
+			<label class="col-lg-2" >利润金额：</label>
+			<div class='col-lg-6'>
+				<div class="input-group">
+					<input placeholder='' class='col-lg-12' name='profit' value='<%=profit %>' />
+					<span class="input-group-addon">元</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-2" >利润原因：</label>
+			<div class='col-lg-10'>
+				<textarea class='col-lg-12' name='profit_reason' rows='2' ><%=profit_reason %></textarea>
+			</div>
+		</div>
+	</div>
+
+	<br/>
+
+	<div class="form-group fold-controller drawback">
+		<label class="col-lg-12">开启返现：
+			<i class='dofold glyphicon glyphicon-chevron-up'></i>
+			<i class='dounfold glyphicon glyphicon-chevron-down'></i>
+		</label>
+	</div>
+	<div class='fold-content mchide'>
+		<div class="form-group">
+			<label class="col-lg-2" >返现金额：</label>
+			<div class="input-group col-lg-3">
+				<input placeholder='' class='col-lg-12' name='drawback[money]' value='<%=drawback %>' />
+				<span class="input-group-addon">元</span>
+			</div>
+			<label class="col-lg-2" >支付宝：</label>
+			<input placeholder='' class='col-lg-5' name='drawback[zhifubao]' value='<%=drawback_zhifubao %>' />
+		</div>
+		<div class="form-group">
+			<label class="col-lg-2" >返现原因：</label>
+			<div class='col-lg-10'>
+				<textarea class='col-lg-12' name='drawback[reason]' rows='2' ><%=drawback_reason %></textarea>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group mchide drawback_controller drawback_state_<%= typeof( drawback_state ) != 'undefined' ? drawback_state : 'none' %>" >
+		<label class="col-lg-2" >返现状态：</label>
+		<div class='col-lg-10 '>
+			<%=drawback_state_name %>
+			<div class='pull-right'>
+				<a class='do-drawback word-btn word-btn-danger'>确认返现</a>
+				<a class='do-drawback-cancel word-btn word-btn-warning'>取消返现</a>
+			</div>
+		</div>
+	</div>
+
+	
+</div>
+</script>
+
+<?php echo $controller->renderPartial( 'mission/_form_product' ) ?>
+
+<?php echo $controller->renderPartial( 'mission/form-2-14-closed' ) ?>

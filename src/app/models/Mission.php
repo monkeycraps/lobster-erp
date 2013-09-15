@@ -2,6 +2,7 @@
 
 class MissionModel extends RedBean_SimpleModel {
 
+	const STATE_DRAFT = 0;
 	const STATE_ON = 1;
 	const STATE_CLOSED = 2;
 
@@ -20,14 +21,15 @@ class MissionModel extends RedBean_SimpleModel {
 			$model->last_uname = $user->name;
 			$model->kf_uid = $user->id;
 			$model->create_uid = $user->id;
-			$model->store_id = $arr['store_id'];
-			$model->wanwan = $arr['wanwan'];
-			$model->state = self::STATE_ON;
+			$model->state = $arr['user_state'] == MissionUserModel::STATE_DRAFT ? self::STATE_DRAFT : self::STATE_ON;
 			$model->is_changed = 0;
 			$model->is_second = 0;
 			$model->pid = 0;
+
+			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
+			isset( $arr['wanwan'] ) && $model->wanwan = $arr['wanwan'];
+			isset( $arr['remarks'] ) && $model->remarks = $arr['remarks'];
 			
-			$model->state = 0;
 			$id = R::store ( $model );
 
 			$ext = MissionExtModel::setExt( $arr['mission_type_id'], $id, $arr );
@@ -111,6 +113,16 @@ class MissionModel extends RedBean_SimpleModel {
 				R::store( $drawback );
 			}
 
+			if( isset( $arr['refundment'] ) ){
+				$refundment = R::dispense( 'mission_refundment' );
+				$refundment->created = Helper\Html::now();
+				$refundment->updated = Helper\Html::now();
+				$refundment->kf_uid = $user->id;
+				$refundment->mission_id = $id;
+				$refundment->state = MissionRefundmentModel::STATE_NEW;
+				R::store( $refundment );
+			}
+
 			R::store($model);
 
 
@@ -161,8 +173,11 @@ class MissionModel extends RedBean_SimpleModel {
 			$model->updated = Helper\Html::now();
 			$model->last_uid = $user->id;
 			$model->last_uname = $user->name;
-			$model->store_id = $arr['store_id'];
-			$model->wanwan = $arr['wanwan'];
+			$model->state = $arr['user_state'] == MissionUserModel::STATE_DRAFT ? self::STATE_DRAFT : self::STATE_ON;
+			
+			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
+			isset( $arr['wanwan'] ) && $model->wanwan = $arr['wanwan'];
+			isset( $arr['remarks'] ) && $model->remarks = $arr['remarks'];
 			if( $user->role_id == UserModel::ROLE_CG ){
 				$model->cg_uid = $user->id;
 			}
@@ -501,10 +516,11 @@ class MissionModel extends RedBean_SimpleModel {
 				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_ON .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
 				break;
 			case 'dz_unclosed':
-				$sql_type = ' and m.state <> '. self::STATE_ON .' and 
-					mu.state <> '. MissionUserModel::STATE_DRAFT .' and 
-					mu.state <> '. MissionUserModel::STATE_WAITING_DRAWING .' and 
-					mu.state <> '. MissionUserModel::STATE_WAITING_REFUNDMENT.' ';
+				$sql_type = ' and m.state <> '. self::STATE_CLOSED .' and (
+					mu.state is null or (
+						mu.state <> '. MissionUserModel::STATE_WAITING_DRAWING .' and 
+						mu.state <> '. MissionUserModel::STATE_WAITING_REFUNDMENT.' 
+					) )';
 				break;
 			case 'dz_closed':
 				$sql_type = ' and m.state = '. self::STATE_CLOSED.' ';

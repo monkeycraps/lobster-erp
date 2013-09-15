@@ -52,6 +52,7 @@
 				</div>
 				<div class='col-5 pull-right' style='padding-top: 7px;' >
 					<ul class='pull-right list-inline'>
+						<li><a class='word-btn word-btn-success batch-submit'>提交</a></li>
 						<li><a class='list-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
 					</ul>
 				</div>

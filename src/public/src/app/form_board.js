@@ -13,13 +13,21 @@ define(function(require, exports, module){
 			'click .comment': 'do_comment', 
 			'keydown input[name="comment"]': 'check_enter'
 		}, 
+		showed: false, 
 		form_view: null, 
 		initialize: function(opt){
 			this.form_view = opt.form_view
 			this.$el = $('#front-form .form_board');
-			// var view = this;
-			// this.$( '.comment' ).click(function(){view.do_comment()});
-			this.init_comment_img();
+			this.listenTo( this.form_view.form_model, 'change', this.render );
+			this.render()
+		}, 
+		render: function(){
+			if( !this.form_view.form_model.id ){
+				this.$( '.comment-wrapper' ).hide();
+			}else{
+				this.$( '.comment-wrapper' ).show();
+				this.init_comment_img();
+			}
 		}, 
 		check_enter: function( event ){
 			var key = event.which; 
@@ -49,9 +57,10 @@ define(function(require, exports, module){
 		},
 		init_comment_img: function(){
 
-			if( !this.form_view.form_model.id ){
-				return;
+			if( this.showed ){
+				return false;
 			}
+			this.showed = true;
 
 			var handler = SWFUploadHandlerWrapper.SWFUploadHandler;
 			console.log( handler )

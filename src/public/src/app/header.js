@@ -9,6 +9,7 @@ define(function(require, exports, module){
 		el: $('header'), 
 		events: {
 			'click #login': 'login', 
+			'click .batch-submit': 'batchSubmit', 
 			'click .mission-add': 'mission_add', 
 			'click .message-list .check_all': 'messageCheckAll', 
 			'click .message-list .open_message': 'messageOpen', 
@@ -17,6 +18,9 @@ define(function(require, exports, module){
 		},
 		initialize: function(){
 
+		}, 
+		batchSubmit: function(){
+			Layout.list_view.batchSubmit();
 		}, 
 		login: function(){
 			ModalManager.modal( 'login' )

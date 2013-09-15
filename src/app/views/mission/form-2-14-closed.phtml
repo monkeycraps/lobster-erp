@@ -1,0 +1,160 @@
+
+<script type='text/template' id='template-formview-closed'>
+<div class='mission-form-inner'>
+	<div>
+		<h1 class='col-lg-6'>#<%= (typeof(id) == 'undefined' || id <= 0) ? '新建任务' : id %> - 退还补发 - 换货</h1>
+		<div class='col-lg-6 pull-right' style='margin: 20px 0 10px; color: red; text-align: right; ' >客服：<%= kf_state_name %><%= cg_state ? '&nbsp;&nbsp;仓管：' + cg_state_name : '' %>
+		</div>
+	</div>
+	<div class='state' style='clear:both;'>
+		<ul class='list-inline'>
+			<li><label>发起人：</label><%=create_uname%><%= create_uid == kf_uid ? '' : ' => ' + kf_uname %></li>
+			<li><label>发起时间：</label><%=created%></li>
+		</ul>
+	</div>
+
+	<input type='hidden' name='mission_type_id' value='<%=mission_type_id%>' />
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<%=store%>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<%=wanwan%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<%=order_num_list%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >时间点：</label>
+		<div class='col-lg-10'>
+			<%=time_point%><%= ( typeof( earlier_send ) != 'undefined' && 'on' == earlier_send ) ? ' - 提前发货' : '' %>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >换货原因：</label>
+		<div class='col-lg-10'>
+			<%=huanhuo_reason%>	
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >具体原因：</label>
+		<div class='col-lg-10'>
+			<%=detail_reason%>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >寄回单号：</label>
+		<div class='col-lg-10'>
+			<%=mail_back_num%>
+		</div>
+	</div>
+
+	<div class="form-group clearfix">
+		<label class="col-lg-2" >原产品：</label>
+		<div class='col-lg-10'>
+			<table class='table list_send_back_product'>
+				<% if( 'undefined' != typeof(send_back_product_list) ){ _.each(send_back_product_list, function(val,key) { %>
+					<tr>
+						<td><%=val.category%></td>
+						<td><%=val.product%></td>
+						<td><%=val.cnt%></td>
+						<td><%=val.state_name%></td>
+					</tr>
+				<% });} %>
+			<tbody></tbody></table>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >寄出单号：</label>
+		<div class='col-lg-10'>
+			<%=mail_to_num%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >地址：</label>
+		<div class='col-lg-10'>
+			<%=mail_to_address%>
+		</div>
+	</div>
+
+	<div class="form-group clearfix">
+		<label class="col-lg-2" >换出产品：</label>
+		<div class='col-lg-10'>
+			<table class='table list_send_to_product'>
+			<tbody>
+				<% if( 'undefined' != typeof(send_to_product_list) ){ _.each(send_to_product_list, function(val,key) { %>
+					<tr>
+						<td><%=val.category%></td>
+						<td><%=val.product%></td>
+						<td><%=val.cnt%></td>
+						<td><%=val.state_name%></td>
+					</tr>
+				<% });} %>
+			</tbody></table>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group fold-controller profit unfold">
+		<label class="col-lg-12" >获取利润：
+		</label>
+	</div>
+	<div class='fold-content'>
+		<div class="form-group">
+			<label class="col-lg-2" >利润金额：</label>
+			<div class='col-lg-6'>
+				<%=profit %><span class="">元</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-2" >利润原因：</label>
+			<div class='col-lg-10'>
+				<%=profit_reason %>
+			</div>
+		</div>
+	</div>
+
+	<br/>
+
+	<div class="form-group fold-controller drawback unfold">
+		<label class="col-lg-12">开启返现：
+		</label>
+	</div>
+	<div class='fold-content'>
+		<div class="form-group">
+			<label class="col-lg-2" >返现金额：</label>
+			<div class="input-group col-lg-3">
+				<%=drawback %><span class="">元</span>
+			</div>
+			<label class="col-lg-2" >支付宝：</label>
+			<%=drawback_zhifubao %>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-2" >返现原因：</label>
+			<div class='col-lg-10'>
+				<%=drawback_reason %>
+			</div>
+		</div>
+	</div>
+	
+</div>
+</script>
