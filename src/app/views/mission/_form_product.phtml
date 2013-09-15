@@ -1,0 +1,40 @@
+
+<script type='text/template' id='template-formview-2-12-add-product-back'>
+	<tr>
+		<td>
+			<input type='hidden' data-name='id' name='send_product_back[<%=uid%>][id]' value='<%=uid%>'/>
+			<input type='hidden' data-name='category' name='send_product_back[<%=uid%>][category_id]' value='<%=category_id%>'/>
+			<input type='hidden' data-name='product' name='send_product_back[<%=uid%>][product_id]' value='<%=product_id%>'/>
+			<input type='hidden' data-name='cnt' name='send_product_back[<%=uid%>][cnt]' value='<%=cnt%>'/>
+			<input type='hidden' data-name='state' name='send_product_back[<%=uid%>][state]' value='<%=state%>'/>
+			<%=category%>	
+		</td>
+		<td><%=product%></td>
+		<td><%=cnt%></td>
+		<td><%=state_name%></td>
+		<td class='col-lg-4 state_<%= state %>'>
+			<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+			<a href='#' class='op ruku'><i class='glyphicon glyphicon-ok'></i></a>
+		</td>
+	</tr>
+</script>
+
+<script type='text/template' id='template-formview-2-12-add-product-to'>
+	<tr>
+		<td>
+			<input type='hidden' data-name='id' name='send_product_to[<%=uid%>][id]' value='<%=uid%>'/>
+			<input type='hidden' data-name='category' name='send_product_to[<%=uid%>][category_id]' value='<%=category_id%>'/>
+			<input type='hidden' data-name='product' name='send_product_to[<%=uid%>][product_id]' value='<%=product_id%>'/>
+			<input type='hidden' data-name='cnt' name='send_product_to[<%=uid%>][cnt]' value='<%=cnt%>'/>
+			<input type='hidden' data-name='state' name='send_product_to[<%=uid%>][state]' value='<%=state%>'/>
+			<%=category%>	
+		</td>
+		<td><%=product%></td>
+		<td><%=cnt%></td>
+		<td><%=state_name%></td>
+		<td class='col-lg-4'>
+			<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></	a>
+		</td>
+	</tr>
+</script>
+

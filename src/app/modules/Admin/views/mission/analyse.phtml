@@ -1,0 +1,73 @@
+<?php use Helper\Html ?>
+<div class="" style='margin: 10px 0px; ' id='analyse-wrapper'>
+	<ul id="myTab" class="nav nav-tabs">
+		<li class="active"><a href="#total" data-toggle="tab">概况</a></li>
+		<li class=""><a href="#person" data-toggle="tab">个人统计</a></li>
+		<li class='pull-right'>
+		</li>
+	</ul>
+	<div id="myTabContent" class="tab-content">
+		<div class="tab-pane fade active in" id="total">
+			<?php echo $controller->renderPartial( 'mission/_filter' ) ?>
+			<div class=''>
+				<table class='table table-bordered' style='width: 500px;'>
+					<thead>
+						<tr>
+							<th>新增</th>
+							<th>关闭</th>
+							<th>二次</th>
+							<th>变更</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><?php echo $cnt_new ?></td>
+							<td><?php echo $cnt_closed ?></td>
+							<td><?php echo $cnt_second ?></td>
+							<td><?php echo $cnt_has_pid ?></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="person">
+			<?php echo $controller->renderPartial( 'mission/_filter' ) ?>
+			<table class='table'>
+				<thead>
+					<tr>
+						<th class='col-1'>#</th>
+						<th>姓名</th>
+						<th class='col-2'>身份</th>
+						<th class='col-2'>新增</th>
+						<th class='col-2'>关闭</th>
+						<th class='col-2'>变更</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+var category_list = <?php echo json_encode( CategoryModel::getSelectList() ) ?>; 
+var product_list = <?php echo json_encode( ProductModel::getSelectList() ) ?>; 
+var mission_type_list = <?php echo json_encode( rbac\MissionType::getMissionTypeList() ) ?>; 
+
+var analyse_filter = $.extend( {
+	time: '', 
+	from: '',
+	to: '',
+	category: 0, 
+	product: 0, 
+	mission_category: 0, 
+	mission_sub_category: 0
+
+}, <?php echo json_encode( $filter ); ?> );
+
+pageBind.product = function(){
+	seajs.use( '/src/admin/analyse');
+}
+</script>

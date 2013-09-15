@@ -1,0 +1,40 @@
+<div class="bs-sidebar">
+	<ul class="nav bs-sidenav">
+		<li class=""><a href="/mission"><i class='glyphicon glyphicon-th-list'></i>&nbsp;&nbsp;任务列表</a>
+		</li>
+		<li class="mission-add-li"><a class='mission-add' href='#' data-toggle='popover' data-placement='right' ><i
+				class='glyphicon glyphicon-plus'></i>&nbsp;&nbsp;新建任务</a>
+			<div class="popover mchide">
+				<div class="arrow"></div>
+				<h3 class="popover-title" >新建任务</h3>
+				<div class="popover-content">
+					<form class='form-horizantal'>
+						<div class='form-group'>
+							<select class='select-cate'>
+							</select>
+						</div>
+						<div class='form-group'>
+							<select class='select-subcate'>
+							</select>
+						</div>
+						<div class='form-group '>
+							<input type='button' class='btn btn-primary btn-mission-add'
+								value='创建' /> 
+							<input type='button'
+								class='btn btn-mission-add-cancel' value='取消' />
+						</div>
+					</form>
+				</div>
+			</div></li>
+		<li class="<?php echo $controller->nav == 'mission' ? 'active' : ''?>">
+			<a class='' href="#"><i
+				class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;任务查看</a>
+			<ul class="nav">
+			<?php $list = \rbac\MissionType::getMissionTypeTop(); 
+				foreach( $list as $one ){ ?>
+				<li class='<?php if( $one['id'] == $controller->subnav )echo 'active'?>' ><a href="/admin/mission/list/id/<?php echo $one['id']?>"><?php echo $one['name']?></a></li>					
+			<?php } ?>
+			</ul>
+		</li>
+	</ul>
+</div>

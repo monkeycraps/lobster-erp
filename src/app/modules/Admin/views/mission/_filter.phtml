@@ -1,0 +1,50 @@
+<div class='well' style='margin: 10px 0;'>
+	<form class='form form-inlne'>
+		<div class='row'>
+			<div class='col-lg-8'>
+				<div>
+					<label style='width: 50px;'>产品：</label>
+					<select name='category' style='width: 100px;'>
+						<option value='0'>全部</option>
+					</select>
+					<select name='product' style='width: 100px;'>
+						<option value='0'>全部</option>
+					</select>
+					<label style='width: 50px;'>类型：</label>
+					<select name='mission_category' style='width: 100px;'>
+						<option value='0'>全部</option>
+					</select>
+					<select name='mission_sub_category' style='width: 100px;'>
+						<option value='0'>全部</option>
+					</select>
+				</div>
+				<div class='clearfix' style='clear:both; margin-top: 10px;'>
+					<div class='btn-group pull-left period'>
+						<button type="button" class="btn btn-info btn-time" data='today'>今天</button>
+						<button type="button" class="btn btn-info btn-time " data='yestorday'>昨天</button>
+						<button type="button" class="btn btn-info btn-time " data='last7'>最近7天</button>
+						<button type="button" class="btn btn-info btn-time " data='last30'>最近30天</button>
+						<input type='hidden' value='' name='time' class='ipt_time' />
+					</div>
+					<div class='pull-left' style='width: 400px;'>
+						<div class="col-lg-5 input-group date" id="dp3" 
+							>
+							<input class="datepicker" size="16" type="text" 
+							value="" name='from' readonly="">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div>
+						<div class="col-lg-5 input-group date" id="dp3" 
+							>
+							<input class="datepicker" size="16" type="text" 
+							value="" name='to' readonly="">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-lg-3'>
+				<input value='查看' type='submit' class='btn btn-primary' style='width: 60px;' />
+			</div>
+		</div>
+	</form>
+</div>

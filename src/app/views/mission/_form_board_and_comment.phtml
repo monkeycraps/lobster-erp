@@ -1,0 +1,54 @@
+<div id='comment_list' class='mchide'>
+	<h1>留言</h1>
+	<ul class='list-unstyled'>
+	</ul>
+	<script type='text/template' id='comment_list_item'>
+		<li class='' <%=id%>>
+			<div class='col-lg-10 wrapper'>
+				<div class='content col-lg-12'>
+					<div class='content col-lg-12'>
+						<%=content%>
+					</div>
+				</div>
+				<div class='subject col-lg-12'>
+					<span class='author col-lg-6'><%=uname%> - <%=created %></span>
+					<span class='attach col-lg-6'></span>
+				</div>
+			</div>
+			<div class='col-lg-2'>
+				<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+			</div>
+		</li>
+	</script>
+</div>
+
+<div class='form_board well mchide col-lg-12' style='margin: 10px 0 0 0; padding: 10px 0 5px;'>
+	<div class="form-group" >
+		<div class="col-lg-10">
+			<button type="button" class="btn btn-primary draft mchide">保存草稿</button>
+			<button type="button" class="btn btn-warning publish mchide">发布</button>
+			<button type="button" class="btn btn-success save mchide">保存</button>
+			<button type="button" class="btn btn-info to_dealing mchide">处理中</button>
+			<button type="button" class="btn btn-warning to_done mchide">已处理</button>
+			<button type="button" class="btn btn-danger to_close mchide">关闭</button>
+			<button type="button" class="btn btn-success reopen mchide">重新打开</button>
+		</div>
+	</div>
+	<div class="form-group" style='margin: 0px;'>
+		<input class='col-lg-12' name='comment'>
+		<div class=''>
+			<div class='pull-left'>
+				<a href='#' class='icon-selector' data-toggle='popover' data-placement='top' ><img src='/img/smile.png' width='16' style='position: relative; top: -3px;'/></a>
+				<div class='popover mchide'>
+					<div class='icon-wrapper'>
+						<?php echo Comment\Comment::showAll( 24 ); ?>
+					</div>
+				</div>
+				<a href='#' style='position: relative; top: 3px;' ><span id="do-comment-img">building...</span></a>
+			</div>
+			<div class='pull-right'>
+				<button type="button" class="btn comment">评论</button>
+			</div>
+		</div>
+	</div>
+</div>
