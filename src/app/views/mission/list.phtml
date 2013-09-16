@@ -12,24 +12,27 @@
 		</ul>
 
 		<div id="myTabContent" class="tab-content">
-			<div class="tab-pane fade active in" id="listitem-6" >
+			<div class="tab-pane fade active in" id="listitem-6" data-type='6'>
 				<?php echo $controller->renderPartial( 'mission/list-table-batch', array( 
 					'type'=>6, 'list'=>$controller->waiting_list_drawback ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-7">
+			<div class="tab-pane fade in" id="listitem-7" data-type='7'>
 				<?php echo $controller->renderPartial( 'mission/list-table-batch', array( 
 					'type'=>7, 'list'=>$controller->waiting_list_refundment ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-8">
+			<div class="tab-pane fade in" id="listitem-8" data-type='8'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>8, 'list'=>$controller->unclosed_list ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-9">
+			<div class="tab-pane fade in" id="listitem-9" data-type='9'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>9, 'list'=>$controller->closed_list ) ); ?>
 			</div>
 		</div>
 
+	<?php break;
+	case UserModel::ROLE_DZ: ?>
+		
 	<?php break;
 	default: ?>
 
@@ -43,19 +46,19 @@
 		</ul>
 
 		<div id="myTabContent" class="tab-content">
-			<div class="tab-pane fade active in" id="listitem-1" >
+			<div class="tab-pane fade active in" id="listitem-1" data-type='1'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>1, 'list'=>$controller->waiting_list ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-2">
+			<div class="tab-pane fade in" id="listitem-2" data-type='2'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>2, 'list'=>$controller->dealing_list ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-3">
+			<div class="tab-pane fade in" id="listitem-3" data-type='3'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>3, 'list'=>$controller->done_list ) ); ?>
 			</div>
-			<div class="tab-pane fade in" id="listitem-4">
+			<div class="tab-pane fade in" id="listitem-4" data-type='4'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
 					'type'=>4, 'list'=>$controller->closed_list ) ); ?>
 			</div>

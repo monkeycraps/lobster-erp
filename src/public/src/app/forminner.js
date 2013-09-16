@@ -21,7 +21,10 @@ define(function(require, exports, module){
 			wanwan: null, 
 			order_num_list: null, 
 			remarks: null, 
+			flag_list: [], 
+			flag_remarks: '', 
 
+			refundment_reason: null, 
 			mail_to_address: null, 
 			time_point: null, 
 			earlier_send: null, 
@@ -57,6 +60,7 @@ define(function(require, exports, module){
 			'click .list_send_back_product .delete': 'delete_send_back_product', 
 			'change select[name="send_back_category_id"]': 'change_send_back_category', 
 			'click .list_send_back_product tbody .ruku': 'send_back_product_ruku', 
+			'click .list_send_back_product tbody .ruku-cancel': 'send_back_product_ruku_cancel', 
 			'click .add_send_to_product': 'add_send_to_product',
 			'click .list_send_to_product .delete': 'delete_send_to_product', 
 			'change select[name="send_to_category_id"]': 'change_send_to_category', 
@@ -66,6 +70,8 @@ define(function(require, exports, module){
 			'click .to_dealing': 'to_dealing', 
 			'click .to_done': 'to_done', 
 			'click .to_close': 'to_close', 
+			'click .btn-reopen-kf': 'reopenKF', 
+			'click .btn-reopen-cg': 'reopenCG', 
 			'click .reopen': 'reopen', 
 			'click .drawback_controller .do-drawback': 'applyDrawback', 
 			'click .drawback_controller .do-drawback-cancel': 'cancelDrawback', 
@@ -83,6 +89,26 @@ define(function(require, exports, module){
 		init_p: function(){
 
 		}, 
+		reopenKF: function(){
+			var view = this
+			$.post( '/mission/reopen', {id: this.model.id, action: 'kf'}, function( data ){
+				if( !_.isObject( data ) ){
+					alert( '系统错误'+ data )
+					return;
+				}
+				view.model.set( data );
+			} )
+		}, 
+		reopenCG: function(){
+			var view = this
+			$.post( '/mission/reopen', {id: this.model.id, action: 'cg'}, function( data ){
+				if( !_.isObject( data ) ){
+					alert( '系统错误'+ data )
+					return;
+				}
+				view.model.set( data );
+			} )
+		}, 
 		send_back_product_ruku: function( e ){
 			target = $( e.currentTarget ).parents( 'tr:first' )
 			var param = {};
@@ -91,7 +117,18 @@ define(function(require, exports, module){
 			console.log( param )
 			$.post( 'mission/ruku', param, function( data ){
 				data.uid = data.id
-				 target.html( $(_.template($('#template-formview-add-product-back').html(), data )).html() )
+				target.html( $(_.template($('#template-formview-add-product-back').html(), data )).html() )
+			})
+		}, 
+		send_back_product_ruku_cancel: function( e ){
+			target = $( e.currentTarget ).parents( 'tr:first' )
+			var param = {};
+			var view = this
+			param.id = $( 'input[data-name="id"]', target ).val()
+			console.log( param )
+			$.post( 'mission/rukuCancel', param, function( data ){
+				data.uid = data.id
+				target.html( $(_.template($('#template-formview-add-product-back').html(), data )).html() )
 			})
 		}, 
 		render: function(){
@@ -114,13 +151,13 @@ define(function(require, exports, module){
 
 				if( undefined != this.model.get('send_back_product_list') ){
 					_.each( this.model.get('send_back_product_list'), function( one ){
-						view.add_send_back_product_do( one.category_id, one.product_id, one.cnt, one.category, one.product, one.state, one.state_name, one.id )
+						view.add_send_back_product_do( one.category_id, one.product_id, one.cnt, one.category, one.product, one.state, one.state_name, _.uniqueId(), one.id )
 					} )
 				}
 
 				if( undefined != this.model.get('send_to_product_list') ){
 					_.each( this.model.get('send_to_product_list'), function( one ){
-						view.add_send_to_product_do( one.category_id, one.product_id, one.cnt, one.category, one.product, one.state, one.state_name, one.id )
+						view.add_send_to_product_do( one.category_id, one.product_id, one.cnt, one.category, one.product, one.state, one.state_name, _.uniqueId(), one.id )
 					} )
 				}
 
@@ -266,11 +303,12 @@ define(function(require, exports, module){
 				$('select[name="send_back_product_id"] option:selected').text().trim(), 
 				1, 
 				'新建', 
-				_.uniqueId()
+				_.uniqueId(), 
+				0
 			);
 			return false;
 		}, 
-		add_send_back_product_do: function( category_id, product_id, cnt, category, product, state, state_name, uid ){
+		add_send_back_product_do: function( category_id, product_id, cnt, category, product, state, state_name, uid, id ){
 			this.$( 'table.list_send_back_product tbody' ).append( _.template($('#template-formview-add-product-back').html(), {
 				category_id: category_id, 
 				product_id: product_id, 
@@ -279,7 +317,8 @@ define(function(require, exports, module){
 				product: product, 
 				state: state, 
 				state_name: state_name, 
-				uid: uid
+				uid: uid, 
+				id: id
 			} ) );
 		}, 
 		delete_send_back_product: function( event ){
@@ -306,11 +345,12 @@ define(function(require, exports, module){
 				$('select[name="send_to_product_id"] option:selected').text().trim(), 
 				1, 
 				'新建', 
-				_.uniqueId()
+				_.uniqueId(), 
+				0
 			);
 			return false;
 		}, 
-		add_send_to_product_do: function( category_id, product_id, cnt, category, product, state, state_name, uid ){
+		add_send_to_product_do: function( category_id, product_id, cnt, category, product, state, state_name, uid, id ){
 			console.log( arguments )
 			this.$( 'table.list_send_to_product tbody' ).append( _.template($('#template-formview-add-product-to').html(), {
 				category_id: category_id, 
@@ -320,7 +360,8 @@ define(function(require, exports, module){
 				product: product, 
 				state: state, 
 				state_name: state_name, 
-				uid: uid
+				uid: uid, 
+				id: id
 			} ) );
 		}, 
 		delete_send_to_product: function( event ){

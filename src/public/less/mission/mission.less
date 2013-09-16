@@ -1,24 +1,62 @@
 #mission-list{
 
 }
-#mission-form{
+
+
+#front-form, #front-history, #front-list{
+  // position: relative;
+  #form-inner{
+    width: 95%;
+  }
+  #forminner-view{
+    width: 95%;
+    // margin-bottom: 50px;
+  }
+  h1{
+    font-weight: bold; 
+    font-style: italic;
+    color: #aaa;
+    text-align: left;
+    font-size: 12px;
+    color: #aaa;
+  }
+}
+
+#front-form{
 	
-	#forminner-mission{
-		position: relative;
-		.form_board {
-		}
+	.form_board {
+	}
 
-		.list_send_back_product, .list_send_to_product, .list_send_product{
-			tbody{
-				tr{
-					.state_1{
+	.list_send_back_product, .list_send_to_product, .list_send_product{
+		tbody{
+			tr{
+				.state_1{
 
-					}
 				}
 			}
 		}
-		.drawback_state_none{
-			display: none;
+	}
+	.drawback_state_none{
+		display: none;
+	}
+	.list_send_back_product{
+		.state_1{
+			.ruku-cancel{
+				display: none;
+			}
+		}
+		.state_2{
+			.ruku{
+				display: none;
+			}
+		}
+		.role_1{
+			.ruku{
+				display: none;
+			}
+			.ruku-cancel{
+				display: none;
+			}
 		}
 	}
 }

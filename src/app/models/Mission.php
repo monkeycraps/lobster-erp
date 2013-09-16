@@ -5,6 +5,7 @@ class MissionModel extends RedBean_SimpleModel {
 	const STATE_DRAFT = 0;
 	const STATE_ON = 1;
 	const STATE_CLOSED = 2;
+	const STATE_TO_OTHER = 3;
 
 	static function createMission( $arr ){
 
@@ -275,9 +276,7 @@ class MissionModel extends RedBean_SimpleModel {
 					}
 				}
 			}
-			// sdebug( array_keys($send_back_product_list) );
-			// sdebug( $arr['send_product_back'] );
-			// die;
+
 			foreach( $send_back_product_list as $one ){
 				$one->deleted = Helper\Html::now();
 				R::store( $one );
@@ -544,7 +543,7 @@ class MissionModel extends RedBean_SimpleModel {
 			inner join store s on s.id = m.store_id
 			inner join user u on u.id = m.create_uid
 			inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
-			where 1 '. $sql_type. $sql_where_order .'
+			where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
 		 order by m.id desc';
 		$tmp = R::getAll( $sql, $param );
 		$list = $ids = array();
@@ -600,5 +599,120 @@ class MissionModel extends RedBean_SimpleModel {
 		}
 		$out .= '</ul>';
 		return $out;
+	}
+
+	function copyMission( $mission_type ){
+
+		$atts = current( R::exportAll( $this->unbox() ) );
+		$mission_new = R::dispense( 'mission' );
+
+		$yaml = yaml_parse_file( APP_PATH. '/config/form.ini' );
+		if( is_array( $yaml['form'. $mission_type] ) ){
+
+			if( !is_array( $yaml['form'. $mission_type]['ext'] ) ){
+				$yaml['form'. $mission_type]['ext'] = array();
+			}
+			$labels = array_merge(
+				$yaml['form'], 
+				$yaml['form'. $mission_type]['data'], 
+				$yaml['form'. $mission_type]['ext']
+			);
+		}
+
+		foreach( $atts as $key=>$one ){
+			$subkey = strtolower( substr( $key, 0, 3 ) );
+			if( $subkey != 'own' && $key != 'sharedProduct' ){
+				switch( $key ){
+					case 'id':
+						break;
+					case 'mission_type_id':
+						$mission_new->mission_type_id = $mission_type;
+						break;
+					default: 
+						$mission_new->setAttr( $key, $one );
+				}
+			}
+		}
+
+		$mission_new->pid = $this->pid;
+		R::store( $mission_new );
+
+		foreach( $atts as $key=>$one ){
+			$subkey = strtolower( substr( $key, 0, 3 ) );
+			if( $key != 'sharedProduct' ){
+				
+				switch( $key ){
+					case 'ownMission_drawback':
+						if( isset( $labels['drawback'] ) ){
+
+							foreach( $one as $one1 ){
+								$drawback = R::dispense( 'mission_drawback' );
+								$drawback->import( $one1 );
+								$drawback->id = null;
+								$drawback->created = Helper\Html::now();
+								$drawback->updated = Helper\Html::now();
+								$drawback->mission_id = $mission_new->id;
+								$mission_new->ownMissionDrawback[] = $drawback;
+							}
+						}
+						break;
+					case 'ownMission_product':
+						foreach( $one as $one1 ){
+
+							$goon = true;
+							switch( $one1['type'] ){
+								case MissionProductModel::TYPE_BACK:
+									if( !isset( $labels['product_back'] ) )$goon = false;
+									break;
+								case MissionProductModel::TYPE_TO:
+									if( !isset( $labels['product_to'] ) )$goon = false;
+									break;
+								case MissionProductModel::TYPE_OLD:
+									if( !isset( $labels['product_old'] ) )$goon = false;
+									break;
+								default: 
+									$goon = false;
+									break;
+							}
+							if( !$goon )continue;
+
+							$product = R::dispense( 'mission_product' );
+							$product->import( $one1 );
+							$product->id = null;
+							$product->created = Helper\Html::now();
+							$product->updated = Helper\Html::now();
+							$product->mission_id = $mission_new->id;
+							$mission_new->ownMissionProduct[] = $product;
+						}
+						break;
+					case 'ownMission_ext':
+						foreach( $one as $one1 ){
+							$ext = R::dispense( 'mission_ext' );
+							$ext->import( $one1 );
+							$ext->id = null;
+							$ext->created = Helper\Html::now();
+							$ext->updated = Helper\Html::now();
+							$ext->mission_id = $mission_new->id;
+							$mission_new->ownMissionExt[] = $ext;
+						}
+						break;
+					case 'ownMission_user':
+						foreach( $one as $one1 ){
+							$user = R::dispense( 'mission_user' );
+							$user->import( $one1 );
+							$user->id = null;
+							$user->created = Helper\Html::now();
+							$user->updated = Helper\Html::now();
+							$user->mission_id = $mission_new->id;
+							$mission_new->ownMissionUser[] = $user;
+						}
+						break;
+				}
+			}
+		}
+
+		R::store( $mission_new );
+
+		return $mission_new;
 	}
 }

@@ -51,6 +51,7 @@ define(function(require, exports, module){
 			this.form_model = null;
 			this.view = null;
 			this.form_history = null;
+			this.$el.empty();
 		}, 
 		add: function( cate_id, sub_cate_id, callback ){
 			this.clear();
@@ -87,6 +88,10 @@ define(function(require, exports, module){
 					}
 				} );
 			} );
+		}, 
+		remove: function(){
+			list_view.list_item_remove()
+			this.clear();
 		}, 
 		reload: function(){
 			this.load( this.form_model.id, this.form_model.get( 'cate_id' ), this.form_model.get( 'mission_type_id' ) )
@@ -307,6 +312,8 @@ define(function(require, exports, module){
 			// 草稿 和 待处理放一起
 			if( user_state == 0 )user_state = 1;
 
+			var show_type = this.$( '#listitem-' + model.id ).attr( 'data-type' );
+
 			var now_list_data_type = this.$( '#listitem-' + model.id ).parents( '.tab-pane:first' ).attr( 'data-type' );
 			switch( parseInt( now_list_data_type ) ){
 				case 8:
@@ -332,11 +339,17 @@ define(function(require, exports, module){
 					}
 					break;
 			}
-			this.$( '#listitem-' + model.id ).html( $(_.template( $('#template-'+ user_state +'-listitem').html(), model.toJSON() )).html() );
+			this.$( '#listitem-' + model.id ).html( $(_.template( $('#template-'+ show_type +'-listitem').html(), model.toJSON() )).html() );
 
 		},
 		gotoList: function( show_type ){
 			this.$( '.list-toggller-'+ show_type ).find( 'a' ).click();
+		}, 
+		list_item_remove: function(){
+			var id = form_view.form_model.id
+			if( this.$( '#listitem-'+ id ).length ){
+				this.$( '#listitem-'+ id ).remove();
+			}
 		}, 
 		list_item_mouseover: function( event ){
 		}, 
@@ -378,6 +391,7 @@ define(function(require, exports, module){
 		go: function( id ){
 			if( this.$( '#listitem-'+ id ).length ){
 				this.gotoList( this.$( '#listitem-'+ id ).attr( 'data-type' ) );
+				this.$( '#listitem-'+ id ).click();
 			}else{
 				this.reload( id )
 			}
@@ -397,6 +411,7 @@ define(function(require, exports, module){
 				if( id ){
 					if( view.$( '#listitem-'+ id ).length ){
 						view.gotoList( view.$( '#listitem-'+ id ).attr( 'data-type' ) );
+						view.$( '#listitem-'+ id ).click();
 					}
 				}
 			} )
@@ -406,6 +421,7 @@ define(function(require, exports, module){
 	var FormToolbarView = Backbone.View.extend({
 		el: $( '#form-tool-bar' ), 
 		events: {
+			'click .mission-type-flag': 'flagMissionShow', 
 			'click .mission-type-change': 'change_mission_show', 
 			'click .form-refresh': 'form_reload', 
 			'click .list-refresh': 'list_reload'
@@ -416,8 +432,17 @@ define(function(require, exports, module){
 		form_reload: function(){
 			form_view.reload();
 		}, 
+		flagMissionShow: function(){
+			if( form_view.form_model && form_view.form_model.id && form_view.form_model.get( 'state' ) == 2 ){
+				Mission.mission_flag_modal.show( form_view.form_model );
+			}
+			return false;
+		}, 
 		change_mission_show: function(){
-			Mission.mission_change_modal.show();
+			if( form_view.form_model && form_view.form_model.id ){
+				Mission.mission_change_modal.show( form_view.form_model );
+			}
+			return false;
 		}, 
 		initForm: function(){
 			this.$( '.glyphicon-edit' ).unbind( 'click' )
@@ -500,6 +525,5 @@ define(function(require, exports, module){
 		form_toolbar_view: form_toolbar_view, 
 	};
 
-	form_view.add( 1, 9 )
 
 });

@@ -35,7 +35,10 @@ class MissionExtModel extends RedBean_SimpleModel {
 
 	static function getFormExt( $mission_type ){
 		$yaml = yaml_parse_file( APP_PATH. '/config/form.ini' );
-		return $yaml['form'. $mission_type];
+		if( !is_array( $yaml['form'. $mission_type]['ext'] ) ){
+			$yaml['form'. $mission_type]['ext'] = array();
+		}
+		return $yaml['form'. $mission_type]['ext'];
 	}
 
 	static function filter( $data, $form_ext ){

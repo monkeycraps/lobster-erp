@@ -13,9 +13,13 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		$yaml = yaml_parse_file( APP_PATH. '/config/form.ini' );
 		if( is_array( $yaml['form'. $mission_type] ) ){
 
+			if( !is_array( $yaml['form'. $mission_type]['ext'] ) ){
+				$yaml['form'. $mission_type]['ext'] = array();
+			}
 			self::$label = array_merge(
 				$yaml['form'], 
-				$yaml['form'. $mission_type]
+				$yaml['form'. $mission_type]['data'], 
+				$yaml['form'. $mission_type]['ext']
 			);
 		}
 

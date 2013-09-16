@@ -12,9 +12,10 @@
 		<td><%=product%></td>
 		<td><%=cnt%></td>
 		<td><%=state_name%></td>
-		<td class='col-lg-4 state_<%= state %>'>
+		<td class='col-lg-4 state_<%= state %> role_<%=app_data.user.role_id %>'>
 			<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
-			<a href='#' class='op ruku'><i class='glyphicon glyphicon-ok'></i></a>
+			<a href='#' class='op word-btn word-btn-danger ruku'>确认入库</a>
+			<a href='#' class='op word-btn word-btn-warning ruku-cancel'>取消入库</a>
 		</td>
 	</tr>
 </script>
@@ -22,7 +23,7 @@
 <script type='text/template' id='template-formview-add-product-to'>
 	<tr>
 		<td>
-			<input type='hidden' data-name='id' name='send_product_to[<%=uid%>][id]' value='<%=uid%>'/>
+			<input type='hidden' data-name='id' name='send_product_to[<%=uid%>][id]' value='<%=id%>'/>
 			<input type='hidden' data-name='category' name='send_product_to[<%=uid%>][category_id]' value='<%=category_id%>'/>
 			<input type='hidden' data-name='product' name='send_product_to[<%=uid%>][product_id]' value='<%=product_id%>'/>
 			<input type='hidden' data-name='cnt' name='send_product_to[<%=uid%>][cnt]' value='<%=cnt%>'/>

@@ -41,4 +41,8 @@ class UserModel extends RedBean_SimpleModel {
 	static function getName( $id ){
 		return R::load( 'user', $id )->name;
 	}
+
+	static function getKefuList(){
+		return R::getAll( 'select * from user where role_id = ? ', array( self::ROLE_KF ) );
+	}
 }

@@ -51,10 +51,14 @@
 					
 				</div>
 				<div class='col-5 pull-right' style='padding-top: 7px;' >
-					<ul class='pull-right list-inline'>
-						<li><a class='word-btn word-btn-success batch-submit'>提交</a></li>
-						<li><a class='list-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
-					</ul>
+					<?php if( $controller->user->id ): ?>
+						<ul class='pull-right list-inline'>
+							<?php if( $controller->user->role_id == UserModel::ROLE_DZ ): ?>
+								<li><a class='word-btn word-btn-success batch-submit'>提交</a></li>
+							<?php endif; ?>
+							<li><a class='list-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
+						</ul>
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class='col-5 row' style='padding-top: 5px;'>
@@ -65,12 +69,21 @@
 					
 				</div>
 				<div class='col-5 pull-right' style='padding-top: 7px;' >
-					<ul class='pull-right list-inline'>
-						<li><a class='form-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
-						<li><a href='#' class='mission-type-change' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="更改任务类型"><i class='glyphicon glyphicon-cog'></i></a></li>
-						<li><a href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="编辑"><i class='glyphicon glyphicon-edit'></i></a></li>
-						<li><a href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="历史记录"><i class='glyphicon glyphicon-briefcase'></i></a></li>
-					</ul>
+					<?php if( $controller->user->id ): ?>
+						<ul class='pull-right list-inline'>
+							<?php if( $controller->user->role_id == UserModel::ROLE_KF ){ ?>
+								<li><a href='#' class='mission-type-change' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="更改任务类型"><i class='glyphicon glyphicon-cog'></i></a></li>
+							<?php }?>
+
+							<?php if( $controller->user->role_id == UserModel::ROLE_DZ ){ ?>
+								<li><a href='#' class='mission-type-flag' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="插旗"><i class='glyphicon glyphicon-flag'></i></a></li>
+							<?php }?>
+
+							<li><a class='form-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
+							<li><a href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="编辑"><i class='glyphicon glyphicon-edit'></i></a></li>
+							<li><a href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="历史记录"><i class='glyphicon glyphicon-briefcase'></i></a></li>
+						</ul>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>

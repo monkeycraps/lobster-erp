@@ -16,26 +16,36 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach( $history as $one ) { ?>
-				<tr>
-					<td><ul class='list-unstyled'>
-						<?php 
-						$changed = json_decode( $one['changed'], true );
-						if( $changed ){
-							foreach( $changed as $one1 ){ 
-								$action = MissionChangeLogModel::getAction( $one1 );
-								$value = MissionChangeLogModel::getValue( $one1 );
+			<?php foreach( $history as $key=>$history_one ) { ?>
+				<?php if( count( $history ) > 1 && count( $history_one > 0 ) ){ ?>
+					<tr class='mission-one-title'>
+						<td >
+							<h1><?php echo $key ?></h1>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+				<?php } ?>
+				<?php foreach( $history_one as $one ){ ?>
+					<tr>
+						<td><ul class='list-unstyled'>
+							<?php 
+							$changed = json_decode( $one['changed'], true );
+							if( $changed ){
+								foreach( $changed as $one1 ){ 
+									$action = MissionChangeLogModel::getAction( $one1 );
+									$value = MissionChangeLogModel::getValue( $one1 );
+								?>
+									<li><?php echo '【'. $action. '】'. $one1['key']. ' - '. $value ?></li>
+								<?php }
+							}
 							?>
-								<li><?php echo '【'. $action. '】'. $one1['key']. ' - '. $value ?></li>
-							<?php }
-						}
-						?>
-					</ul></td>
-					<td><?php echo UserModel::getName( $one['uid'] )?></td>
-					<td><?php echo Helper\Html::date( $one['created'] )?></td>
-				</tr>
-			<? 
-			}?>
+						</ul></td>
+						<td><?php echo UserModel::getName( $one['uid'] )?></td>
+						<td><?php echo Helper\Html::date( $one['created'] )?></td>
+					</tr>
+				<?php } ?>
+			<? } ?>
 		</tbody>
 	</table>
 </div>

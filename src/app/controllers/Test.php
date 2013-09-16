@@ -41,7 +41,13 @@ class TestController extends ApplicationController {
 
 		// $sql = 'update mission_drawback set state = '. MissionDrawbackModel::STATE_DONE . ' where mission_id = ? and state = '. MissionDrawbackModel::STATE_APPLY;
 		// dump( R::exec( $sql, array( 189 ) ) );
+		
+		$mission = R::load( 'mission', 188 );
+		
+		$mission_new = $mission->copyMission( 19 );
+		echo $mission_new->id;
 
-		$this->show( 'test' );
+
+		// $this->show( 'test' );
 	}
 }

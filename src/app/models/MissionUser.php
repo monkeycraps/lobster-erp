@@ -12,6 +12,7 @@ class MissionUserModel extends RedBean_SimpleModel {
 	const STATE_WAITING_REFUNDMENT = 7;
 	const SHOW_STATE_DZ_CONCLOSED = 8;
 	const SHOW_STATE_DZ_CLOSED = 9;
+	const STATE_TO_OTHER = 10;
 
 	static function getStateName( $state ){
 		switch( intval($state) ){
@@ -29,6 +30,18 @@ class MissionUserModel extends RedBean_SimpleModel {
 				break;
 			case 4:
 				return '已关闭';
+				break;
+			case 5:
+				return '取消';
+				break;
+			case 6:
+				return '等待返现';
+				break;
+			case 7:
+				return '等待退款';
+				break;
+			case 10:
+				return '转移给别人';
 				break;
 			default:
 				return '异常';

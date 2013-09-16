@@ -58,12 +58,12 @@ define(function(require, exports, module){
 			this.$( '.message_cnt' ).text( '('+ cnt + ')' )
 			var view = this
 			$( 'ul.message-list li', view ).each(function(){
-				if( $(this).hasClass( 'message' ) ){
+				if( $(this).find('a.message').length > 0 ){
 					$(this).remove();
 				}
 			})
 			_.each(list, function( val, key ){
-				view.$( 'ul.message-list' ).append( '<li><a href="#" class="message" data="'+ val.id +'">'+ val.title +'</a></li>' );
+				view.$( 'ul.message-list' ).append( '<li><a href="#" class="message" data="'+ val.id +'">'+ val.title.substr( 0, 8 ) +'</a></li>' );
 			})
 		}, 
 		initMessage: function( list, cnt ){
@@ -71,7 +71,7 @@ define(function(require, exports, module){
 			this.$( '.message_cnt' ).text( '('+ cnt + ')' )
 			var view = this
 			_.each(list, function( val, key ){
-				view.$( 'ul.message-list' ).append( '<li><a href="#" class="message" data="'+ val.id +'">'+ val.title +'</a></li>' );
+				view.$( 'ul.message-list' ).append( '<li><a href="#" class="message" data="'+ val.id +'">'+ val.title.substr( 0, 8 ) +'</a></li>' );
 			})
 		}
 	});

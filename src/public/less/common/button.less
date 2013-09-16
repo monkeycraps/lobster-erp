@@ -2,7 +2,7 @@
 html > body {
 	
 	.word-btn{
-	  display: block;
+	  display: inline-block;
 	  color: black;
 	  border: 2px solid #666;
 	  cursor: pointer;
@@ -18,15 +18,24 @@ html > body {
 	.word-btn-success{
 	  color: #5cb85c;
 	  border: 2px solid #4cae4c;
+	  &:hover{
+	  	color: rgb(38, 124, 38);
+	  }
 	}
 
 	.word-btn-danger{
 	  color: #d9534f;
 	  border: 2px solid #d43f3a;
+	  &:hover{
+	  	color: rgb(167, 45, 41);
+	  }
 	}
 
 	.word-btn-warning{
 	  color: #f0ad4e;
 	  border: 2px solid #eea236;
+	  &:hover{
+	  	color: rgb(180, 124, 43);
+	  }
 	}
 }

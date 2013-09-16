@@ -38,26 +38,100 @@ pageBind.product = function(){
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"
                         aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">更改任务类型</h4>
+                    <h4 class="modal-title">配置管理</h4>
                 </div>
                 <div class="modal-body">
-                    <input type='hidden' name='mission_id' value='' />
-                    <div class='form-group'>
-                        <select class='select-cate'>
-                        </select>
+                    <div>
+                        <ul class="nav nav-tabs" id="myTab">
+                            <?php 
+                            $mission_type_list = rbac\Role::getRoleActions( $controller->user->role_id );
+                            $first = true; foreach( $mission_type_list as $one ) { ?>
+                                <li class="<?php echo $first ? 'active' : '' ?>">
+                                    <a href="#mission-type-<?php echo $one['data']['id'] ?>" 
+                                        data-id='<?php echo $one['data']['id']?>'
+                                        data-toggle='tab'
+                                        >
+                                        <?php echo $one['data']['name'] ?></a></li>
+                            <?php $first = false; }?>
+                        </ul>
+                        <div class="tab-content" style='padding: 10px 0 40px 0;'>
+                            <?php $first = true; foreach( $mission_type_list as $one ) { ?>
+                                <div class="tab-pane <?php echo $first ? 'active' : '' ?>" 
+                                    id="mission-type-<?php echo $one['data']['id']?>">
+                                    <?php 
+                                    sort( $one['children'] );
+                                    $children = $one['children'];
+                                    foreach( $children as $one1 ){ 
+                                        ?>
+                                        <input class="btn btn-default" type="button" value="<?php echo $one1['name'] ?>" 
+                                        data-id='<?php echo $one1['id'] ?>'>
+                                    <?php } ?>
+                                </div>
+                            <?php $first = false; }?>
+                        </div>
+                        <div class='form-group'>
+                            <input type='button' class='btn btn-primary btn-change-type' value='更改任务类型' />
+                        </div>
                     </div>
-                    <div class='form-group'>
-                        <select class='select-subcate'>
-                        </select>
+                    <div class='split-line'></div>
+                    <div>
+                        <div class='form-group'>
+                            <select class='select kefu-uid' style='width: 100px;'>
+                                <?php $list = UserModel::getKefuList(); 
+                                foreach( $list as $one ){  
+                                    if( $one['id'] == $controller->user->id )continue;
+                                ?>
+                                    <option value='<?php echo $one['id'] ?>'><?php echo $one['name'] ?></option>
+                                <?php }?>
+                            </select>
+                            <input type='button' class='btn btn-primary btn-change-kefu' value='交接' />
+                        </div>
                     </div>
-                    <div class='form-group '>
-                        <input type='button' class='btn btn-primary btn-mission-change' value='更改' />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value='更改'>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+
+<div class="modal fade" id="modal-mission-flag">
+    <div class="modal-dialog">
+        <form class='form-inline' onsubmit='return false;'>
+            <div class="modal-content">
+                <?php echo Helper\Html::authToken() ?>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">插旗子</h4>
+                </div>
+                <div class="modal-body">
+                    <div class='form-group'>
+                        <label class='checkbox'>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_KF ?>' name='mistake[]' />
+                            客服失误
+                        </label>
+                        <label class='checkbox'>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_CG ?>' name='mistake[]' />
+                            仓管失误
+                        </label>
+                        <label class='checkbox'>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_CK ?>' name='mistake[]' />
+                            仓库失误
+                        </label>
+                        <label class='checkbox'>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_OTHER ?>' name='mistake[]' />
+                            其他情况
+                        </label>
+                    </div>
+                    <div class='form-group'>
+                        <textarea class='textarea col-lg-12' rows='7' name='remarks' ></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style='clear: both;'>
+                    <input type="button" class="btn btn-primary" value='保存'>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
