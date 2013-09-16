@@ -33,7 +33,6 @@
 		<div class='col-lg-10'>
 			<input type="text" name='order_num' class="form-control" value='<%=order_num_list%>'
 				placeholder="多个订单号用空格分开">
-			<div class='help-block'>多个订单号用空格分开</div>
 		</div>
 	</div>
 
@@ -44,12 +43,10 @@
 				<% _.each(time_point_list, function(val,key) { if( !time_point ) time_point = key %>
 					<option value='<%= val %>' <%= typeof(time_point) != 'undefined' && time_point == val ? 'selected' : '' %>><%= val %></option> <% }); %>
 			</select>
-			<div class='checkbox'>
-				<label>
-			    	<input type="checkbox" name='earlier_send' <%= ( typeof( earlier_send ) != 'undefined' && 
-			    		'on' == earlier_send ) ? 'checked' : '' %> 提前发货
-			    </label>
-			</div>
+			<label class='checkbox'>
+		    	<input type="checkbox" name='earlier_send' <%= ( typeof( earlier_send ) != 'undefined' && 
+		    		'on' == earlier_send ) ? 'checked' : '' %>/> 提前发货
+		    </label>
 		</div>
 	</div>
 
@@ -80,27 +77,7 @@
 		</div>
 	</div>
 
-	<div class="form-group clearfix">
-		<label class="col-lg-2" >原产品：</label>
-		<div class='col-lg-10'>
-			<select class='col-lg-3' name='send_back_category_id' >
-				<% category_id = 0; _.each(category_list, function(val,key) { if( !category_id ) category_id = key %>
-					<option value='<%= val.id %>' <%= typeof(category_id) != 'undefined' && category_id == val.category_id ? 'selected' : '' %>>
-					<%= val.name %></option> <% }); %>
-			</select>
-			<select class='col-lg-3' name='send_back_product_id'>
-				<% product_id = 0; _.each(product_list[category_id], function(val,key) { %>
-					<option value='<%= val.id %>' <%= typeof(product_id) != 'undefined' && product_id == val.product_id ? 'selected' : '' %>>
-					<%= val.name %></option> <% }); %>
-			</select>
-			<input name='send_back_cnt' value='1' style='width: 40px;' />
-			<button type="button" class='btn btn-success add_send_back_product'>
-				<i class='glyphicon glyphicon-plus'></i> 增加
-			</button>
-			<table class='table list_send_back_product'>
-			<tbody></tbody></table>
-		</div>
-	</div>
+	<?php echo $controller->renderPartial( 'mission/_form_product_html', array( 'type'=>'back', 'name'=>'原产品' ) ); ?>
 
 	<div class='split-line'></div>
 
@@ -120,27 +97,7 @@
 		</div>
 	</div>
 
-	<div class="form-group clearfix">
-		<label class="col-lg-2" >换出产品：</label>
-		<div class='col-lg-10'>
-			<select class='col-lg-3' name='send_to_category_id' >
-				<% category_id = 0; _.each(category_list, function(val,key) { if( !category_id ) category_id = key %>
-					<option value='<%= val.id %>' <%= typeof(category_id) != 'undefined' && category_id == val.category_id ? 'selected' : '' %>>
-					<%= val.name %></option> <% }); %>
-			</select>
-			<select class='col-lg-3' name='send_to_product_id'>
-				<% product_id = 0; _.each(product_list[category_id], function(val,key) { %>
-					<option value='<%= val.id %>' <%= typeof(product_id) != 'undefined' && product_id == val.product_id ? 'selected' : '' %>>
-					<%= val.name %></option> <% }); %>
-			</select>
-			<input name='send_to_cnt' value='1' style='width: 40px;' />
-			<button type="button" class='btn btn-success add_send_to_product'>
-				<i class='glyphicon glyphicon-plus'></i> 增加
-			</button>
-			<table class='table list_send_to_product'>
-			<tbody></tbody></table>
-		</div>
-	</div>
+	<?php echo $controller->renderPartial( 'mission/_form_product_html', array( 'type'=>'to', 'name'=>'换出产品' ) ); ?>
 
 	<div class='split-line'></div>
 

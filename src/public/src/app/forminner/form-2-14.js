@@ -11,6 +11,7 @@ define(function(require, exports, module){
 	var Model = FormInner.Model.extend({
 		urlRoot: '/mission/mission/id/', 
 		defaults: {
+			mission_type_id: 14
 		}, 
 		initialize: function(){
 			this.defaults = _.extend( this.defaults_p, this.defaults )
@@ -20,7 +21,11 @@ define(function(require, exports, module){
 	});
 	
 	var FormView = FormInner.View.extend({
+		el: '#forminner-mission-2-14', 
+		template: _.template($('#template-formview-2-14').html()),
+		template_close: _.template($('#template-formview-closed-2-14').html()),
 		events: {
+		
 		}, 
 		initialize: function(opt){
 

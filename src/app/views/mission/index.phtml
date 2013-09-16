@@ -26,6 +26,9 @@ var category_list = <?php echo json_encode( CategoryModel::getSelectList() ) ?>;
 var product_list = <?php echo json_encode( ProductModel::getSelectList() ) ?>; 
 var time_point_list = ['7天以内', '8-30天', '30天-1年', '1年以上'];
 var huanhuo_reason_list = ['个人原因', '价格原因', '产品原因', '物流原因', '发货原因', '发票原因']; 
+var tuihuo_reason_list = ['个人原因', '价格原因', '产品原因', '物流原因', '发货原因', '发票原因']; 
+var receipt_list = ['普票', '增票']; 
+var sub_mail_type_list = ['产品损坏']; 
 pageBind.product = function(){
 }
 </script>

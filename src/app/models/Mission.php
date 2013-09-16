@@ -83,13 +83,30 @@ class MissionModel extends RedBean_SimpleModel {
 
 			if( isset( $arr['send_product_to'] ) && $arr['send_product_to'] ){
 
-
 				foreach( $arr['send_product_to'] as $one ){
 					if( !$one )continue;
 					
 					$mission_product = R::dispense( 'mission_product' );
 					$mission_product->mission_id = $id;
 					$mission_product->type = MissionProductModel::TYPE_TO;
+					$mission_product->category_id = $one['category_id'];
+					$mission_product->product_id = $one['product_id'];
+					$mission_product->cnt = $one['cnt'];
+					$mission_product->created = Helper\Html::now();
+					$mission_product->updated = Helper\Html::now();
+					$mission_product->state = $one['state'];
+					$model->ownMissionProduct[] = $mission_product;
+				}
+			}
+
+			if( isset( $arr['send_product_old'] ) && $arr['send_product_old'] ){
+
+				foreach( $arr['send_product_old'] as $one ){
+					if( !$one )continue;
+					
+					$mission_product = R::dispense( 'mission_product' );
+					$mission_product->mission_id = $id;
+					$mission_product->type = MissionProductModel::TYPE_OLD;
 					$mission_product->category_id = $one['category_id'];
 					$mission_product->product_id = $one['product_id'];
 					$mission_product->cnt = $one['cnt'];
@@ -186,7 +203,7 @@ class MissionModel extends RedBean_SimpleModel {
 			R::store ( $model );
 
 			MissionExtModel::setExt( $model->mission_type_id, $model->id, $arr );
-
+			
 			if( !$mission_user = current(R::find( 'mission_user', 'mission_id = ? and uid = ?', array( $model->id, $user->id ) ) ) ){
 				$mission_user = R::dispense( 'mission_user' );
 				$mission_user->mission_id = $id;
@@ -322,6 +339,49 @@ class MissionModel extends RedBean_SimpleModel {
 				}
 			}
 			foreach( $send_to_product_list as $one ){
+				$one->deleted = Helper\Html::now();
+				R::store( $one );
+			}
+
+			// old
+			$send_old_product_list_tmp = $model->withCondition( 'deleted is null and type = '. MissionProductModel::TYPE_OLD )->ownMissionProduct;
+			$send_old_product_list = array();
+			foreach( $send_old_product_list_tmp as $one ){
+				$send_old_product_list[$one['id']] = $one;
+			}
+			if( isset( $arr['send_product_old'] ) && $arr['send_product_old'] ){
+
+				foreach( $arr['send_product_old'] as $one ){
+
+					if( !$one )continue;
+					
+					if( !isset( $send_old_product_list[$one['id']] ) ){
+
+						$mission_product = R::dispense( 'mission_product' );
+						$mission_product->mission_id = $model->id;
+						$mission_product->type = MissionProductModel::TYPE_OLD;
+						$mission_product->category_id = $one['category_id'];
+						$mission_product->product_id = $one['product_id'];
+						$mission_product->cnt = $one['cnt'];
+						$mission_product->created = Helper\Html::now();
+						$mission_product->updated = Helper\Html::now();
+						$mission_product->state = $one['state'];
+						$model->ownMissionProduct[] = $mission_product;
+
+						R::store( $model );
+
+					}else{
+
+						$mission_product = $send_old_product_list[$one['id']];
+						$mission_product->updated = Helper\Html::now();
+						$mission_product->cnt = $one['cnt'];
+						$mission_product->state = $one['state'];
+
+						unset( $send_old_product_list[$one['id']] );
+					}
+				}
+			}
+			foreach( $send_old_product_list as $one ){
 				$one->deleted = Helper\Html::now();
 				R::store( $one );
 			}
@@ -508,11 +568,11 @@ class MissionModel extends RedBean_SimpleModel {
 				break;
 			case 'waiting_drawback':
 				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_ON .' and mu.state = '. MissionUserModel::STATE_WAITING_DRAWING .' ';
+				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_DRAWING .' ';
 				break;
 			case 'waiting_refundment':
 				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_ON .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
+				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
 				break;
 			case 'dz_unclosed':
 				$sql_type = ' and m.state <> '. self::STATE_CLOSED .' and (
@@ -540,7 +600,7 @@ class MissionModel extends RedBean_SimpleModel {
 			left join mission_user mu on m.id = mu.mission_id and mu.uid = ?
 			inner join mission_type sc on m.mission_type_id = sc.id
 			inner join mission_type c on sc.pid = c.id
-			inner join store s on s.id = m.store_id
+			left join store s on s.id = m.store_id
 			inner join user u on u.id = m.create_uid
 			inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
 			where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'

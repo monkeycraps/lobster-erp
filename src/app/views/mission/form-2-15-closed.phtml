@@ -1,0 +1,65 @@
+<script type='text/template' id='template-formview-closed-2-15'>
+<div class='mission-form-inner'>
+	
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<%=store%>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<%=wanwan%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<%=order_num_list%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >退货类型：</label>
+		<div class='col-lg-10'>
+			<%=tuihuo_reason%>	
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >具体原因：</label>
+		<div class='col-lg-10'>
+			<%=detail_reason%>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >新客户信息：</label>
+		<div class='col-lg-10'>
+			<%=new_client_info%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >转发单号：</label>
+		<div class='col-lg-10'>
+			<%=new_order_num%>
+		</div>
+	</div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_product_closed', array( 'type'=>'old', 'name'=>'退货产品' ) ); ?>
+
+	<div class='split-line'></div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_profit_closed' ) ?>
+
+	<br/>
+
+	<?php echo $controller->renderPartial( 'mission/_form_drawback_closed' ) ?>
+
+</div>
+</script>

@@ -525,5 +525,4 @@ define(function(require, exports, module){
 		form_toolbar_view: form_toolbar_view, 
 	};
 
-
 });

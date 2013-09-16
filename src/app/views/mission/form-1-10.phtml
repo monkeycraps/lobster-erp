@@ -36,40 +36,10 @@
 			<div class='help-block'></div>
 		</div>
 	</div>
-	<div class="form-group clearfix">
-		<label class="col-lg-2" for="ipt_order_num">退货产品：</label>
-		<div class='col-lg-10'>
-			<select class='col-lg-3' name='send_to_category_id' >
-				<% category_id = 0; _.each(category_list, function(val,key) { if( !category_id ) category_id = key %>
-					<option value='<%= val.id %>' <%= typeof(category_id) != 'undefined' && category_id == val.category_id ? 'selected' : '' %>>
-					<%= val.name %></option> <% }); %>
-			</select>
-			<select class='col-lg-3' name='send_to_product_id'>
-				<% product_id = 0; _.each(product_list[category_id], function(val,key) { %>
-					<option value='<%= val.id %>' <%= typeof(product_id) != 'undefined' && product_id == val.product_id ? 'selected' : '' %>>
-					<%= val.name %></option> <% }); %>
-			</select>
-			<input name='send_to_cnt' value='1' style='width: 40px;' />
-			<button type="button" class='btn btn-success add_send_to_product'>
-				<i class='glyphicon glyphicon-plus'></i> 增加
-			</button>
-			<table class='table list_send_to_product'>
-			<tbody></tbody></table>
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-lg-2" for="ipt_order_num">退款原因：</label>
-		<div class='col-lg-10'>
-			<textarea placeholder='每行一个地址' class='col-lg-12' rows='2' name='mail_to_address'><%=mail_to_address%></textarea>
-		</div>
-	</div>
 
-	<div class='split-line'></div>
-
-	<?php echo $controller->renderPartial( 'mission/_form_refundment' ) ?>
-
-	<?php echo $controller->renderPartial( 'mission/_form_profit' ) ?>
-
+	<?php echo $controller->renderPartial( 'mission/_form_product_html', array( 'type'=>'old', 'name'=>'对应产品' ) ); ?>
+	<?php echo $controller->renderPartial( 'mission/_form_product_html', array( 'type'=>'to', 'name'=>'赠品' ) ); ?>
+	
 </div>
 </script>
 

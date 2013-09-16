@@ -1,0 +1,37 @@
+<script type='text/template' id='template-formview-closed-5-20'>
+<div class='mission-form-inner'>
+	
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >姓名：</label>
+		<div class='col-lg-10'>
+			<%=realname%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >手机：</label>
+		<div class='col-lg-10'>
+			<%=mobile%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >付款金额：</label>
+		<div class='col-lg-10'>
+			<%=pay_money%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >付款时间：</label>
+		<div class='col-lg-10 input-group date'>
+			<%=pay_time%>
+		</div>
+	</div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_product_closed', array( 'type'=>'to', 'name'=>'产品' ) ); ?>
+
+</div>
+</script>

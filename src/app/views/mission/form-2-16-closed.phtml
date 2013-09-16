@@ -1,0 +1,89 @@
+<script type='text/template' id='template-formview-closed-2-16'>
+<div class='mission-form-inner'>
+	
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<%=store%>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<%=wanwan%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<%=order_num_list%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >发票类型：</label>
+		<div class='col-lg-10'>
+			<%=receipt%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >抬头：</label>
+		<div class='col-lg-10'>
+			<%=receipt_subject%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >税号：</label>
+		<div class='col-lg-10'>
+			<%=receipt_num%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >金额: </label>
+		<div class='col-lg-10'>
+			<%=receipt_money%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >其他信息：</label>
+		<div class='col-lg-10'>
+			<%=receipt_other%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >补寄地址：</label>
+		<div class='col-lg-10'>
+			<%=receipt_address%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >具体原因：</label>
+		<div class='col-lg-10'>
+			<%=detail_reason%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >寄出单号：</label>
+		<div class='col-lg-10'>
+			<%=receipt_mail_to_num%>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_profit_closed' ) ?>
+
+	<br/>
+
+	<?php echo $controller->renderPartial( 'mission/_form_drawback_closed' ) ?>
+
+</div>
+</script>

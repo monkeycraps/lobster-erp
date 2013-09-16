@@ -1,0 +1,16 @@
+<div class="form-group clearfix">
+	<label class="col-lg-2" for="ipt_order_num"><?php echo $name ?>：</label>
+	<div class='col-lg-10'>
+		<table class='table list_send_<?php echo $type ?>_product'>
+		<tbody>
+			<% if( 'undefined' != typeof(send_<?php echo $type ?>_product_list) ){ _.each(send_<?php echo $type ?>_product_list, function(val,key) { %>
+				<tr>
+					<td><%=val.category%></td>
+					<td><%=val.product%></td>
+					<td><%=val.cnt%></td>
+					<td><%=val.state_name%></td>
+				</tr>
+			<% });} %>
+		</tbody></table>
+	</div>
+</div>

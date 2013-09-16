@@ -203,7 +203,7 @@ class MissionController extends ApplicationController {
 	function flagAction(){
 
 		if( !($id = $this->post( 'id' )) or !( $mission = R::findOne( 'mission', 'id = ?', array( $id ) ) )  ){
-			throw new Exception( 'mo mission product yet', 404 );
+			throw new Exception( 'mo mission yet', 404 );
 		}
 
 		if( $this->user->role_id != UserModel::ROLE_DZ ){
@@ -215,7 +215,7 @@ class MissionController extends ApplicationController {
 		$remarks = $this->post( 'remarks' );
 
 		if( !$mission_flag = R::findOne( 'mission_flag', 'mission_id = ?', array( $mission->id ) ) ){
-			$mission_flag = R::dispense( 'mkission_flag' );
+			$mission_flag = R::dispense( 'mission_flag' );
 			$mission_flag->created = Helper\Html::now();
 			$mission_flag->mission_id = $mission->id;
 		}
@@ -394,7 +394,7 @@ class MissionController extends ApplicationController {
 
 		$send_back_product_list = array();
 		$send_to_product_list = array();
-		$send_product_list = array();
+		$send_old_product_list = array();
 		if( $model_list = $model->withCondition( 'deleted is null' )->ownMissionProduct ){
 
 			foreach( $model_list as $one ){
@@ -413,8 +413,8 @@ class MissionController extends ApplicationController {
 							'state_name'=>MissionProductModel::getStateName( $one->state ), 
 						));
 						break;
-					default: 
-						$send_product_list[] = array_merge( $one->getIterator ()->getArrayCopy (), array(
+					case MissionProductModel::TYPE_OLD:
+						$send_old_product_list[] = array_merge( $one->getIterator ()->getArrayCopy (), array(
 							'category'=>CategoryModel::getName( $one->category_id ), 
 							'product'=>ProductModel::getName( $one->product_id ), 
 							'state_name'=>MissionProductModel::getStateName( $one->state ), 
@@ -459,7 +459,7 @@ class MissionController extends ApplicationController {
 			'order_num_list' => $order_num_list, 
 			'send_back_product_list' => $send_back_product_list, 
 			'send_to_product_list' => $send_to_product_list, 
-			'send_product_list' => $send_product_list, 
+			'send_old_product_list' => $send_old_product_list, 
 			'user_state' => $user_state, 
 			'user_state_name' => MissionUserModel::getStateName( $user_state ), 
 			'mission_state' => MissionModel::getMissionStateName( $model->getIterator()->getArrayCopy() ), 
@@ -473,7 +473,7 @@ class MissionController extends ApplicationController {
 			'drawback_zhifubao'=> $drawback->zhifubao, 
 			'drawback_reason'=> $drawback->reason, 
 			'drawback_state'=> $drawback->state, 
-			'drawback_state_name'=> MissionRefundmentModel::getStateName( $drawback->state ), 
+			'drawback_state_name'=> MissionDrawbackModel::getStateName( $drawback->state ), 
 			'refundment_state'=> $refundment->state, 
 			'refundment_state_name'=> MissionRefundmentModel::getStateName( $refundment->state ), 
 			'flag_list'=> $mission_flag_lisg, 

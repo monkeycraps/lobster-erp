@@ -1,0 +1,66 @@
+<script type='text/template' id='template-formview-closed-6-21'>
+<div class='mission-form-inner'>
+	
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<%=store%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >汇款人：</label>
+		<div class='col-lg-10'>
+			<%=mail_person_name%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >汇款银行：</label>
+		<div class='col-lg-10'>
+			<%=mail_person_bank%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >所在地：</label>
+		<div class='col-lg-10'>
+			<%=mail_person_bank_address%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >金额：</label>
+		<div class='col-lg-10'>
+			<%=mail_money%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >付款时间：</label>
+		<div class='col-lg-10 input-group date'>
+			<%=mail_time%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >收件信息：</label>
+		<div class='col-lg-10'>
+			<%=mail_product_info%>
+		</div>
+	</div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_product_closed', array( 'type'=>'to', 'name'=>'产品' ) ); ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >发货单号：</label>
+		<div class='col-lg-10'>
+			<%=mail_address%>
+		</div>
+	</div>
+
+</div>
+</script>

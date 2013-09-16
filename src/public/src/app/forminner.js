@@ -7,6 +7,10 @@ define(function(require, exports, module){
 	var Layout = require( '/src/app/layout' );
 	var list = Layout.list;
 
+	require( '/bootstrap/datepicker/js/bootstrap-datepicker' )
+	require( '/bootstrap/datepicker/js/locales/bootstrap-datepicker.zh-CN' )
+	require( '/bootstrap/datepicker/css/datepicker.css' )
+
 	var Model = Backbone.Model.extend({
 		urlRoot: '/mission/mission/id/', 
 		defaults_p: {
@@ -24,6 +28,30 @@ define(function(require, exports, module){
 			flag_list: [], 
 			flag_remarks: '', 
 
+			mail_person_name: '', 
+	        mail_person_bank: '', 
+	        mail_person_bank_address: '', 
+	        mail_money: '', 
+	        mail_time: '', 
+	        mail_product_info: '', 
+	        mail_address: '', 
+			pay_money: '', 
+			pay_time: '', 
+			detail_description: '', 
+			sub_mail_type: '', 
+			receipt: '', 
+	        receipt_subject: '',
+	        receipt_num: '',
+	        receipt_money: '',
+	        receipt_other: '',
+	        receipt_address: '',
+	        receipt_mail_to_num: '',
+			tuihuo_reason: null, 
+			new_order_num: null, 
+			new_client_info: null, 
+			mobile: null, 
+			person_id: null, 
+			realname: null, 
 			refundment_reason: null, 
 			mail_to_address: null, 
 			time_point: null, 
@@ -63,7 +91,10 @@ define(function(require, exports, module){
 			'click .list_send_back_product tbody .ruku-cancel': 'send_back_product_ruku_cancel', 
 			'click .add_send_to_product': 'add_send_to_product',
 			'click .list_send_to_product .delete': 'delete_send_to_product', 
-			'change select[name="send_to_category_id"]': 'change_send_to_category', 
+			'change select[name="send_to_category_id"]': 'change_send_to_category',
+			'click .add_send_old_product': 'add_send_old_product',
+			'click .list_send_old_product .delete': 'delete_send_old_product', 
+			'change select[name="send_old_category_id"]': 'change_send_old_category', 
 			'click .draft': 'save', 
 			'click .save': 'save', 
 			'click .publish': 'publish', 
@@ -114,7 +145,6 @@ define(function(require, exports, module){
 			var param = {};
 			var view = this
 			param.id = $( 'input[data-name="id"]', target ).val()
-			console.log( param )
 			$.post( 'mission/ruku', param, function( data ){
 				data.uid = data.id
 				target.html( $(_.template($('#template-formview-add-product-back').html(), data )).html() )
@@ -125,7 +155,6 @@ define(function(require, exports, module){
 			var param = {};
 			var view = this
 			param.id = $( 'input[data-name="id"]', target ).val()
-			console.log( param )
 			$.post( 'mission/rukuCancel', param, function( data ){
 				data.uid = data.id
 				target.html( $(_.template($('#template-formview-add-product-back').html(), data )).html() )
@@ -158,6 +187,12 @@ define(function(require, exports, module){
 				if( undefined != this.model.get('send_to_product_list') ){
 					_.each( this.model.get('send_to_product_list'), function( one ){
 						view.add_send_to_product_do( one.category_id, one.product_id, one.cnt, one.category, one.product, one.state, one.state_name, _.uniqueId(), one.id )
+					} )
+				}
+
+				if( undefined != this.model.get('send_old_product_list') ){
+					_.each( this.model.get('send_old_product_list'), function( one ){
+						view.add_send_old_product_do( one.category_id, one.product_id, one.cnt, one.category, one.product, one.state, one.state_name, _.uniqueId(), one.id )
 					} )
 				}
 
@@ -286,6 +321,11 @@ define(function(require, exports, module){
 					view.model.unset( key )
 				}
 			} );
+			_.each( view.model.toJSON(), function(val, key){ 
+				if( /send_product_old\[/.test(key) ) {
+					view.model.unset( key )
+				}
+			} );
 		}, 
 		change_send_back_category: function( event ){
 			var id = event.currentTarget.value	;
@@ -351,7 +391,6 @@ define(function(require, exports, module){
 			return false;
 		}, 
 		add_send_to_product_do: function( category_id, product_id, cnt, category, product, state, state_name, uid, id ){
-			console.log( arguments )
 			this.$( 'table.list_send_to_product tbody' ).append( _.template($('#template-formview-add-product-to').html(), {
 				category_id: category_id, 
 				product_id: product_id, 
@@ -365,6 +404,48 @@ define(function(require, exports, module){
 			} ) );
 		}, 
 		delete_send_to_product: function( event ){
+			var view = this;
+			$( event.currentTarget ).parents('tr').find( 'input[type="hidden"]' ).each(function(){
+				view.model.unset( $(this).attr('name') );
+			});
+			$( event.currentTarget ).parents('tr').remove();
+			return false;
+		}, 
+		change_send_old_category: function( event ){
+			var id = event.currentTarget.value	;
+			this.$( 'select[name="send_old_product_id"]' ).empty();
+			_.each( product_list[id], function(val, key){
+				this.$( 'select[name="send_old_product_id"]' ).append( '<option value="'+ val.id +'">'+ val.name +'</option>' );
+			} )
+		}, 
+		add_send_old_product: function(event){
+			this.add_send_old_product_do(
+				$('select[name="send_old_category_id"]').val(), 
+				$('select[name="send_old_product_id"]').val(), 
+				$('input[name="send_old_cnt"]').val().trim(), 
+				$('select[name="send_old_category_id"] option:selected').text().trim(), 
+				$('select[name="send_old_product_id"] option:selected').text().trim(), 
+				1, 
+				'新建', 
+				_.uniqueId(), 
+				0
+			);
+			return false;
+		}, 
+		add_send_old_product_do: function( category_id, product_id, cnt, category, product, state, state_name, uid, id ){
+			this.$( 'table.list_send_old_product tbody' ).append( _.template($('#template-formview-add-product-old').html(), {
+				category_id: category_id, 
+				product_id: product_id, 
+				cnt: cnt, 
+				category: category, 
+				product: product, 
+				state: state, 
+				state_name: state_name, 
+				uid: uid, 
+				id: id
+			} ) );
+		}, 
+		delete_send_old_product: function( event ){
 			var view = this;
 			$( event.currentTarget ).parents('tr').find( 'input[type="hidden"]' ).each(function(){
 				view.model.unset( $(this).attr('name') );
@@ -412,7 +493,6 @@ define(function(require, exports, module){
 			
 			this.clearProdocut();
 			changed = Util.formJson( this.$( 'form' ) );
-			console.log( changed );
 
 			switch( action ){
 				case 'save':

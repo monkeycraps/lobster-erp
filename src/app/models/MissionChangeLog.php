@@ -79,7 +79,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 				case 'ext':
 					$changed = self::getChangedExt( $changed, $before, $now  );
 					break;
-				case 'product':
+				case 'product_old':
 				case 'product_back':
 				case 'product_to':
 					$changed = self::getChangedProduct( $changed, $before, $now, $key );
@@ -139,7 +139,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 				case 'ext':
 					$changed = self::checkDelteExt( $changed, $before, $now );
 					break;
-				case 'product':
+				case 'product_old':
 				case 'product_back':
 				case 'product_to':
 					break;
@@ -386,7 +386,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 		$send_back_product_list = array();
 		$send_to_product_list = array();
-		$send_product_list = array();
+		$send_old_product_list = array();
 		if( $model->withCondition( 'deleted is null' )->ownMissionProduct ){
 
 			foreach( $model->ownMissionProduct as $one ){
@@ -397,8 +397,8 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					case MissionProductModel::TYPE_TO:
 						$send_to_product_list[] = $one->getIterator()->getArrayCopy();
 						break;
-					default: 
-						$send_product_list[] = $one->getIterator()->getArrayCopy();
+					case MissionProductModel::TYPE_OLD:
+						$send_old_product_list[] = $one->getIterator()->getArrayCopy();
 						break;
 				}
 			}
@@ -406,7 +406,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		$mission = array_merge( $mission, array(
 			'product_back'=>$send_back_product_list, 
 			'product_to'=>$send_to_product_list, 
-			'product'=>$send_product_list, 
+			'product_old'=>$send_old_product_list, 
 		) );
 
 		$order_list = array();

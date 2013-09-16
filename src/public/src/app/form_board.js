@@ -131,15 +131,16 @@ define(function(require, exports, module){
 
 			this.$el.show();
 			var icon_selector = this.$( '.icon-selector' ).on('shown.bs.popover', function () {
-				$( 'li', $( '.icon-wrapper:visible' )).hover(function(){
+				
+				$( 'li', $( '.icon-wrapper:visible' )).unbind( 'hover' ).hover(function(){
 		      			$(this).css( 'background', 'rgb(218, 239, 255)' );
 		      		}, function(){
 		      			$(this).css( 'background', 'transparent' )
 		      		}
-		      	).click(function(){
+		      	).unbind( 'click' ).click(function(){
 		      		var data = $( this ).attr( 'data' )
 	      			icon_selector.popover( 'hide' );
-	      			view.$( 'input[name="comment"]' ).val( view.$( 'input[name="comment"]' ).val() + '['+ data +']' )
+	      			view.$( 'input[name="comment"]' ).val( (view.$( 'input[name="comment"]' ).val()) + ('['+ data +']') )
 	      		});
 			})
 

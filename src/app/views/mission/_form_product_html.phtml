@@ -1,0 +1,21 @@
+<div class="form-group clearfix">
+	<label class="col-lg-2" for="ipt_order_num"><?php echo $name ?>：</label>
+	<div class='col-lg-10'>
+		<select class='col-lg-3' name='send_<?php echo $type ?>_category_id' >
+			<% category_id = 0; _.each(category_list, function(val,key) { if( !category_id ) category_id = key %>
+				<option value='<%= val.id %>' <%= typeof(category_id) != 'undefined' && category_id == val.category_id ? 'selected' : '' %>>
+				<%= val.name %></option> <% }); %>
+		</select>
+		<select class='col-lg-3' name='send_<?php echo $type ?>_product_id'>
+			<% product_id = 0; _.each(product_list[category_id], function(val,key) { %>
+				<option value='<%= val.id %>' <%= typeof(product_id) != 'undefined' && product_id == val.product_id ? 'selected' : '' %>>
+				<%= val.name %></option> <% }); %>
+		</select>
+		<input name='send_<?php echo $type ?>_cnt' value='1' style='width: 40px;' />
+		<button type="button" class='btn btn-success add_send_<?php echo $type ?>_product'>
+			<i class='glyphicon glyphicon-plus'></i> 增加
+		</button>
+		<table class='table list_send_<?php echo $type ?>_product'>
+		<tbody></tbody></table>
+	</div>
+</div>

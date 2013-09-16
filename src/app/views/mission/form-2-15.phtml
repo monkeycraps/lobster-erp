@@ -1,0 +1,89 @@
+<div id='forminner-mission-2-15'>
+	<form class="form form-horizontal" role="form" >
+		<div id='forminner-view'>
+
+		</div>
+		<div class='split-line'></div>
+
+		<?php echo $controller->renderPartial( 'mission/_form_board_and_comment' ) ?>
+
+	</form>
+</div>
+<script type='text/template' id='template-formview-2-15'>
+<div class='mission-form-inner'>
+	
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	<input type='hidden' name='mission_type_id' value='<%=mission_type_id%>' />
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<select name='store_id' class='col-lg-10' class='store' ></select>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<input type="text" name='wanwan' class="form-control wanwan" value='<%=wanwan%>'
+				id='ipt_wanwan' placeholder="">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<input type="text" name='order_num' class="form-control" value='<%=order_num_list%>'
+				placeholder="多个订单号用空格分开">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >退货类型：</label>
+		<div class='col-lg-10'>
+			<select name='tuihuo_reason' class='col-lg-4' >
+				<% _.each(tuihuo_reason_list, function(val,key) { if( !tuihuo_reason ) tuihuo_reason = key %>
+					<option value='<%= val %>' <%= typeof(tuihuo_reason) != 'undefined' && tuihuo_reason == val ? 'selected' : '' %>><%= val %></option> <% }); %>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >具体原因：</label>
+		<div class='col-lg-10'>
+			<textarea name='detail_reason' class='col-lg-12' rows='2' ><%=detail_reason%></textarea>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >新客户信息：</label>
+		<div class='col-lg-10'>
+			<textarea name='new_client_info' class='col-lg-12' rows='3' ><%=new_client_info%></textarea>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >转发单号：</label>
+		<div class='col-lg-10'>
+			<input type="text" name='new_order_num' class="form-control" value='<%=new_order_num%>'
+				 placeholder="">
+		</div>
+	</div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_product_html', array( 'type'=>'old', 'name'=>'退货产品' ) ); ?>
+
+	<div class='split-line'></div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_refundment' ) ?>
+
+	<?php echo $controller->renderPartial( 'mission/_form_profit' ) ?>
+
+	<br/>
+
+	<?php echo $controller->renderPartial( 'mission/_form_drawback' ) ?>
+
+</div>
+</script>
+
+<?php echo $controller->renderPartial( 'mission/_form_product' ) ?>
+<?php echo $controller->renderPartial( 'mission/form-2-15-closed' ) ?>

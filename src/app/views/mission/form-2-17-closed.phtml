@@ -1,0 +1,64 @@
+<script type='text/template' id='template-formview-closed-2-17'>
+<div class='mission-form-inner'>
+	
+	<?php echo $controller->renderPartial( 'mission/_template_formview_header', array( 'name'=>$controller->form_name ) ) ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >店铺：</label>
+		<div class='col-lg-4'>
+			<%=store%>
+		</div>
+		<label class="col-lg-2" for="ipt_wanwan">旺旺：</label>
+		<div class='col-lg-4'>
+			<%=wanwan%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >订单号：</label>
+		<div class='col-lg-10'>
+			<%=order_num_list%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >补救类型：</label>
+		<div class='col-lg-10'>
+			<%=sub_mail_type%>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-lg-2" >具体原因：</label>
+		<div class='col-lg-10'>
+			<%=detail_reason%>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<label class="col-lg-2" >地址：</label>
+		<div class='col-lg-10'>
+			<%=mail_to_address%>
+		</div>
+	</div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_product_closed', array( 'type'=>'to', 'name'=>'补寄产品' ) ); ?>
+
+	<div class="form-group">
+		<label class="col-lg-2" >寄出单号：</label>
+		<div class='col-lg-10'>
+			<%=mail_to_num%>
+		</div>
+	</div>
+
+	<div class='split-line'></div>
+
+	<?php echo $controller->renderPartial( 'mission/_form_profit_closed' ) ?>
+
+	<br/>
+
+	<?php echo $controller->renderPartial( 'mission/_form_drawback_closed' ) ?>
+
+</div>
+</script>
