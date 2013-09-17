@@ -42,7 +42,8 @@
           }
         })
         // 加载入口模块
-       var app_data = <?php $this->display( 'app_json.phtml', array( 'controller'=>$controller ) ); ?>;
+        var app = {};
+        var app_data = <?php $this->display( 'app_json.phtml', array( 'controller'=>$controller ) ); ?>;
 		$().ready(function(){
 			seajs.use("backbone", function(Backbone){	
 				seajs.use("bootstrap", function(){

@@ -5,9 +5,9 @@ define(function(require, exports, module){
 	var ModalManager = require( '/src/app/modal' )
 	var Mission = require( '/src/app/mission' );
 	var mscroll = require( '/mcustomscrollbar/jquery.mCustomScrollbar.concat.min' );
+	require( '/mcustomscrollbar/jquery.mCustomScrollbar.css' );
 	var FormBoard = require( '/src/app/form_board' );
 	var Comment = require( '/src/app/comment' );
-	require( '/mcustomscrollbar/jquery.mCustomScrollbar.css' );
 
 	function resize(){
 		var wh = $(window).height()
@@ -168,25 +168,27 @@ define(function(require, exports, module){
 				var popover = $( '.popover:visible' );
 				$( 'form', popover ).show();
 
-				$( '.tab-pane .btn', popover ).click(function(){
+				$( '.tab-pane .btn', popover ).unbind( 'click' ).click(function(){
 					$( '.tab-pane .btn', popover ).removeClass( 'btn-info' );
 					$( this ).addClass( 'btn-info' )
 					return false;
 				})
 
-				$('.nav a', popover).click(function (e) {
+				$('.nav a', popover).unbind( 'click' ).click(function (e) {
 					e.preventDefault()
 					$(this).tab('show')
 					$( '.tab-pane:visible', popover ).hide();
 					$( '.tab-pane[id="'+ ($( this ).attr( 'href' ).substr( 1 ) ) +'"]', popover ).show();
 				})
 
-				$( '.btn-mission-add', popover ).click(function(event){
+				$( '.btn-mission-add', popover ).unbind( 'click' ).click(function(event){
 					menu_view.do_mission_add( event )
 				});
-				$( '.btn-mission-add-cancel', popover ).click(function(event){
+				$( '.btn-mission-add-cancel', popover ).unbind( 'click' ).click(function(event){
 					menu_view.do_mission_add_cancel( event )
 				});
+
+				$('.nav a:first', popover).click();
 			})
 		}, 
 		do_mission_add: function( event ){
@@ -194,7 +196,7 @@ define(function(require, exports, module){
 			var wrapper = $( event.currentTarget ).parents( '.popover:first' );
 
 			var cate_id = $( 'li.active a', wrapper ).attr( 'data-id' )
-			var sub_cate_id = $( '.tab-pane .btn-info', wrapper ).attr( 'data-id' )
+			var sub_cate_id = $( '.tab-pane:visible .btn-info', wrapper ).attr( 'data-id' )
 
 			if( !sub_cate_id ){
 				alert( '还没选择具体任务' )
@@ -207,26 +209,6 @@ define(function(require, exports, module){
 		do_mission_add_cancel: function(){
 
 			this.$( '.mission-add' ).popover( 'hide' );
-		}, 
-		change_cate: function( event ){
-
-			var wrapper = $( event.target ).parents( '.popover.in' )
-
-			var mission_type = app_data.user.role.mission_type;
-			var mtid = $( event.target ).val()
-			if( typeof mission_type[mtid] == 'undefined' || typeof mission_type[mtid].children == 'undefined' ){
-				$( '.select-subcate', wrapper ).hide()
-				$( '.label-subcate', wrapper ).hide()
-				return;
-			}
-
-			var children = mission_type[mtid].children
-			$( '.select-subcate' ).empty()
-			for( key in children ){
-				$( '.select-subcate', wrapper ).show();
-				$( '.label-subcate', wrapper ).show();
-				$( '.select-subcate', wrapper ).append( '<option value="'+ key +'">'+ children[key].name +'</option>' )
-			}
 		}
 	});
 	
@@ -247,7 +229,17 @@ define(function(require, exports, module){
 			    }, 
 			    scrollInertia : 150
 			});
+			this.reloadCnt();
 		},
+		reloadCnt: function(){
+			var view = this;
+			$.get( '/mission/reloadCnt', function(data){
+
+				_.each( data, function( val, key ){
+					view.$( '.nav a[href="#listitem-'+ key+ '"] .cnt' ).text( parseInt( val ) == 0 ? '' : '('+ val +')' )
+				} )
+			}, 'json' )
+		}, 
 		batchSubmit: function(){
 			var action = this.$( '#myTab .active a' ).attr( 'href' ).substr( 10 )
 			switch( parseInt(action) ){
@@ -350,6 +342,7 @@ define(function(require, exports, module){
 			if( this.$( '#listitem-'+ id ).length ){
 				this.$( '#listitem-'+ id ).remove();
 			}
+			this.reloadCnt();
 		}, 
 		list_item_mouseover: function( event ){
 		}, 
@@ -370,6 +363,8 @@ define(function(require, exports, module){
 			this.$( 'table .active' ).removeClass( 'active' );
 			this.$( '#listitem-' + model.id ).addClass( 'active' );
 			this.gotoList( show_type )
+
+			this.reloadCnt();
 			
 		}, 
 		list_item_select: function( event ){
@@ -407,6 +402,8 @@ define(function(require, exports, module){
 				    }, 
 				    scrollInertia : 150
 				});
+
+				view.reloadCnt();
 
 				if( id ){
 					if( view.$( '#listitem-'+ id ).length ){

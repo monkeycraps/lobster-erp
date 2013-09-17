@@ -29,6 +29,8 @@ define(function(require, exports, module){
 		}
 	});
 
+	
+
 	var Menu = Backbone.View.extend({
 		el: $( '#board-menu' ), 
 		events: {

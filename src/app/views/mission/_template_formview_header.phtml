@@ -1,7 +1,7 @@
 <div>
 	<h1 class='col-lg-6'>#<%= (typeof(id) == 'undefined' || id <= 0) ? '新建任务' : id %> - <?php echo $name ?></h1>
 	<div class='col-lg-6 pull-right' style='margin: 20px 0 10px; color: red; text-align: right; ' >
-		客服：<%= kf_state_name %>
+		<%= kf_state ? '&nbsp;&nbsp;客服：' + kf_state_name : '' %>
 		<% if( app_data.user.role_id == 2 && kf_state == 4 ){ %>
 			<a class='word-btn word-btn-warning btn-reopen-cg'>打开</a>
 		<% } %>

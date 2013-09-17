@@ -544,7 +544,48 @@ class MissionModel extends RedBean_SimpleModel {
 		return $this;
 	}
 
+	static function getListCnt( $uid, $type, $order_num = 0 ){
+
+		list( $sql, $param ) = self::getListSql( 'cnt', $uid, $type, $order_num );
+
+		return R::getCell( $sql, $param );
+	}
+
 	static function getList( $uid, $type, $order_num = 0 ){
+
+		list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $order_num );
+
+		$tmp = R::getAll( $sql, $param );
+		$list = $ids = array();
+		foreach( $tmp as $one ){
+			$one['user_state_name'] = MissionUserModel::getStateName( $one['user_state'] );
+			$one['mission_state'] = MissionModel::getMissionStateName( $one );
+
+			$list[$one['id']] = $one;
+			$ids[] = $one['id'];
+		}
+
+		if( $ids ){
+
+			$sql = 'select * from mission_order where mission_id in ('. implode( ',', $ids ) .') and deleted is null ';
+			$order_num_list = R::getAll( $sql );
+			foreach( $order_num_list as $one ){
+				!isset( $list[$one['mission_id']]['order_num_list'] ) && $list[$one['mission_id']]['order_num_list'] = array();
+				$list[$one['mission_id']]['order_num_list'][] = $one['order_num'];
+			}
+
+			$sql = 'select * from mission_product where mission_id in ('. implode( ',', $ids ) .') and deleted is null ';
+			$product_list = R::getAll( $sql );
+			foreach( $product_list as $one ){
+				!isset( $list[$one['mission_id']]['product_list'] ) && $list[$one['mission_id']]['product_list'] = array();
+				$list[$one['mission_id']]['product_list'][] = $one;
+			}
+		}
+
+		return $list;
+	}
+
+	static function getListSql( $sql_data_type, $uid, $type, $order_num ){
 
 		$param = array( $uid );
 
@@ -593,46 +634,39 @@ class MissionModel extends RedBean_SimpleModel {
 			$param[] = $order_num;
 		}
 
-		$sql = 'select m.*, s.name store, mu.state user_state, c.name category, sc.name sub_category, 
-			c.id as category_id, sc.id as sub_category_id, 
-			u.name create_uname, kf.name kf_uname
-			from mission m 
-			left join mission_user mu on m.id = mu.mission_id and mu.uid = ?
-			inner join mission_type sc on m.mission_type_id = sc.id
-			inner join mission_type c on sc.pid = c.id
-			left join store s on s.id = m.store_id
-			inner join user u on u.id = m.create_uid
-			inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
-			where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
-		 order by m.id desc';
-		$tmp = R::getAll( $sql, $param );
-		$list = $ids = array();
-		foreach( $tmp as $one ){
-			$one['user_state_name'] = MissionUserModel::getStateName( $one['user_state'] );
-			$one['mission_state'] = MissionModel::getMissionStateName( $one );
-
-			$list[$one['id']] = $one;
-			$ids[] = $one['id'];
+		switch( $sql_data_type ){
+			case 'list':
+				$sql = 'select m.*, s.name store, mu.state user_state, c.name category, sc.name sub_category, 
+					c.id as category_id, sc.id as sub_category_id, 
+					u.name create_uname, kf.name kf_uname
+					from mission m 
+					left join mission_user mu on m.id = mu.mission_id and mu.uid = ?
+					inner join mission_type sc on m.mission_type_id = sc.id
+					inner join mission_type c on sc.pid = c.id
+					left join store s on s.id = m.store_id
+					inner join user u on u.id = m.create_uid
+					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
+					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
+				 order by m.id desc';
+				break;
+			case 'cnt':
+				$sql = 'select count(1)
+					from mission m 
+					left join mission_user mu on m.id = mu.mission_id and mu.uid = ?
+					inner join mission_type sc on m.mission_type_id = sc.id
+					inner join mission_type c on sc.pid = c.id
+					left join store s on s.id = m.store_id
+					inner join user u on u.id = m.create_uid
+					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
+					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
+				 order by m.id desc';
+				break;
+			default: 
+				throw new Exception( 'not valid sql data type' );
+				break;
 		}
-
-		if( $ids ){
-
-			$sql = 'select * from mission_order where mission_id in ('. implode( ',', $ids ) .') and deleted is null ';
-			$order_num_list = R::getAll( $sql );
-			foreach( $order_num_list as $one ){
-				!isset( $list[$one['mission_id']]['order_num_list'] ) && $list[$one['mission_id']]['order_num_list'] = array();
-				$list[$one['mission_id']]['order_num_list'][] = $one['order_num'];
-			}
-
-			$sql = 'select * from mission_product where mission_id in ('. implode( ',', $ids ) .') and deleted is null ';
-			$product_list = R::getAll( $sql );
-			foreach( $product_list as $one ){
-				!isset( $list[$one['mission_id']]['product_list'] ) && $list[$one['mission_id']]['product_list'] = array();
-				$list[$one['mission_id']]['product_list'][] = $one;
-			}
-		}
-
-		return $list;
+		
+		return array( $sql, $param );
 	}
 
 	static function getMissionStateName( $one ){

@@ -13,8 +13,8 @@ define(function(require, exports, module) {
 		header: null, 
 		init: function(){
 			require.async(['/src/admin/layout'], function(Layout){
-				Admin.layout = new Layout.Layout();
-				Admin.menu = new Layout.Menu();
+				app.layout = new Layout.Layout();
+				app.menu = new Layout.Menu();
 			});
 		}
 	}

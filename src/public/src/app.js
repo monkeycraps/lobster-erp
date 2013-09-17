@@ -11,25 +11,27 @@ define(function(require, exports, module) {
 				app.header = header;
 
 				Notify.checkDesktopNotification();
+
 				// Notify.show( '今晚上山打老虎' );
+				
+				$('body').tooltip({
+			      selector: "[data-toggle=tooltip]",
+			      container: "body"
+			    })
+
+			    $('body').popover({
+			      selector: "[data-toggle=popover]",
+			      container: "body", 
+			      html: true, 
+			      placement: function( wrapper, trigger ){
+			      	return $(trigger).attr('data-placement');
+			      }, 
+			      content: function(){
+			      	return $(this).next('.popover').html();
+			      }
+			    })
 			});
 
-			$('body').tooltip({
-		      selector: "[data-toggle=tooltip]",
-		      container: "body"
-		    })
-
-		    $('body').popover({
-		      selector: "[data-toggle=popover]",
-		      container: "body", 
-		      html: true, 
-		      placement: function( wrapper, trigger ){
-		      	return $(trigger).attr('data-placement');
-		      }, 
-		      content: function(){
-		      	return $(this).next('.popover').html();
-		      }
-		    })
 
 		    $( '#message-wrapper' ).load('/message/index', function(){
 		    	require.async('/src/app/message', function( Message ){

@@ -480,6 +480,44 @@ class MissionController extends ApplicationController {
 			'flag_remarks'=> $mission_flag->remarks, 
 		), $ext ) );
 	}
+
+
+	function reloadCntAction(){
+		$this->renderJson( $this->getListCnt() );
+	}
+
+	function getListCnt(){
+
+		switch( $this->user->role_id ){
+			case UserModel::ROLE_DZ:
+				$waiting_list_drawback_cnt = MissionModel::getListCnt( $this->user->id, 'waiting_drawback' );
+				$waiting_list_refundment_cnt = MissionModel::getListCnt( $this->user->id, 'waiting_refundment' );
+				$unclosed_list_cnt = MissionModel::getListCnt( $this->user->id, 'dz_unclosed' );
+				$closed_list_cnt = MissionModel::getListCnt( $this->user->id, 'dz_closed' );
+				return array(
+					MissionUserModel::STATE_WAITING_DRAWING => $waiting_list_drawback_cnt, 
+					MissionUserModel::STATE_WAITING_REFUNDMENT => $waiting_list_refundment_cnt, 
+					MissionUserModel::SHOW_STATE_DZ_CONCLOSED => $unclosed_list_cnt, 
+					MissionUserModel::SHOW_STATE_DZ_CLOSED => $closed_list_cnt, 
+				);
+				break;	
+			case UserModel::ROLE_FCG:
+				return array();
+				break;
+			default: 
+				$waiting_list_cnt = MissionModel::getListCnt( $this->user->id, 'waiting' );
+				$dealing_list_cnt = MissionModel::getListCnt( $this->user->id, 'dealing' );
+				$done_list_cnt = MissionModel::getListCnt( $this->user->id, 'done' );
+				$closed_list_cnt = MissionModel::getListCnt( $this->user->id, 'closed' );
+				return array(
+					MissionUserModel::STATE_WAITING => $waiting_list_cnt, 
+					MissionUserModel::STATE_DEALING => $dealing_list_cnt, 
+					MissionUserModel::STATE_DONE => $done_list_cnt, 
+					MissionUserModel::STATE_CLOSED => $closed_list_cnt, 
+				);
+				break;
+		}
+	}
 }
 
 

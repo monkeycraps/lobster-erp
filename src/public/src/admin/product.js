@@ -3,7 +3,9 @@ define(function(require, exports, module){
 	var _ = require( 'underscore' );
 	var Backbone = require( 'backbone' );
 	var ModalManager = require( '/src/admin/modal' )
-	
+	var mscroll = require( '/mcustomscrollbar/jquery.mCustomScrollbar.concat.min' );
+	require( '/mcustomscrollbar/jquery.mCustomScrollbar.css' );
+
 	var List = Backbone.View.extend({
 		el: $( '#admin-list' ), 
 		events: {
@@ -15,7 +17,13 @@ define(function(require, exports, module){
 			'click tr .delete': 'list_item_delete'
 		}, 
 		initialize: function(){
-//			this.$( 'tr' ).hover(this.list_item_over, this.list_item_leave);
+			this.$el.mCustomScrollbar({
+				advanced:{
+			        updateOnContentResize: true, 
+			        autoScrollOnFocus: false
+			    }, 
+			    scrollInertia : 150
+			});
 		}, 
 		cate_create: function(){
 			this.$( 'a[href="#cate"]' ).click();

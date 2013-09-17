@@ -116,7 +116,7 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 			return;
 		
 		// \Yaf\Dispatcher::getInstance ()->enableView ();
-		throw new ErrorException ( $errstr, 0, $errno, $errfile, $errline );
+		throw new \ErrorException ( $errstr, 0, $errno, $errfile, $errline );
 	}
 
 	public function _initDefaultDbAdapter() {

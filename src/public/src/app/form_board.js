@@ -149,7 +149,7 @@ define(function(require, exports, module){
 					this.$( '.save' ).hide();
 					this.$( '.to_dealing' ).hide();
 					this.$( '.to_done' ).hide();
-					this.$( '.to_close' ).show();
+					this.$( '.to_close' ).hide();
 					this.$( '.draft' ).show();
 					this.$( '.publish' ).show();
 					this.$( '.reopen' ).hide();
