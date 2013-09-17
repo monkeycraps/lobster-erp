@@ -6,9 +6,9 @@
 			<th class=''>#</th>
 			<th class='col1'>状态</th>
 			<th class=''>类型</th>
-			<th class='col-3'>订单号</th>
 			<th class='col-2'>旺旺ID</th>
-			<th class='col-1'>店铺</th>
+			<th class='col-2'>支付宝</th>
+			<th class=''>金额</th>
 			<th class='col-2'>修改时间</th>
 			<th class='' style='width: 5%;'></th>
 		</tr>
@@ -22,9 +22,9 @@
 				<td><?=$one['id']?></td>
 				<td class='mission_state'><?=$one['mission_state']?></td>
 				<td><?=$one['sub_category']?></td>
-				<td><?=isset( $one['order_num_list'] ) ? implode( "<br/>", $one['order_num_list'] ): ''?></td>
 				<td><?=$one['wanwan']?></td>
-				<td><?=StoreModel::getName( $one['store_id'] )?></td>
+				<td><?=isset( $one['drawback_zhifubao'] ) ? $one['drawback_zhifubao'] : ''?></td>
+				<td><?=isset( $one['drawback_money'] ) ? $one['drawback_money'] : ''?></td>
 				<td><?=Helper\Html::date( $one['created'] )?></td>
 				<td>
 					<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
@@ -39,9 +39,9 @@
 			<td><%=id%></td>
 			<td class='mission_state'><%=mission_state%></td>
 			<td><%=sub_category%></td>
-			<td><%=order_num_list%></td>
 			<td><%=wanwan%></td>
-			<td><%=store%></td>
+			<td><%=typeof( drawback_zhifubao ) == 'undefined' ? '' : drawback_zhifubao %></td>
+			<td><%=typeof( drawback ) == 'undefined' ? '' : drawback %></td>
 			<td><%=created%></td>
 			<td>
 				<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>

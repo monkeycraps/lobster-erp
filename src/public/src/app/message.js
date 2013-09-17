@@ -175,7 +175,7 @@ define(function(require, exports, module){
 			app.header.updateMessage( this.list, this.new_message )
 		}, 
 		goto_message: function( e ){
-			var id = $( e.currentTarget ).parents( 'tr:first' ).attr( 'data-id' )
+			var id = $( e.currentTarget ).parents( 'tr:first' ).attr( 'data-mission-id' )
 			this.$( '#message-inner' ).modal('hide')
 
 			app.Layout.list_view.go( id )

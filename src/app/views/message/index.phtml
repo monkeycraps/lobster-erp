@@ -18,7 +18,8 @@
       			</thead>
       		<?php foreach( $list as $one ){ ?>
       			<tbody>
-	      			<tr data-id='<?php echo $one['id'] ?>' class='<?php echo $one['readed'] ? 'readed' : '' ?>' >
+	      			<tr data-id='<?php echo $one['id'] ?>' data-mission-id='<?php echo $one['mission_id']?>' 
+                class='<?php echo $one['readed'] ? 'readed' : '' ?>' >
 	      				<td><?php echo $one['id']?></td>
 	      				<td class='subject'>
 	      					<?php echo $one['title']?>

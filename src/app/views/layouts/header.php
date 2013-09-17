@@ -2,8 +2,8 @@
 	<div id="top-bar">
 		<div class="row" >
 			<div class='col-2 border'>
-				<div class='col-4'>
-					<h1 class='logo pull-left'>合道OA</h1>
+				<div class=''>
+					<h1 class='logo pull-left'>合道OA <span style='font-size: 12px;'>BETA0.8</span></h1>
 				</div>
 			</div>
 			<div class='col-5 border'>
@@ -33,59 +33,4 @@
 			</div>
 		</div>
 	</div>
-	<?php if( !isset($controller->ishome) ){ ?>
-		<div class='navbar row' style='height: 45px;' id='form-tool-bar'>
-			<div class='col-2 border' style='padding: 10px;'>
-				<div class='col-inner'>
-					<div class="input-group">
-						<span class="input-group-addon"><i class='glyphicon glyphicon-search'></i></span>
-						<input id='search-data' name='search' placeholder='请输入单号' />
-					</div>
-				</div>
-			</div>
-			<div class='col-5 border' style='height: 45px; padding-top: 7px;'>
-				<div class='list-success bs-callout bs-callout-success mchide col-5' style='margin: 0px;'>
-					保存成功
-				</div>
-				<div class='list-message bs-callout bs-callout-info mchide col-5' style='margin: 0px;'>
-					
-				</div>
-				<div class='col-5 pull-right' style='padding-top: 7px;' >
-					<?php if( $controller->user->id ): ?>
-						<ul class='pull-right list-inline'>
-							<?php if( $controller->user->role_id == UserModel::ROLE_DZ ): ?>
-								<li><a class='word-btn word-btn-success batch-submit'>提交</a></li>
-							<?php endif; ?>
-							<li><a class='list-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
-						</ul>
-					<?php endif; ?>
-				</div>
-			</div>
-			<div class='col-5 row' style='padding-top: 5px;'>
-				<div class='form-success bs-callout bs-callout-success mchide col-5' style='margin: 0px;'>
-					保存成功
-				</div>
-				<div class='form-message bs-callout bs-callout-info mchide col-5' style='margin: 0px;'>
-					
-				</div>
-				<div class='col-5 pull-right' style='padding-top: 7px;' >
-					<?php if( $controller->user->id ): ?>
-						<ul class='pull-right list-inline'>
-							<?php if( $controller->user->role_id == UserModel::ROLE_KF ){ ?>
-								<li><a href='#' class='mission-type-change' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="更改任务类型"><i class='glyphicon glyphicon-cog'></i></a></li>
-							<?php }?>
-
-							<?php if( $controller->user->role_id == UserModel::ROLE_DZ ){ ?>
-								<li><a href='#' class='mission-type-flag' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="插旗"><i class='glyphicon glyphicon-flag'></i></a></li>
-							<?php }?>
-
-							<li><a class='form-refresh' href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
-							<li><a href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="编辑"><i class='glyphicon glyphicon-edit'></i></a></li>
-							<li><a href='#' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="历史记录"><i class='glyphicon glyphicon-briefcase'></i></a></li>
-						</ul>
-					<?php endif; ?>
-				</div>
-			</div>
-		</div>
-	<?php }?>
 </header>

@@ -34,10 +34,12 @@ class RefundmentController extends ApplicationController {
 			$mission_user->updated = Helper\Html::now();
 			R::store( $mission_user );
 
-			$mission = R::findOne( 'mission', 'id = ?', array( $refundment->mission_id ) );
-			$title = $mission->id. ' - '. $this->user->name. '申请退款'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-			$content = '';
-			$this->user->message->send( $dz->id, $title, $content, $refundment->mission_id );
+			MissionChangeLogModel::saveChangeAction( $refundment->mission_id, 'refundment',  MissionRefundmentModel::STATE_APPLY );
+
+			// $mission = R::findOne( 'mission', 'id = ?', array( $refundment->mission_id ) );
+			// $title = $mission->id. ' - '. $this->user->name. '申请退款'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
+			// $content = '';
+			// $this->user->message->send( $dz->id, $title, $content, $refundment->mission_id );
 
 			R::commit();
 		}catch( Exception $e ){
@@ -88,10 +90,12 @@ class RefundmentController extends ApplicationController {
 			$mission_user->updated = Helper\Html::now();
 			R::store( $mission_user );
 
-			$mission = R::findOne( 'mission', 'id = ?', array( $refundment->mission_id ) );
-			$title = $mission->id. ' - '. $this->user->name. '取消了退款申请'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-			$content = '';
-			$this->user->message->send( $dz->id, $title, $content, $refundment->mission_id );
+			MissionChangeLogModel::saveChangeAction( $refundment->mission_id, 'refundment',  MissionRefundmentModel::STATE_NEW );
+
+			// $mission = R::findOne( 'mission', 'id = ?', array( $refundment->mission_id ) );
+			// $title = $mission->id. ' - '. $this->user->name. '取消了退款申请'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
+			// $content = '';
+			// $this->user->message->send( $dz->id, $title, $content, $refundment->mission_id );
 
 			R::commit();
 		}catch( Exception $e ){
@@ -141,17 +145,20 @@ class RefundmentController extends ApplicationController {
 				throw new Exception( '有任务取消了退款，或者已经被处理，请刷新重试。', 2 );
 			}
 
-			$sql = 'select * from mission_refundment d inner join mission m on d.mission_id = m.id where 
+			$sql = 'select d.*, m.wanwan, m.mission_type_id from mission_refundment d inner join mission m on d.mission_id = m.id where 
 				m.id in ( '. $ids_sql .' )' ; 
 			$list = R::getAll( $sql );
 
-
 			foreach( $list as $one ){
-				$title = $one['id']. ' - '. $this->user->name. '通过了退款申请'. ' - '. 
+				$title = $one['id']. ' - 店长 '. $this->user->name. ' 通过了退款申请';
+				$content = 
+					$one['id']. ' - '. 
 					MissionTypeModel::getParentName( $one['mission_type_id'] ) . ' - '. 
-					MissionTypeModel::getName( $one['mission_type_id'] );
-				$content = '';
-				$this->user->message->send( $this->user->id, $title, $content, $one['mission_id'] );
+					MissionTypeModel::getName( $one['mission_type_id'] ). ' - '. 
+					$one['wanwan'];
+				$this->user->message->send( $one['kf_uid'], $title, $content, $one['mission_id'] );
+
+				MissionChangeLogModel::saveChangeAction( $one['id'], 'refundment',  MissionRefundmentModel::STATE_DONE );
 			}
 
 			R::commit();

@@ -60,17 +60,75 @@ class MissionController extends ApplicationController {
 
 	function searchAction(){
 
-		$key = intval( $this->get( 'key' ) );
+		$id = intval( $this->get( 'id' ) );
+		$order_num = $this->get( 'order_num' );
+		$wanwan = $this->get( 'wanwan' );
 
-		$this->waiting_list = MissionModel::getList( $this->user->id, 'waiting', $key );
-		$this->dealing_list = MissionModel::getList( $this->user->id, 'dealing', $key );
-		$this->done_list = MissionModel::getList( $this->user->id, 'done', $key );
-		$this->closed_list = MissionModel::getList( $this->user->id, 'closed', $key );
+		if( $id ){
 
-		if( $key ){
-			echo $this->renderPartial( 'mission/search' );
+			switch( $this->user->role_id ){
+				case UserModel::ROLE_DZ:
+					$this->waiting_list_drawback = MissionModel::getList( $this->user->id, 'waiting_drawback', array( 'id'=>$id ) );
+					$this->waiting_list_refundment = MissionModel::getList( $this->user->id, 'waiting_refundment', array( 'id'=>$id ) );
+					$this->unclosed_list = MissionModel::getList( $this->user->id, 'dz_unclosed', array( 'id'=>$id ) );
+					$this->closed_list = MissionModel::getList( $this->user->id, 'dz_closed', array( 'id'=>$id ) );
+					echo $this->renderPartial( 'mission/search' );
+					break;	
+				case UserModel::ROLE_FCG:
+					$this->show( 'index' );
+					break;
+				default: 
+					$this->waiting_list = MissionModel::getList( $this->user->id, 'waiting', array( 'id'=>$id ) );
+					$this->dealing_list = MissionModel::getList( $this->user->id, 'dealing', array( 'id'=>$id ) );
+					$this->done_list = MissionModel::getList( $this->user->id, 'done', array( 'id'=>$id ) );
+					$this->closed_list = MissionModel::getList( $this->user->id, 'closed', array( 'id'=>$id ) );
+					echo $this->renderPartial( 'mission/search' );
+					break;
+			}
+
+		}elseif( $order_num or $wanwan ){
+
+			switch( $this->user->role_id ){
+				case UserModel::ROLE_DZ:
+					$this->waiting_list_drawback = MissionModel::getList( $this->user->id, 'waiting_drawback', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					$this->waiting_list_refundment = MissionModel::getList( $this->user->id, 'waiting_refundment', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					$this->unclosed_list = MissionModel::getList( $this->user->id, 'dz_unclosed', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					$this->closed_list = MissionModel::getList( $this->user->id, 'dz_closed', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					echo $this->renderPartial( 'mission/search' );
+					break;	
+				case UserModel::ROLE_FCG:
+					$this->show( 'index' );
+					break;
+				default: 
+					$this->waiting_list = MissionModel::getList( $this->user->id, 'waiting', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					$this->dealing_list = MissionModel::getList( $this->user->id, 'dealing', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					$this->done_list = MissionModel::getList( $this->user->id, 'done', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					$this->closed_list = MissionModel::getList( $this->user->id, 'closed', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					echo $this->renderPartial( 'mission/search' );
+					break;
+			}
+
 		}else{
-			echo $this->renderPartial( 'mission/list' );
+
+			switch( $this->user->role_id ){
+				case UserModel::ROLE_DZ:
+					$this->waiting_list_drawback = MissionModel::getList( $this->user->id, 'waiting_drawback' );
+					$this->waiting_list_refundment = MissionModel::getList( $this->user->id, 'waiting_refundment' );
+					$this->unclosed_list = MissionModel::getList( $this->user->id, 'dz_unclosed' );
+					$this->closed_list = MissionModel::getList( $this->user->id, 'dz_closed' );
+					echo $this->renderPartial( 'mission/list' );
+					break;	
+				case UserModel::ROLE_FCG:
+					$this->show( 'index' );
+					break;
+				default: 
+					$this->waiting_list = MissionModel::getList( $this->user->id, 'waiting' );
+					$this->dealing_list = MissionModel::getList( $this->user->id, 'dealing' );
+					$this->done_list = MissionModel::getList( $this->user->id, 'done' );
+					$this->closed_list = MissionModel::getList( $this->user->id, 'closed' );
+					echo $this->renderPartial( 'mission/list' );
+					break;
+			}
 		}
 	}
 
@@ -250,13 +308,27 @@ class MissionController extends ApplicationController {
 		R::begin();
 		try{
 
-			$mission_new = $mission->copyMission( $mission_type );
-
-			$mission->state = MissionModel::STATE_TO_OTHER;
 			$mission->last_uid = $this->user->id;
 			$mission->last_uname = $this->user->name;
 
 			R::store( $mission );
+			
+			$mission_new = $mission->copyMission( $mission_type );
+
+			$mission->state = MissionModel::STATE_TO_OTHER;
+			R::store( $mission );
+
+			if( $mission->cg_uid ){
+
+				$title = $mission->id. ' - '. $this->user->name. ' 更改了任务类型';
+				$content = 
+					$mission->id. ' - '. 
+					MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. 
+					MissionTypeModel::getName( $mission->mission_type_id ). ' - '. 
+					$mission->wanwan;
+				$this->user->message->send( $mission->cg_uid, $title, $content, $mission->id );
+			}
+
 
 			R::commit();
 		}catch( Exception $e ){
@@ -307,10 +379,14 @@ class MissionController extends ApplicationController {
 			$mission_user_new->updated = Helper\Html::now();
 			R::store( $mission_user_new );
 
-			$title = $mission->id. ' - '. $this->user->name. ' 转了个任务给你。'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-			$content = '状态为：'. MissionUserModel::getStateName( $state_before );
+			$title = $mission->id. ' - '. $this->user->name. ' 转了个任务给你';
+			$content = 
+				$mission->id. ' - '. 
+				MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. 
+				MissionTypeModel::getName( $mission->mission_type_id ). ' - '. 
+				$mission->wanwan;
 			$this->user->message->send( $new_user->id, $title, $content, $mission->id );
-			
+
 			R::commit();
 		}catch( Exception $e ){
 			R::rollback();
@@ -353,8 +429,12 @@ class MissionController extends ApplicationController {
 					break;
 			}
 
-			$title = $mission->id. ' - '. $this->user->name. ' 重新打开了任务。'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-			$content = '';
+			$title = $mission->id. ' - '. $this->user->name. ' 重新打开了任务。';
+			$content = 
+				$mission->id. ' - '. 
+				MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. 
+				MissionTypeModel::getName( $mission->mission_type_id ). ' - '. 
+				$mission->wanwan;
 			$this->user->message->send( $uid, $title, $content, $mission->id );
 
 			R::commit();

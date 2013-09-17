@@ -116,7 +116,6 @@ define(function(require, exports, module){
 		}, 
 		do_comment_img_success: function(file, serverData, responseReceived) {
 
-
 			var d = jQuery.parseJSON(serverData);
 			if( !d ){
 				alert( '上传图片错误' );

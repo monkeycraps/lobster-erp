@@ -28,8 +28,14 @@ class MissionModel extends RedBean_SimpleModel {
 			$model->pid = 0;
 
 			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
-			isset( $arr['wanwan'] ) && $model->wanwan = $arr['wanwan'];
+			if( isset( $arr['wanwan'] )){
+				$model->wanwan = $arr['wanwan'];
+				if( R::findOne( 'mission', 'wanwan = ?', array( $arr['wanwan'] ) ) ){
+					$model->is_second = 1;
+				}
+			}
 			isset( $arr['remarks'] ) && $model->remarks = $arr['remarks'];
+
 			
 			$id = R::store ( $model );
 
@@ -131,7 +137,7 @@ class MissionModel extends RedBean_SimpleModel {
 				R::store( $drawback );
 			}
 
-			if( isset( $arr['refundment'] ) ){
+			if( isset( $arr['refundment'] ) && !$refundment = R::findOne( 'mission_refundment', 'mission_id = ?', array( $model->id ) ) ){
 				$refundment = R::dispense( 'mission_refundment' );
 				$refundment->created = Helper\Html::now();
 				$refundment->updated = Helper\Html::now();
@@ -194,10 +200,20 @@ class MissionModel extends RedBean_SimpleModel {
 			$model->state = $arr['user_state'] == MissionUserModel::STATE_DRAFT ? self::STATE_DRAFT : self::STATE_ON;
 			
 			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
-			isset( $arr['wanwan'] ) && $model->wanwan = $arr['wanwan'];
+
+			if( isset( $arr['wanwan'] )){
+				$model->wanwan = $arr['wanwan'];
+				if( R::findOne( 'mission', 'wanwan = ? and id <> ?', array( $arr['wanwan'], $model->id ) ) ){
+					$model->is_second = 1;
+				}else{
+					$model->is_second = 0;
+				}
+			}
+
 			isset( $arr['remarks'] ) && $model->remarks = $arr['remarks'];
 			if( $user->role_id == UserModel::ROLE_CG ){
 				$model->cg_uid = $user->id;
+				$model->is_new = 0;
 			}
 			
 			R::store ( $model );
@@ -408,6 +424,15 @@ class MissionModel extends RedBean_SimpleModel {
 
 			}
 
+			if( isset( $arr['refundment'] ) && !$refundment = R::findOne( 'mission_refundment', 'mission_id = ?', array( $model->id ) ) ){
+				$refundment = R::dispense( 'mission_refundment' );
+				$refundment->created = Helper\Html::now();
+				$refundment->updated = Helper\Html::now();
+				$refundment->kf_uid = $user->id;
+				$refundment->mission_id = $model->id;
+				$refundment->state = MissionRefundmentModel::STATE_NEW;
+				R::store( $refundment );
+			}
 
 			R::store($model);
 
@@ -427,54 +452,67 @@ class MissionModel extends RedBean_SimpleModel {
 				// 客服修改信息，要发送给仓管
 				if( !isset( $arr['do_publish'] ) && $user->role_id == UserModel::ROLE_KF ){
 
-					if( $model->cg_uid ){
-						$order_num_list_tmp = $model->ownMissionOrder;
+					// if( $model->cg_uid ){
+					// 	$order_num_list_tmp = $model->ownMissionOrder;
 
-						$title = '任务有更改。';
-						$fix = '';
-						if( $order_num_list_tmp ){
-							$fis = '订单号: ';
-							foreach( $order_num_list_tmp as $one1 ){
-								$fix .= $one1['order_num']. ' \ ';
-							}
-							$fix = substr($fix, 0, strlen( $fix ) - 3 );
-						}else{
-							$fix = 'id号: '+ $model->id;
-						}
-						$content = $fix. '<br/>';
-						if( $changed ){
-							foreach( $changed as $key1=>$one1 ){
-								$action = MissionChangeLogModel::getAction( $one1 );
-								$content .= '【'. $action. '】'. $one1['key']. ' - '. (isset( $one1[$key1] ) ? $one1[$key1] : '异常记录'). '<br/>' ;
-							}
-						}
-						plugin( 'user' )->message->send( $model->cg_uid, $title, $content, $model->id );
-					}
+					// 	$title = '任务有更改。';
+					// 	$fix = '';
+					// 	if( $order_num_list_tmp ){
+					// 		$fis = '订单号: ';
+					// 		foreach( $order_num_list_tmp as $one1 ){
+					// 			$fix .= $one1['order_num']. ' \ ';
+					// 		}
+					// 		$fix = substr($fix, 0, strlen( $fix ) - 3 );
+					// 	}else{
+					// 		$fix = 'id号: '+ $model->id;
+					// 	}
+					// 	$content = $fix. '<br/>';
+					// 	if( $changed ){
+					// 		foreach( $changed as $key1=>$one1 ){
+					// 			$action = MissionChangeLogModel::getAction( $one1 );
+					// 			$content .= '【'. $action. '】'. $one1['key']. ' - '. (isset( $one1[$key1] ) ? $one1[$key1] : '异常记录'). '<br/>' ;
+					// 		}
+					// 	}
+					// 	plugin( 'user' )->message->send( $model->cg_uid, $title, $content, $model->id );
+					// }
 
-				}elseif( $user->role_id == UserModel::ROLE_CG ){
+				}
+			}
 
-					$order_num_list_tmp = $model->ownMissionOrder;
+			if( $user->role_id == UserModel::ROLE_CG ){
 
-					$title = '仓管完成任务';
-					$fix = '';
-					if( $order_num_list_tmp ){
-						$fis = '订单号: ';
-						foreach( $order_num_list_tmp as $one1 ){
-							$fix .= $one1['order_num']. ' \ ';
-						}
-						$fix = substr($fix, 0, strlen( $fix ) - 3 );
-					}else{
-						$fix = 'id号: '+ $model->id;
-					}
-					$content = $fix. "</br>". MissionTypeModel::getParentName( $model->mission_type_id ) . ' - '. MissionTypeModel::getName( $model->mission_type_id );
-					if( $changed ){
-						foreach( $changed as $key1=>$one1 ){
-							$action = MissionChangeLogModel::getAction( $one1 );
-							$content .= '【'. $action. '】'. $one1['key']. ' - '. (isset( $one1[$key1] ) ? $one1[$key1] : '异常记录'). '<br/>' ;
-						}
-					}
-					plugin( 'user' )->message->send( $model->kf_uid, $title, $content, $model->id );
+				if( $mission_state_changed && $mission_user->state == MissionUserModel::STATE_DONE ){
 
+					// $order_num_list_tmp = $model->ownMissionOrder;
+
+					// $title = '仓管完成任务';
+					// $fix = '';
+					// if( $order_num_list_tmp ){
+					// 	$fis = '订单号: ';
+					// 	foreach( $order_num_list_tmp as $one1 ){
+					// 		$fix .= $one1['order_num']. ' \ ';
+					// 	}
+					// 	$fix = substr($fix, 0, strlen( $fix ) - 3 );
+					// }else{
+					// 	$fix = 'id号: '+ $model->id;
+					// }
+					// $content = $fix. "</br>". MissionTypeModel::getParentName( $model->mission_type_id ) . ' - '. MissionTypeModel::getName( $model->mission_type_id );
+					// if( $changed ){
+					// 	foreach( $changed as $key1=>$one1 ){
+					// 		$action = MissionChangeLogModel::getAction( $one1 );
+					// 		$content .= '【'. $action. '】'. $one1['key']. ' - '. (isset( $one1[$key1] ) ? $one1[$key1] : '异常记录'). '<br/>' ;
+					// 	}
+					// }
+
+					// $user = plugin( 'user' );
+					// $title = $model->id. ' - 仓管 '. $user->name. ' 关闭任务';
+					// $content = 
+					// 	$model->id. ' - '. 
+					// 	MissionTypeModel::getParentName( $model->mission_type_id ) . ' - '. 
+					// 	MissionTypeModel::getName( $model->mission_type_id ). ' - '. 
+					// 	$model->wanwan;
+
+					// $user->message->send( $model->kf_uid, $title, $content, $model->id );
 				}
 			}
 
@@ -534,6 +572,18 @@ class MissionModel extends RedBean_SimpleModel {
 				MissionChangeLogModel::saveChange( $model->mission_type_id, $model_original, MissionChangeLogModel::getAttrs( $model->id ) );
 			}
 
+			if( $user->role_id == UserModel::ROLE_CG ) {
+
+				$title = $model->id. ' - 仓管 '. $user->name. ' 关闭任务';
+				$content = 
+					$model->id. ' - '. 
+					MissionTypeModel::getParentName( $model->mission_type_id ) . ' - '. 
+					MissionTypeModel::getName( $model->mission_type_id ). ' - '. 
+					$model->wanwan;
+
+				$user->message->send( $model->kf_uid, $title, $content, $model->id );
+			}
+
 			R::commit();
 
 		}catch( Exception $e ){
@@ -544,16 +594,16 @@ class MissionModel extends RedBean_SimpleModel {
 		return $this;
 	}
 
-	static function getListCnt( $uid, $type, $order_num = 0 ){
+	static function getListCnt( $uid, $type ){
 
-		list( $sql, $param ) = self::getListSql( 'cnt', $uid, $type, $order_num );
+		list( $sql, $param ) = self::getListSql( 'cnt', $uid, $type );
 
 		return R::getCell( $sql, $param );
 	}
 
-	static function getList( $uid, $type, $order_num = 0 ){
+	static function getList( $uid, $type, $search=array(), $goto = 0 ){
 
-		list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $order_num );
+		list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $search, $goto );
 
 		$tmp = R::getAll( $sql, $param );
 		$list = $ids = array();
@@ -585,7 +635,7 @@ class MissionModel extends RedBean_SimpleModel {
 		return $list;
 	}
 
-	static function getListSql( $sql_data_type, $uid, $type, $order_num ){
+	static function getListSql( $sql_data_type, $uid, $type, $search_opt = array(), $goto = 0 ){
 
 		$param = array( $uid );
 
@@ -628,22 +678,40 @@ class MissionModel extends RedBean_SimpleModel {
 		}
 
 		$sql_join_order = $sql_where_order = '';
-		if( $order_num ){
-			$sql_join_order = ' inner join mission_order mo on mo.mission_id = m.id and mo.deleted is null ';
-			$sql_where_order = ' and mo.order_num = ? ';
-			$param[] = $order_num;
+
+		if( $search_opt ){
+			foreach( $search_opt as $key=>$one ){
+				if( !$one )continue;
+				switch( $key ){
+					case 'id':
+						$sql_where_order .= ' and m.id = ? ';
+						$param[] = $one;
+						break;
+					case 'order_num':
+						$sql_join_order .= ' inner join mission_order mo on mo.mission_id = m.id and mo.deleted is null ';
+						$sql_where_order .= ' and mo.order_num = ? ';
+						$param[] = $one;
+						break;
+					case 'wanwan':
+						$sql_where_order .= ' and m.wanwan = ? ';
+						$param[] = $one;
+						break;
+				}
+			}
 		}
 
 		switch( $sql_data_type ){
 			case 'list':
 				$sql = 'select m.*, s.name store, mu.state user_state, c.name category, sc.name sub_category, 
 					c.id as category_id, sc.id as sub_category_id, 
-					u.name create_uname, kf.name kf_uname
+					u.name create_uname, kf.name kf_uname, 
+					md.zhifubao as drawback_zhifubao, md.money as drawback_money
 					from mission m 
 					left join mission_user mu on m.id = mu.mission_id and mu.uid = ?
 					inner join mission_type sc on m.mission_type_id = sc.id
 					inner join mission_type c on sc.pid = c.id
 					left join store s on s.id = m.store_id
+					left join mission_drawback md on m.id = md.mission_id
 					inner join user u on u.id = m.create_uid
 					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
 					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
@@ -672,13 +740,21 @@ class MissionModel extends RedBean_SimpleModel {
 	static function getMissionStateName( $one ){
 
 		$user = Yaf\Application::app()->user;
-		if( $user->role_id == UserModel::ROLE_KF ){
-			return '';
-		}
+		// if( $user->role_id == UserModel::ROLE_KF ){
+		// 	return '';
+		// }
 		// return $user->role_id;
 
 		$arr = array();
-		$one['is_changed'] && $arr[] = 'is_changed';
+		switch( $user->role_id ){
+			case UserModel::ROLE_KF:
+				$one['state'] == self::STATE_DRAFT && $arr[] = 'is_draft';
+				break;
+			default:
+				$one['is_new'] && $arr[] = 'is_new';
+				$one['is_changed'] && $arr[] = 'is_changed';
+				break;
+		}
 		$one['is_second'] && $arr[] = 'is_second';
 		($one['pid'] > 0 ) && $arr[] = 'has_pid';
 
@@ -689,7 +765,7 @@ class MissionModel extends RedBean_SimpleModel {
 		// );
 		$out = '<ul class="list-inline">';
 		foreach( $arr as $one ){
-			$out .= "<li><img src='/img/ms_{$one}_1.jpg' /></li>";
+			$out .= "<li><img src='/img/ms_{$one}_3.jpg' /></li>";
 		}
 		$out .= '</ul>';
 		return $out;
@@ -728,7 +804,7 @@ class MissionModel extends RedBean_SimpleModel {
 			}
 		}
 
-		$mission_new->pid = $this->pid;
+		$mission_new->pid = $this->id;
 		R::store( $mission_new );
 
 		foreach( $atts as $key=>$one ){
@@ -736,6 +812,19 @@ class MissionModel extends RedBean_SimpleModel {
 			if( $key != 'sharedProduct' ){
 				
 				switch( $key ){
+					case 'ownMission_order':
+						if( isset( $labels['order_num'] ) ){
+
+							foreach( $one as $one1 ){
+								$order = R::dispense( 'mission_order' );
+								$order->import( $one1 );
+								$order->id = null;
+								$order->created = Helper\Html::now();
+								$order->mission_id = $mission_new->id;
+								$mission_new->ownMissionOrder[] = $order;
+							}
+						}
+						break;
 					case 'ownMission_drawback':
 						if( isset( $labels['drawback'] ) ){
 
@@ -747,6 +836,34 @@ class MissionModel extends RedBean_SimpleModel {
 								$drawback->updated = Helper\Html::now();
 								$drawback->mission_id = $mission_new->id;
 								$mission_new->ownMissionDrawback[] = $drawback;
+							}
+						}
+						break;
+					case 'ownMission_refundment':
+						if( isset( $labels['refundment'] ) ){
+
+							foreach( $one as $one1 ){
+								$refundment = R::dispense( 'mission_refundment' );
+								$refundment->import( $one1 );
+								$refundment->id = null;
+								$refundment->created = Helper\Html::now();
+								$refundment->updated = Helper\Html::now();
+								$refundment->mission_id = $mission_new->id;
+								$mission_new->ownMissionRefundment[] = $refundment;
+							}
+						}
+						break;
+					case 'ownMission_flag':
+						if( isset( $labels['flag'] ) ){
+
+							foreach( $one as $one1 ){
+								$flag = R::dispense( 'mission_flag' );
+								$flag->import( $one1 );
+								$flag->id = null;
+								$flag->created = Helper\Html::now();
+								$flag->updated = Helper\Html::now();
+								$flag->mission_id = $mission_new->id;
+								$mission_new->ownMissionRefundment[] = $flag;
 							}
 						}
 						break;

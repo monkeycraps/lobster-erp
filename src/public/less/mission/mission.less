@@ -1,109 +1,149 @@
-#mission-list{
+#layout{
 
-}
-
-
-#front-form, #front-history, #front-list{
-  // position: relative;
-  #form-inner{
-    width: 95%;
-  }
-  #forminner-view{
-    width: 95%;
-    // margin-bottom: 50px;
-  }
-  h1{
-    font-weight: bold; 
-    font-style: italic;
-    color: #aaa;
-    text-align: left;
-    font-size: 12px;
-    color: #aaa;
-  }
-}
-
-#front-form{
-	
-	.form_board {
+	position: relative;
+	.layout-message-outter{
+		position: absolute;
+		z-index: 99999;
+		width: 100%;
+		height: 100%;
+		// background: white;
+		opacity: 0.9;
+	}
+	.layout-message-inner{
+		position: absolute;
+		z-index: 99999;
+		width: 200px;
+		height: 50px;
+		top: 200px;
+		left: 50%;
+		margin-left: -100px;
+		// background: red;
 	}
 
-	.list_send_back_product, .list_send_to_product, .list_send_product{
-		tbody{
-			tr{
-				.state_1{
+	#mission-list{
 
+	}
+
+	#front-menu{
+		padding: 5px 0px;
+		height: 1000px;
+
+		.bs-sidebar{
+			.nav{
+				li{
+					a{
+						line-height: 40px;
+						font-size: 14px;
+						font-weight: bold;
+					}
 				}
 			}
 		}
 	}
-	.drawback_state_none{
-		display: none;
-	}
-	.list_send_back_product{
-		.state_1{
-			.ruku-cancel{
-				display: none;
-			}
-		}
-		.state_2{
-			.ruku{
-				display: none;
-			}
-		}
-		.role_1{
-			.ruku{
-				display: none;
-			}
-			.ruku-cancel{
-				display: none;
-			}
-		}
-	}
-}
 
-#front-history{
-	table td, table th{
-		cursor: default;
+	#front-form, #front-history, #front-list{
+		padding: 10px;
+		#form-inner{
+			width: 95%;
+		}
+		#forminner-view{
+			width: 95%;
+			// margin-bottom: 50px;
+		}
+		h1{
+			font-weight: bold; 
+			font-style: italic;
+			color: #aaa;
+			text-align: left;
+			font-size: 12px;
+			color: #aaa;
+		}
 	}
-}
 
-#front-list{
-	.mission_state{
+	#front-form{
+		
+		.form_board {
+		}
+
+		.list_send_back_product, .list_send_to_product, .list_send_product{
+			tbody{
+				tr{
+					.state_1{
+
+					}
+				}
+			}
+		}
+		.drawback_state_none{
+			display: none;
+		}
+		.list_send_back_product{
+			.state_1{
+				.ruku-cancel{
+					display: none;
+				}
+			}
+			.state_2{
+				.ruku{
+					display: none;
+				}
+			}
+			.role_1{
+				.ruku{
+					display: none;
+				}
+				.ruku-cancel{
+					display: none;
+				}
+			}
+		}
+	}
+
+	#front-history{
+		table td, table th{
+			cursor: default;
+		}
+	}
+
+	#front-list{
+		.mission_state{
+			ul{
+				margin: 0px;
+				li{
+					padding: 0 3px;
+				}
+			}
+		}
+	}
+
+	#comment_list{
 		ul{
 			li{
-				padding: 3px;
-			}
-		}
-	}
-}
-
-#comment_list{
-	ul{
-		li{
-			.subject{
-				font-size: 11px;
-				color: #999999;
-			}
-			.content{
-				color: #666;
-			}
-			.op{
-				display: none;
-			}
-			.wrapper{
-				margin: 3px 0px;
-				padding: 5px;
-			}
-			&:hover{
-				background-color: #eee;
-				.wrapper{
-					background-color: #eee;
+				.subject{
+					font-size: 11px;
+					color: #999999;
+				}
+				.content{
+					color: #666;
 				}
 				.op{
-					padding: 7px;
-					display: inline-block;
+					display: none;
+				}
+				.wrapper{
+					margin: 3px 0px;
+					padding: 5px;
+				}
+				&:hover{
+					background-color: #eee;
+					.wrapper{
+						background-color: #eee;
+					}
+					.op{
+						padding: 7px;
+						display: inline-block;
+					}
 				}
 			}
 		}
 	}
-}
+}	

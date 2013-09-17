@@ -10,7 +10,7 @@ define(function(require, exports, module){
 	var Notify = {
 
 		show: function( content, title, mission_id, message_id ){
-			if( !title ) title = '合道电器'
+			if( !title ) title = '合道电器';
 			content = content.replace(new RegExp('<br/>',"gm"),'\r\n');
 			notify.createNotification( title, {body: content, icon: "/html5-notify/alert.ico", onclick: function(){
 			 	if( mission_id ){

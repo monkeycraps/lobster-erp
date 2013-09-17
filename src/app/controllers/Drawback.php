@@ -34,13 +34,15 @@ class DrawbackController extends ApplicationController {
 			$mission_user->updated = Helper\Html::now();
 			R::store( $mission_user );
 
-			$mission = R::findOne( 'mission', 'id = ?', array( $drawback->mission_id ) );
-			$title = $mission->id. ' - '. $this->user->name. '申请返现'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-			$content = 
-				'金额：'. $drawback->money .'<br/>'. 
-				'返现原因：'. $drawback->reason .'<br/>'. 
-				'发起客服：'. UserModel::getName($drawback->kf_uid) .'<br/>';
-			$this->user->message->send( $dz->id, $title, $content, $drawback->mission_id );
+			MissionChangeLogModel::saveChangeAction( $drawback->mission_id, 'drawback',  MissionDrawbackModel::STATE_APPLY );
+
+			// $mission = R::findOne( 'mission', 'id = ?', array( $drawback->mission_id ) );
+			// $title = $mission->id. ' - '. $this->user->name. '申请返现'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
+			// $content = 
+			// 	'金额：'. $drawback->money .'<br/>'. 
+			// 	'返现原因：'. $drawback->reason .'<br/>'. 
+			// 	'发起客服：'. UserModel::getName($drawback->kf_uid) .'<br/>';
+			// $this->user->message->send( $dz->id, $title, $content, $drawback->mission_id );
 
 			R::commit();
 		}catch( Exception $e ){
@@ -94,13 +96,15 @@ class DrawbackController extends ApplicationController {
 			$mission_user->updated = Helper\Html::now();
 			R::store( $mission_user );
 
-			$mission = R::findOne( 'mission', 'id = ?', array( $drawback->mission_id ) );
-			$title = $mission->id. ' - '. $this->user->name. '取消了返现申请'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-			$content = 
-				'金额：'. $drawback->money .'<br/>'. 
-				'返现原因：'. $drawback->reason .'<br/>'. 
-				'发起客服：'. UserModel::getName($drawback->kf_uid) .'<br/>';
-			$this->user->message->send( $dz->id, $title, $content, $drawback->mission_id );
+			// $mission = R::findOne( 'mission', 'id = ?', array( $drawback->mission_id ) );
+			// $title = $mission->id. ' - '. $this->user->name. '取消了返现申请'. ' - '. MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
+			// $content = 
+			// 	'金额：'. $drawback->money .'<br/>'. 
+			// 	'返现原因：'. $drawback->reason .'<br/>'. 
+			// 	'发起客服：'. UserModel::getName($drawback->kf_uid) .'<br/>';
+			// $this->user->message->send( $dz->id, $title, $content, $drawback->mission_id );
+
+			MissionChangeLogModel::saveChangeAction( $drawback->mission_id, 'drawback',  MissionDrawbackModel::STATE_NEW );
 
 			R::commit();
 		}catch( Exception $e ){
@@ -159,14 +163,16 @@ class DrawbackController extends ApplicationController {
 
 
 			foreach( $list as $one ){
-				$title = $one['id']. ' - '. $this->user->name. '通过了返现申请'. ' - '. 
-					MissionTypeModel::getParentName( $one['mission_type_id'] ) . ' - '. 
-					MissionTypeModel::getName( $one['mission_type_id'] );
+
+				$title = $one['id']. ' - 店长 '. $this->user->name. ' 通过了返现申请';
 				$content = 
-					'金额：'. $one['money'] .'<br/>'. 
-					'返现原因：'. $one['reason'] .'<br/>'. 
-					'发起客服：'. UserModel::getName($one['kf_uid']) .'<br/>';
-				$this->user->message->send( $this->user->id, $title, $content, $one['mission_id'] );
+					$one['id']. ' - '. 
+					MissionTypeModel::getParentName( $one['mission_type_id'] ) . ' - '. 
+					MissionTypeModel::getName( $one['mission_type_id'] ). ' - '. 
+					$one['wanwan'];
+				$this->user->message->send( $one['kf_uid'], $title, $content, $one['mission_id'] );
+
+				MissionChangeLogModel::saveChangeAction( $one['id'], 'drawback',  MissionDrawbackModel::STATE_DONE );
 			}
 
 			R::commit();

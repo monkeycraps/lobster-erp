@@ -57,30 +57,37 @@ class MissionUserModel extends RedBean_SimpleModel {
 			case UserModel::ROLE_KF:
 				$cg = RoleModel::getCG( $this->uid );
 
+				$mission = R::findOne( 'mission', 'id = ?', array( $this->mission_id ) );
+				
 				if( !$mission_user = R::findOne( 'mission_user', 'uid = ? and mission_id = ?', array( $cg->id, $this->mission_id ) ) ){
 					$mission_user = R::dispense( 'mission_user' );
 					$mission_user->mission_id = $this->mission_id;
 					$mission_user->uid = $cg->id;
 					$mission_user->created = Helper\Html::now();
+
+					$mission->is_new = 1;
+				}else{
+					if( $mission_user->state == self::STATE_CLOSED ){
+						return;
+					}
 				}
 				$mission_user->updated = Helper\Html::now();
 				$mission_user->state = self::STATE_WAITING;
 				R::store( $mission_user );
 
-				$mission = R::findOne( 'mission', 'id = ?', array( $this->mission_id ) );
 				$mission->cg_uid = $cg->id;
 				R::store( $mission );
 
-				$controller = Yaf\Application::app()->controller;
-				if( $controller->post( 'do_publish' ) or $controller->put( 'do_publish' ) ){
+				// $controller = Yaf\Application::app()->controller;
+				// if( $controller->post( 'do_publish' ) or $controller->put( 'do_publish' ) ){
 
-					$user = plugin( 'user' );
-					$title = $user->name. '发布了新任务：';
-					$content = MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
-					$order_num_list = $controller->post( 'order_num' ) ? $controller->post( 'order_num' ) : $controller->put( 'order_num' );
-					$content .="<br/>". $order_num_list;
-					plugin( 'user' )->message->send( $mission->cg_uid, $title, $content, $mission->id );
-				}
+				// 	$user = plugin( 'user' );
+				// 	$title = $user->name. '发布了新任务：';
+				// 	$content = MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. MissionTypeModel::getName( $mission->mission_type_id );
+				// 	$order_num_list = $controller->post( 'order_num' ) ? $controller->post( 'order_num' ) : $controller->put( 'order_num' );
+				// 	$content .="<br/>". $order_num_list;
+				// 	plugin( 'user' )->message->send( $mission->cg_uid, $title, $content, $mission->id );
+				// }
 
 				break;
 			case UserModel::ROLE_CG:

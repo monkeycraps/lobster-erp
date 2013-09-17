@@ -177,16 +177,13 @@ class Html {
 
 	static function date($timestamp) {
 
-		$logger = \eYaf\Logger::getLogger();
-		$logger->log( $timestamp );
-
 		if( !$timestamp ) return;
 
 		if( date ( 'Y-m-d', strtotime ( $timestamp ) ) == date( 'Y-m-d' ) ){
 			return date( 'H:i', strtotime ( $timestamp ) );
 		}
 
-		return date ( 'Y-m-d', strtotime ( $timestamp ) );
+		return date ( 'Y-m-d H:i', strtotime ( $timestamp ) );
 	}
 
 	static function renderPager($path = '/layouts/pager') {

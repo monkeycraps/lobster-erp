@@ -2,10 +2,12 @@ define(function(require, exports, module){
 
 	var _ = require( 'underscore' );
 	var Backbone = require( 'backbone' );
-	var ModalManager = require( '/src/app/modal' )
-	var Mission = require( '/src/app/mission' );
 	var mscroll = require( '/mcustomscrollbar/jquery.mCustomScrollbar.concat.min' );
 	require( '/mcustomscrollbar/jquery.mCustomScrollbar.css' );
+
+	var ModalManager = require( '/src/app/modal' )
+	var MenuView = require( '/src/app/menu' );
+	var Mission = require( '/src/app/mission' );
 	var FormBoard = require( '/src/app/form_board' );
 	var Comment = require( '/src/app/comment' );
 
@@ -15,7 +17,7 @@ define(function(require, exports, module){
 		$( '#front-menu' ).css( 'height', board_height );
 		$( '#front-list' ).css( 'height', board_height );
 		$( '#front-form' ).css( 'height', board_height );
-		$( '#front-history' ).css( 'height', board_height );
+		// $( '#front-history' ).css( 'height', board_height );
 	}
 
 	var Layout = Backbone.View.extend({
@@ -30,6 +32,25 @@ define(function(require, exports, module){
 				resize();
 			}
 			resize();
+			// this.showSuccess();
+		}, 
+		showSuccess: function( msg ){
+			if( !msg ){
+				msg = '保存成功'
+			}
+			this.$( '.layout-message, .layout-success' ).hide();
+			this.$( '.layout-success' ).html( msg ).show();
+			// this.$( '.layout-message-outter' ).show().fadeOut( 10000 );
+			this.$( '.layout-message-inner' ).show().fadeOut( 4000 );
+		}, 
+		showMessage: function( msg ){
+			if( !msg ){
+				msg = '没设置消息'
+			}
+			this.$( '.layout-message, .layout-success' ).hide();
+			this.$( '.layout-message' ).html( msg ).show();
+			// this.$( '.layout-message-outter' ).show().fadeOut( 10000 );
+			this.$( '.layout-message-inner' ).show().fadeOut( 4000 );
 		}
 	});
 
@@ -64,6 +85,7 @@ define(function(require, exports, module){
 					form_view.form_board = new FormBoard({form_view: form_view});
 					form_view.form_board.show();
 					form_view.comment = new Comment({form_view: form_view});
+					app.Layout.form_toolbar_view = new FormToolbarView()
 					form_view.reset();
 					if( typeof( callback ) == 'function' ){
 						callback( form_view.form_model )
@@ -81,6 +103,7 @@ define(function(require, exports, module){
 					form_view.view = new FormInner.View({model: form_view.form_model})
 					form_view.form_board = new FormBoard({form_view: form_view});
 					form_view.form_board.show();
+					app.Layout.form_toolbar_view = new FormToolbarView()
 					form_view.comment = new Comment({form_view: form_view});
 					form_view.reset();
 					if( typeof( callback ) == 'function' ){
@@ -97,7 +120,7 @@ define(function(require, exports, module){
 			this.load( this.form_model.id, this.form_model.get( 'cate_id' ), this.form_model.get( 'mission_type_id' ) )
 		}, 
 		reset: function(){
-			form_toolbar_view.initForm();
+			app.Layout.form_toolbar_view.initForm();
 			form_view.showForm();
 			this.$el.mCustomScrollbar({
 				advanced:{
@@ -123,95 +146,38 @@ define(function(require, exports, module){
 		floatBoard: function(){
 			this.$( '.form_board' ).css( 'position', 'fixed' ).css( 'bottom', '0px' );
 			this.$el.css( 'padding-bottom', this.$( '.form_board' ).outerHeight() );
-			this.$( '.form_board' ).css( 'width', this.$( '#forminner-view' ).outerWidth() );
+			this.$( '.form_board' ).css( 'width', this.$( '#form-tool-bar' ).outerWidth() );
 		},
 		unfloatBoard: function(){
 			this.$( '.form_board' ).css( 'position', 'static' );
 			this.$el.css( 'padding-bottom', '10px' );
 		}, 
 		showHistory: function(){
-			if( this.form_history == null ){
-				this.form_history = new FormHistory({id: this.form_model.id, callback: function(){
-					form_view.hide();
-					form_view.form_history.show();
-				}});
+			this.hide();
+			if( this.form_history == null && this.form_model.id ){
+				this.form_history = new FormHistory()
+				this.form_history.show();
 			}else{
-				form_view.hide();
-				form_view.form_history.show();
+				this.form_history.show();
 			}
 		}, 
 		showForm: function(){
-			form_view.show();
-			if( null != form_view.form_history ){
-				form_view.form_history.hide();
+			this.show();
+			if( this.form_history ){
+				this.form_history.hide();
 			}
 		}, 
 		show: function(){
-			this.$el.show();
+			$('#form-tab-info').show();
 		}, 
 		hide: function(){
-			this.$el.hide();
+			$('#form-tab-info').hide();
 		}, 
 		gotoLast: function(){
 			form_view.$el.mCustomScrollbar("scrollTo",'bottom');
 		}
 	});
 
-	var MenuView = Backbone.View.extend({
-		el: $( '#front-menu' ), 
-		events: {
-		}, 
-		initialize: function(){
-
-			this.$( '.mission-add' ).on('shown.bs.popover', function () {
-
-				var popover = $( '.popover:visible' );
-				$( 'form', popover ).show();
-
-				$( '.tab-pane .btn', popover ).unbind( 'click' ).click(function(){
-					$( '.tab-pane .btn', popover ).removeClass( 'btn-info' );
-					$( this ).addClass( 'btn-info' )
-					return false;
-				})
-
-				$('.nav a', popover).unbind( 'click' ).click(function (e) {
-					e.preventDefault()
-					$(this).tab('show')
-					$( '.tab-pane:visible', popover ).hide();
-					$( '.tab-pane[id="'+ ($( this ).attr( 'href' ).substr( 1 ) ) +'"]', popover ).show();
-				})
-
-				$( '.btn-mission-add', popover ).unbind( 'click' ).click(function(event){
-					menu_view.do_mission_add( event )
-				});
-				$( '.btn-mission-add-cancel', popover ).unbind( 'click' ).click(function(event){
-					menu_view.do_mission_add_cancel( event )
-				});
-
-				$('.nav a:first', popover).click();
-			})
-		}, 
-		do_mission_add: function( event ){
-
-			var wrapper = $( event.currentTarget ).parents( '.popover:first' );
-
-			var cate_id = $( 'li.active a', wrapper ).attr( 'data-id' )
-			var sub_cate_id = $( '.tab-pane:visible .btn-info', wrapper ).attr( 'data-id' )
-
-			if( !sub_cate_id ){
-				alert( '还没选择具体任务' )
-				return ;
-			}
-			form_view.add( cate_id, sub_cate_id );
-
-			this.do_mission_add_cancel();
-		}, 
-		do_mission_add_cancel: function(){
-
-			this.$( '.mission-add' ).popover( 'hide' );
-		}
-	});
-	
 	var ListView = Backbone.View.extend({
 		el: $('#front-list'), 
 		events: {
@@ -219,7 +185,9 @@ define(function(require, exports, module){
 			'click tbody tr': 'list_item_select', 
 			'mouseover tbody tr': 'list_item_mouseover', 
 			'mouseleave tbody tr': 'list_item_mouseleave', 
-			'mouseleave tbody tr': 'list_item_mouseleave'
+			'mouseleave tbody tr': 'list_item_mouseleave', 
+			'click .batch-submit': 'batchSubmit', 
+			'click .list-refresh': 'listReload'
 		}, 
 		initialize: function(){
 			this.$el.mCustomScrollbar({
@@ -229,8 +197,28 @@ define(function(require, exports, module){
 			    }, 
 			    scrollInertia : 150
 			});
-			this.reloadCnt();
+			if( app_data.user.id ){
+				this.reloadCnt();
+			}
 		},
+		listReload: function(){
+			this.reload();
+		}, 
+		showListSuccess: function( msg ){
+			if( !msg ){
+				msg = '保存成功'
+			}
+			layout.showSuccess( msg )
+		}, 
+		showListMessage: function( msg ){
+			if( !msg ){
+				msg = '没设置消息'
+			}
+			layout.showMessage( msg )
+		}, 
+		batchSubmit: function(){
+			list_view.batchSubmit();
+		}, 
 		reloadCnt: function(){
 			var view = this;
 			$.get( '/mission/reloadCnt', function(data){
@@ -258,7 +246,7 @@ define(function(require, exports, module){
 			var batch = []
 			$( 'tbody tr .checkbox:checked' ).each(function(){batch.push( this.value )});
 			if( batch.length == 0 ){
-				form_toolbar_view.showListMessage( '没有选中' );
+				this.showListMessage( '没有选中' );
 				return;
 			}
 			$.post( url, {batch: batch}, function(data){
@@ -270,7 +258,7 @@ define(function(require, exports, module){
 					alert( data.msg )
 					return;
 				}
-				form_toolbar_view.showListSuccess( data.msg );
+				view.showListSuccess( data.msg );
 				list_view.reload()
 			} )
 		}, 
@@ -285,17 +273,18 @@ define(function(require, exports, module){
 				this.$( 'tbody:visible tr .checkbox' ).each(function(){this.checked=false;}); 
 			}
 		}, 
-		search: function( key ){
+		search: function( id, order_num, wanwan ){
 			var view = this;
-			this.$el.load( '/mission/search/key/' + key, {}, function(){
+			this.$el.load( '/mission/search?id='+ id +'&order_num='+ order_num+ '&wanwan='+ wanwan, function(){
 				view.$el.mCustomScrollbar({
 					advanced:{
 				        updateOnContentResize: true, 
 				        autoScrollOnFocus: false
 				    }, 
 				    scrollInertia : 150
-				});
 
+				});
+				list_view.reloadCnt()
 			} );
 		}, 
 		renderItem: function( model ){
@@ -420,11 +409,10 @@ define(function(require, exports, module){
 		events: {
 			'click .mission-type-flag': 'flagMissionShow', 
 			'click .mission-type-change': 'change_mission_show', 
-			'click .form-refresh': 'form_reload', 
-			'click .list-refresh': 'list_reload'
+			'click .form-refresh': 'form_reload'
 		}, 
-		list_reload: function(){
-			list_view.reload();
+		initialize: function(){
+			this.$el = $( '#form-tool-bar' )
 		}, 
 		form_reload: function(){
 			form_view.reload();
@@ -432,6 +420,8 @@ define(function(require, exports, module){
 		flagMissionShow: function(){
 			if( form_view.form_model && form_view.form_model.id && form_view.form_model.get( 'state' ) == 2 ){
 				Mission.mission_flag_modal.show( form_view.form_model );
+			}else if( form_view.form_model.get( 'state' ) == 2 ){
+				alert( '任务还没关闭' );
 			}
 			return false;
 		}, 
@@ -442,12 +432,11 @@ define(function(require, exports, module){
 			return false;
 		}, 
 		initForm: function(){
-			this.$( '.glyphicon-edit' ).unbind( 'click' )
-			this.$( '.glyphicon-edit' ).click(function(){
+			this.$( 'a[href="#form-tab-info"]' ).unbind( 'click' ).click(function(){
 				form_view.showForm();
 			})
 
-			this.$( '.glyphicon-briefcase' ).click(function(){
+			this.$( 'a[href="#form-tab-history"]' ).unbind( 'click' ).click(function(){
 				form_view.showHistory();
 			})
 		}, 
@@ -455,29 +444,13 @@ define(function(require, exports, module){
 			if( !msg ){
 				msg = '保存成功'
 			}
-			this.$( '.bs-callout' ).hide();
-			this.$( '.form-success' ).html( msg ).show().fadeOut( 10000 );
+			layout.showSuccess( msg )
 		}, 
 		showMessage: function( msg ){
 			if( !msg ){
 				msg = '没设置消息'
 			}
-			this.$( '.bs-callout' ).hide();
-			this.$( '.form-message' ).html( msg ).show().fadeOut( 10000 );
-		}, 
-		showListSuccess: function( msg ){
-			if( !msg ){
-				msg = '保存成功'
-			}
-			this.$( '.bs-callout' ).hide();
-			this.$( '.list-success' ).html( msg ).show().fadeOut( 10000 );
-		}, 
-		showListMessage: function( msg ){
-			if( !msg ){
-				msg = '没设置消息'
-			}
-			this.$( '.bs-callout' ).hide();
-			this.$( '.list-message' ).html( msg ).show().fadeOut( 10000 );
+			layout.showMessage( msg )
 		}
 	});
 
@@ -485,25 +458,29 @@ define(function(require, exports, module){
 		el: $('#front-history'), 
 		initialize: function(opt){
 
-			var form_history = this;
+			this.$el = $('#front-history')
+			// var form_history = this;
 			var id = form_view.form_model.id
+
 			this.$el.empty();
 			this.$el.load( '/mission/history/id/'+ id, function(){
-				opt.callback();
-				form_history.$el.mCustomScrollbar({
-					advanced:{
-				        updateOnContentResize: true, 
-				        autoScrollOnFocus: false
-				    }, 
-				    scrollInertia : 150
-				});
+				// opt.callback();
+				// form_history.$el.mCustomScrollbar({
+				// 	advanced:{
+				//         updateOnContentResize: true, 
+				//         autoScrollOnFocus: false
+				//     }, 
+				//     scrollInertia : 150
+				// });
 			});
 		}, 
 		show: function(){
 			this.$el.show();
+			$('#form-tab-history').show();
 		}, 
 		hide: function(){
 			this.$el.hide();
+			$('#form-tab-history').hide();
 		}
 	})
 
@@ -511,7 +488,7 @@ define(function(require, exports, module){
 	var form_view = new FormView();
 	var layout = new Layout();
 	var list_view = new ListView();
-	var form_toolbar_view = new FormToolbarView() 
+	var form_toolbar_view = null; 
 	var form_board = null;
 
 	module.exports = {
@@ -521,5 +498,4 @@ define(function(require, exports, module){
 		form_view: form_view, 
 		form_toolbar_view: form_toolbar_view, 
 	};
-
 });

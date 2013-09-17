@@ -1,4 +1,5 @@
 <?php use Helper\Html ?>
+
 <?php switch( $controller->user->role_id ){
 	case UserModel::ROLE_DZ: ?>
 
@@ -12,6 +13,10 @@
 			<li class="list-toggller-4"><a href="#listitem-9" data-toggle="tab">已关闭
 				<span class='cnt'></span></a></li>
 			<li class='pull-right'>
+				<ul class='pull-right list-inline'>
+					<li><a class='word-btn word-btn-success batch-submit'>提交</a></li>
+					<li><a class='list-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
+				</ul>
 			</li>
 		</ul>
 
@@ -35,7 +40,7 @@
 		</div>
 
 	<?php break;
-	case UserModel::ROLE_DZ: ?>
+	case UserModel::ROLE_FCG: ?>
 		
 	<?php break;
 	default: ?>
@@ -50,6 +55,9 @@
 			<li class="list-toggller-4"><a href="#listitem-4" data-toggle="tab">已关闭
 				<span class='cnt'></span></a></li>
 			<li class='pull-right'>
+				<ul class='pull-right list-inline'>
+					<li><a class='list-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
+				</ul>
 			</li>
 		</ul>
 

@@ -5,6 +5,38 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 	static $label;
 	static $mission_type;
 
+	static function saveChangeAction( $mission_id, $action, $state ){
+
+		$yaml = yaml_parse_file( APP_PATH. '/config/form.ini' );
+
+		self::$label = $yaml['form'];
+
+		$changed = array();
+		switch( $action ){
+			case 'drawback':
+				$changed[] = array(
+					'key'=>self::getLabel('drawback_state'),
+					'change'=> MissionDrawbackModel::getStateName( $state ), 
+				);
+				break;
+			case 'refundment':
+				$changed[] = array(
+					'key'=>self::getLabel('refundment_state'),
+					'change'=> MissionRefundmentModel::getStateName( $state ), 
+				);
+				break;
+		}
+
+		$model = R::dispense( 'mission_change_log' );
+		$model->mission_id = $mission_id;
+		$model->changed = json_encode($changed);
+		$model->created = Helper\Html::now();
+		$model->updated = Helper\Html::now();
+		$model->uid = yaf\Application::app()->user->id;
+		R::store( $model );
+
+	}
+
 	static function saveChange( $mission_type, $before, $now ){
 
 		$is_new = true;
@@ -42,30 +74,32 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			// kefu mission 修改，记录为 is_changed
 			if( $user->role_id == UserModel::ROLE_KF ){
 
-				$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
-				foreach( $changed as $one ){
-					if( isset( $one['key'] ) ){
-						if( in_array( $one['key'], $omit ) ){
-							continue;
-						}
-						$mission->is_changed = 1;
+				// $mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
+				// foreach( $changed as $one ){
+				// 	if( isset( $one['key'] ) ){
+				// 		if( in_array( $one['key'], $omit ) ){
+				// 			continue;
+				// 		}
+				// 		$mission->is_changed = 1;
 
-						R::store( $mission );
+				// 		R::store( $mission );
 
-						break;
-					}
-				}
+				// 		break;
+				// 	}
+				// }
+
 			}elseif( $user->role_id == UserModel::ROLE_CG ){
-				foreach( $changed as $one ){
-					if( isset( $one['key'] ) && $one['key'] == '动作' ){
-						if( isset( $one['change'] ) && $now['user_state'] == MissionUserModel::STATE_DONE ){
-							$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
-							$mission->is_changed = 0;
-							R::store( $mission );
-							break;
-						}
-					}
-				}
+
+				// foreach( $changed as $one ){
+				// 	if( isset( $one['key'] ) && $one['key'] == '动作' ){
+				// 		if( isset( $one['change'] ) && $now['user_state'] == MissionUserModel::STATE_DONE ){
+				// 			$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
+				// 			$mission->is_changed = 0;
+				// 			R::store( $mission );
+				// 			break;
+				// 		}
+				// 	}
+				// }
 			}
 		}
 		return $changed;
@@ -86,6 +120,12 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					break;
 				case 'order':
 					$changed = self::getChangedOrder( $changed, $before, $now );
+					break;
+				case 'drawback':
+					$changed = self::getChangedDrawback( $changed, $before, $now );
+					break;
+				case 'refundment':
+					$changed = self::getChangedRefundment( $changed, $before, $now );
 					break;
 				default:
 					if( !self::getLabel($key) ){
@@ -139,6 +179,12 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 				case 'ext':
 					$changed = self::checkDelteExt( $changed, $before, $now );
 					break;
+				case 'drawback':
+					$changed = self::checkDelteDrawback( $changed, $before, $now );
+					break;
+				case 'refundment':
+					$changed = self::checkDelteRefundment( $changed, $before, $now );
+					break;
 				case 'product_old':
 				case 'product_back':
 				case 'product_to':
@@ -156,6 +202,50 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 						);
 					}
 					break;
+			}
+		}
+
+		return $changed;
+	}
+
+	static function checkDelteDrawback($changed, $before, $now ){
+
+		foreach( $before['drawback'] as $key=>$one ){
+			switch( $key ){
+				default:
+					$key_label = 'drawback_'. $key;
+					if( !self::getLabel($key_label) ){
+						continue;
+					}
+					if( !isset( $now['drawback'][$key] ) ){
+						$changed[] = array(
+							'key'=>self::getLabel($key_label),
+							'delete'=>$one, 
+						);
+					}
+					break;				
+			}
+		}
+
+		return $changed;
+	}
+
+	static function checkDelteRefundment($changed, $before, $now ){
+
+		foreach( $before['refundment'] as $key=>$one ){
+			switch( $key ){
+				default:
+					$key_label = 'refundment_'. $key;
+					if( !self::getLabel($key_label) ){
+						continue;
+					}
+					if( !isset( $now['refundment'][$key] ) ){
+						$changed[] = array(
+							'key'=>self::getLabel($key_label),
+							'delete'=>$one, 
+						);
+					}
+					break;				
 			}
 		}
 
@@ -314,6 +404,86 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		return $changed;
 	}
 
+	static function getChangedDrawback( $changed, $before, $now ){
+
+		foreach( $now['drawback'] as $key=>$one ){
+
+			switch( $key ){
+				default:
+					$key_label = 'drawback_'. $key;
+					if( !self::getLabel($key_label) ){
+						continue;
+					}
+
+					switch( $key ){
+						case 'state':
+							if( isset( $before['drawback'][$key] ) ){
+								$before['drawback'][$key] = MissionDrawbackModel::getStateName( $before['drawback'][$key] );
+							}
+							$one = MissionDrawbackModel::getStateName( $one );
+							break;
+					}
+
+
+					if( !isset( $before['drawback'][$key] ) ){
+						$changed[] = array(
+							'key'=>self::getLabel($key_label), 
+							'add'=>$one, 
+						);
+					}else{
+						if( self::diff( $before['drawback'][$key], $one ) ){
+							$changed[] = array(
+								'key'=>self::getLabel($key_label), 
+								'change'=>$before['drawback'][$key]. '=>' .$one, 
+							);
+						}
+					}
+					break;
+			}
+		}
+		return $changed;
+	}
+
+	static function getChangedRefundment( $changed, $before, $now ){
+
+		foreach( $now['refundment'] as $key=>$one ){
+
+			switch( $key ){
+				default:
+					$key_label = 'refundment_'. $key;
+					if( !self::getLabel($key_label) ){
+						continue;
+					}
+
+					switch( $key ){
+						case 'state':
+							if( isset( $before['refundment'][$key] ) ){
+								$before['refundment'][$key] = MissionDrawbackModel::getStateName( $before['refundment'][$key] );
+							}
+							$one = MissionRefundmentModel::getStateName( $one );
+							break;
+					}
+
+
+					if( !isset( $before['refundment'][$key] ) ){
+						$changed[] = array(
+							'key'=>self::getLabel($key_label), 
+							'add'=>$one, 
+						);
+					}else{
+						if( self::diff( $before['refundment'][$key], $one ) ){
+							$changed[] = array(
+								'key'=>self::getLabel($key_label), 
+								'change'=>$before['refundment'][$key]. '=>' .$one, 
+							);
+						}
+					}
+					break;
+			}
+		}
+		return $changed;
+	}
+
 	static function getChangedOrder( $changed, $before, $now ){
 
 		$order_num_old = $order_num_new = array();
@@ -326,7 +496,6 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			$order_num_new[] = $one['order_num'];
 		}
 
-		debug( $order_num_new, 'order_num_new' );
 		foreach( $order_num_new as $one ){
 			if( !in_array($one, $order_num_old) ){
 				$changed[] = array(
@@ -370,7 +539,6 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 			$arr = $ext->getIterator()->getArrayCopy();
 			$jrr = json_decode( $arr['other'], true );
-			debug( $jrr, 'mission ext others' );
 
 			$mission = array_merge( $mission, array(
 				'ext'=>array_merge( 
@@ -382,6 +550,22 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					$jrr
 				)
 			) );
+		}
+
+		if( $model->ownMissionDrawback ){
+			$drawback = current($model->ownMissionDrawback);
+			$arr = $drawback->getIterator()->getArrayCopy();
+			$mission = array_merge( $mission, array( 
+				'drawback'=>$arr
+			));
+		}
+
+		if( $model->ownMissionRefundment ){
+			$refundment = current($model->ownMissionRefundment);
+			$arr = $refundment->getIterator()->getArrayCopy();
+			$mission = array_merge( $mission, array( 
+				'refundment'=>$arr
+			));
 		}
 
 		$send_back_product_list = array();
@@ -428,7 +612,6 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			'user_state'=>$mission_user->state
 		) );
 
-		debug( $mission, 'mission' );
 		return $mission;
 	}
 
