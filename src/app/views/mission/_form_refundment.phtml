@@ -1,17 +1,15 @@
-<% if( user_state != 0 ){ %>
-	<div class="form-group mchide refundment_controller refundment_state_<%= refundment_state %>" >
-		<input type='hidden' name='refundment' value='1' />
-		<label class="col-lg-2" >退款状态：</label>
-		<div class='col-lg-10 '>
-			<span style='color: <%= refundment_state == 3 ? 'green': 'red' %>'>
-				<%=refundment_state_name %>
-			</span>
-			<% if( app_data.user.role_id == 1 ){ %>
-				<div class='pull-right'>
-					<a class='do-refundment word-btn word-btn-danger'>确认退款</a>
-					<a class='do-refundment-cancel word-btn word-btn-warning'>取消退款</a>
-				</div>
-			<% } %>
-		</div>
+<div class="form-group mchide refundment_controller refundment_state_<%= refundment_state %>" >
+	<input type='hidden' name='refundment' value='1' />
+	<label class="col-lg-2" >退款状态：</label>
+	<div class='col-lg-10 '>
+		<span style='color: <%= refundment_state == 3 ? 'green': 'red' %>'>
+			<%=refundment_state_name %>
+		</span>
+		<% if( app_data.user.role_id == 1 ){ %>
+			<div class='pull-right'>
+				<a class='do-refundment word-btn word-btn-danger'>确认退款</a>
+				<a class='do-refundment-cancel word-btn word-btn-warning'>取消退款</a>
+			</div>
+		<% } %>
 	</div>
-<% } %>
+</div>

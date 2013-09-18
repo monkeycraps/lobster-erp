@@ -68,38 +68,43 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			R::store( $model );
 
 			$omit = array(
-				'id', 'updated', 'created', 'state', 'closed'
+				'id', 'updated', 'created', 'state', 'closed', 'user_state', 
+				'drawback_state', 'refundment_state', 'profit', 'profit_reason', 
+				'drawback', 'drawback_money', 'drawback_zhifubao', 
 			);
 
 			// kefu mission 修改，记录为 is_changed
 			if( $user->role_id == UserModel::ROLE_KF ){
 
-				// $mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
-				// foreach( $changed as $one ){
-				// 	if( isset( $one['key'] ) ){
-				// 		if( in_array( $one['key'], $omit ) ){
-				// 			continue;
-				// 		}
-				// 		$mission->is_changed = 1;
+				$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
+				if( $mission->state > 0 ){
 
-				// 		R::store( $mission );
+					foreach( $changed as $one ){
+						if( isset( $one['key'] ) ){
+							if( in_array( $one['key'], $omit ) ){
+								continue;
+							}
+							$mission->is_changed = 1;
+							$mission->is_new = 0;
+							R::store( $mission );
 
-				// 		break;
-				// 	}
-				// }
+							break;
+						}
+					}
+				}
 
 			}elseif( $user->role_id == UserModel::ROLE_CG ){
 
-				// foreach( $changed as $one ){
-				// 	if( isset( $one['key'] ) && $one['key'] == '动作' ){
-				// 		if( isset( $one['change'] ) && $now['user_state'] == MissionUserModel::STATE_DONE ){
-				// 			$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
-				// 			$mission->is_changed = 0;
-				// 			R::store( $mission );
-				// 			break;
-				// 		}
-				// 	}
-				// }
+				foreach( $changed as $one ){
+					if( isset( $one['key'] ) && $one['key'] == '动作' ){
+						if( isset( $one['change'] ) && $now['user_state'] == MissionUserModel::STATE_DONE ){
+							$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
+							$mission->is_changed = 0;
+							R::store( $mission );
+							break;
+						}
+					}
+				}
 			}
 		}
 		return $changed;

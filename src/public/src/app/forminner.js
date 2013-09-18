@@ -496,12 +496,15 @@ define(function(require, exports, module){
 
 			switch( action ){
 				case 'save':
+					changed.do_publish = 0;
 					break;
 				case 'to_dealing':
 					changed.user_state = 2;
+					changed.do_publish = 0;
 					break;
 				case 'to_done':
 					changed.user_state = 3;
+					changed.do_publish = 0;
 					break;
 				case 'publish':
 					changed.user_state = 3;
@@ -509,6 +512,7 @@ define(function(require, exports, module){
 					break;
 				case 'to_close': 
 					changed.action = 'close';
+					changed.do_publish = 0;
 					break;
 			}
 

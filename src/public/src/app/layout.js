@@ -354,7 +354,8 @@ define(function(require, exports, module){
 			this.gotoList( show_type )
 
 			this.reloadCnt();
-			
+
+			list_view.listenTo( model, 'change', list_view.renderItem )
 		}, 
 		list_item_select: function( event ){
 
@@ -498,4 +499,6 @@ define(function(require, exports, module){
 		form_view: form_view, 
 		form_toolbar_view: form_toolbar_view, 
 	};
+
+	form_view.add( 1, 7 )
 });

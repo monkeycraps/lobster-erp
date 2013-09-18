@@ -30,7 +30,7 @@ class MissionModel extends RedBean_SimpleModel {
 			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
 			if( isset( $arr['wanwan'] )){
 				$model->wanwan = $arr['wanwan'];
-				if( R::findOne( 'mission', 'wanwan = ?', array( $arr['wanwan'] ) ) ){
+				if( $arr['wanwan'] && R::findOne( 'mission', 'wanwan = ?', array( $arr['wanwan'] ) ) ){
 					$model->is_second = 1;
 				}
 			}
@@ -184,7 +184,7 @@ class MissionModel extends RedBean_SimpleModel {
 		}
 
 		if( isset( $arr['user_state'] ) && $arr['user_state'] != MissionUserModel::STATE_DRAFT ){
-			if( isset( $arr['do_publish'] ) ){
+			if( isset( $arr['do_publish'] ) && $arr['do_publish'] ){
 				$model_original = null;	
 			}else{
 				$model_original = MissionChangeLogModel::getAttrs( $model->id );
@@ -504,15 +504,6 @@ class MissionModel extends RedBean_SimpleModel {
 					// 	}
 					// }
 
-					// $user = plugin( 'user' );
-					// $title = $model->id. ' - 仓管 '. $user->name. ' 关闭任务';
-					// $content = 
-					// 	$model->id. ' - '. 
-					// 	MissionTypeModel::getParentName( $model->mission_type_id ) . ' - '. 
-					// 	MissionTypeModel::getName( $model->mission_type_id ). ' - '. 
-					// 	$model->wanwan;
-
-					// $user->message->send( $model->kf_uid, $title, $content, $model->id );
 				}
 			}
 
@@ -582,6 +573,9 @@ class MissionModel extends RedBean_SimpleModel {
 					$model->wanwan;
 
 				$user->message->send( $model->kf_uid, $title, $content, $model->id );
+
+				$mission_user_other->state = MissionUserModel::STATE_WAITING;
+				R::store( $mission_user_other );
 			}
 
 			R::commit();
@@ -689,12 +683,12 @@ class MissionModel extends RedBean_SimpleModel {
 						break;
 					case 'order_num':
 						$sql_join_order .= ' inner join mission_order mo on mo.mission_id = m.id and mo.deleted is null ';
-						$sql_where_order .= ' and mo.order_num = ? ';
-						$param[] = $one;
+						$sql_where_order .= ' and mo.order_num like( ? ) ';
+						$param[] = '%'. $one. '%';
 						break;
 					case 'wanwan':
-						$sql_where_order .= ' and m.wanwan = ? ';
-						$param[] = $one;
+						$sql_where_order .= ' and m.wanwan like( ? ) ';
+						$param[] = '%'. $one. '%';
 						break;
 				}
 			}

@@ -92,6 +92,8 @@ class MissionUserModel extends RedBean_SimpleModel {
 				break;
 			case UserModel::ROLE_CG:
 
+				$mission = R::findOne( 'mission', 'id = ?', array( $this->mission_id ) );
+
 				$kf_uid = R::getCell( ' select m.kf_uid from mission m
 					where m.id = ?', array( $this->mission_id ) );
 
@@ -101,6 +103,16 @@ class MissionUserModel extends RedBean_SimpleModel {
 				$mission_user->updated = Helper\Html::now();
 				$mission_user->state = self::STATE_WAITING;
 				R::store( $mission_user );
+
+				$user = plugin( 'user' );
+				$title = $mission->id. ' - 仓管 '. $user->name. ' 完成任务';
+				$content = 
+					$mission->id. ' - '. 
+					MissionTypeModel::getParentName( $mission->mission_type_id ) . ' - '. 
+					MissionTypeModel::getName( $mission->mission_type_id ). ' - '. 
+					$mission->wanwan;
+
+				$user->message->send( $kf_uid, $title, $content, $this->mission_id );
 
 				break;
 			default:
