@@ -1,0 +1,14 @@
+<?php
+$comeback_list = $controller->comeback_list; 
+foreach( $comeback_list as $one ){?>
+	<tr class='' id='listitem-comeback-<?=$one['id']?>'>
+		<td><?=$one['id']?></td>
+		<td class='name'><?=$one['mail_num']?></td>
+		<td class=''><?=$one['result']?></td>
+		<td><?=Helper\Html::date( $one['created'] )?></td>
+		<td>
+			<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+			<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+		</td>
+	</tr>
+<?php }?>

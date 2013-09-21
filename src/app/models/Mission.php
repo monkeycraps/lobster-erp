@@ -744,13 +744,14 @@ class MissionModel extends RedBean_SimpleModel {
 			case UserModel::ROLE_KF:
 				$one['state'] == self::STATE_DRAFT && $arr[] = 'is_draft';
 				break;
-			default:
+			case UserModel::ROLE_CG:
 				$one['is_new'] && $arr[] = 'is_new';
 				$one['is_changed'] && $arr[] = 'is_changed';
+				($one['pid'] > 0 ) && $arr[] = 'has_pid';
+			default:
 				break;
 		}
 		$one['is_second'] && $arr[] = 'is_second';
-		($one['pid'] > 0 ) && $arr[] = 'has_pid';
 
 		// $arr = array(
 		// 	'is_changed', 

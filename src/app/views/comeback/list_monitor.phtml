@@ -1,0 +1,50 @@
+<?php use Helper\Html ?>
+<div class="">
+	<ul id="myTab" class="nav nav-tabs">
+		<li class="active"><a href="#comeback" data-toggle="tab">退货管理</a></li>
+		<li class='pull-right'>
+		</li>
+	</ul>
+
+	<div class='form form-inline' style='margin: 10px;height: 25px;'>
+		<form onsubmit='return false;' class='pull-right'>
+			<input name='mail_num' placeholder='快递单号' style='width: 300px;' />
+			<button class='btn btn-warning btn-xs'>查询</button>
+		</form>
+	</div>
+
+	<div class='split-line'></div>
+
+	<div id="myTabContent" class="tab-content">
+		<div class="tab-pane fade active in" id="comeback">
+			<table class='table table-hover'>
+				<thead>
+					<tr>
+						<th class='col-1'>#</th>
+						<th class='col-1'>快递单号</th>
+						<th class='col-2'>产品</th>
+						<th class='col-1'>检测结果</th>
+						<th class='col-1'>登记人</th>
+						<th class='col-1'>登记时间</th>
+						<th class=''>备注</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					$comeback_list = $controller->comeback_list; 
+					foreach( $comeback_list as $one ){?>
+						<tr class='' id='listitem-comeback-<?=$one['id']?>'>
+							<td><?=$one['id']?></td>
+							<td class='name'><?=$one['mail_num']?></td>
+							<td class='name'><?=$one['product_list']?></td>
+							<td class=''><?=$one['result']?></td>
+							<td class=''><?=$one['create_uname']?></td>
+							<td><?=Helper\Html::date( $one['created'] )?></td>
+							<td class=''><?=$one['comment']?></td>
+						</tr>
+					<?php }?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

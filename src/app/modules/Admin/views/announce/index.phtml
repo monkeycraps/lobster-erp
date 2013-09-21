@@ -1,0 +1,13 @@
+<div class='row'>
+  <div class='col-6 border' id='admin-list'>
+    <?php $this->display( 'announce/list.phtml', array( 'controller'=>$controller ) ); ?>
+  </div>
+  <div class='col-6' id='admin-form'>
+    <?php $this->display( 'announce/form.phtml', array( 'controller'=>$controller ) ); ?>
+  </div>
+</div>
+<script>
+pageBind.announce = function(){
+	seajs.use( '/src/admin/announce');
+}
+</script>

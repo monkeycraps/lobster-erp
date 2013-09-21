@@ -2,7 +2,10 @@ define(function(require, exports, module){
 
 	var _ = require( 'underscore' );
 	var Backbone = require( 'backbone' );
-	var ModalManager = require( '/src/admin/modal' )
+	var Util = require( '/src/app/util' );
+
+	var mscroll = require( '/mcustomscrollbar/jquery.mCustomScrollbar.concat.min' );
+	require( '/mcustomscrollbar/jquery.mCustomScrollbar.css' );
 	
 	var List = Backbone.View.extend({
 		el: $( '#admin-list' ), 
@@ -16,6 +19,15 @@ define(function(require, exports, module){
 			'click tr .ban': 'list_item_ban'
 		}, 
 		initialize: function(){
+
+			this.$el.mCustomScrollbar({
+				advanced:{
+			        updateOnContentResize: true, 
+			        autoScrollOnFocus: false
+			    }, 
+			    scrollInertia : 150
+			});
+
 		}, 
 		create: function(){
 			form.showModel();
@@ -148,10 +160,7 @@ define(function(require, exports, module){
 				
 				var isnew = this.model.isNew()
 				
-				this.$( '#form-inner input, #form-inner select' ).each(function(itr, one){
-					one = $(one)
-					changed[one.attr( 'name' )] = one.val();
-				});
+				changed = Util.formJson( this.$( 'form' ) );
 				
 				this.model.save2(changed, {
 					success: function(model, response){

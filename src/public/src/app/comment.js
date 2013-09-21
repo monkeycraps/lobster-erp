@@ -2,7 +2,7 @@ define(function(require, exports, module){
 
 	var _ = require( 'underscore' );
 	var Backbone = require( 'backbone' );
-	var Mission = require( '/src/app/mission' );
+	var Mission = require( '/src/app/mission_ext' );
 	var jQuery = $ = require( '$' );
 	require( '/colorbox/v1.4.15/jquery.colorbox.js' )
 	require( '/colorbox/v1.4.15/i18n/jquery.colorbox-zh-CN.js' )
@@ -51,7 +51,7 @@ define(function(require, exports, module){
 			return false;
 		}, 
 		render: function(){
-
+			
 		}
 	});
 

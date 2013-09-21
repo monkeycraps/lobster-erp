@@ -3,7 +3,7 @@ define(function(require, exports, module){
 	var _ = require( 'underscore' );
 	var $ = require( '$' );
 	var Backbone = require( 'backbone' );
-	var Mission = require( '/src/app/mission' );
+	var Mission = require( '/src/app/mission_ext' );
 	var SWFUpload = require( 'gallery2/swfupload/2.2.0/swfupload-debug' );
 	var SWFUploadHandlerWrapper = require( 'gallery2/swfupload/2.2.0/handler' );
 
@@ -63,7 +63,6 @@ define(function(require, exports, module){
 			this.showed = true;
 
 			var handler = SWFUploadHandlerWrapper.SWFUploadHandler;
-			console.log( handler )
 
 			var post_params = {
 				id: 0
@@ -116,16 +115,24 @@ define(function(require, exports, module){
 		}, 
 		do_comment_img_success: function(file, serverData, responseReceived) {
 
-			var d = jQuery.parseJSON(serverData);
-			if( !d ){
-				alert( '上传图片错误' );
-				return;
+			try{
+				var d = $.parseJSON(serverData);
+				if( !d ){
+					alert( '上传图片错误' );
+					return;
+				}
+			}catch( ex ){
+				alert( '服务异常: '+ serverData );
 			}
 
 			this.customSettings.form_board.form_view.comment.add(d);
 			this.customSettings.form_board.form_view.$( 'input[name="comment"]' ).val( '' );
 		}, 
 		show: function(){
+
+			if( !this.form_view ){
+				return;
+			}
 			var view = this;
 
 			this.$el.show();

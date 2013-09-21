@@ -11,7 +11,9 @@ $app = array(
 		'role'=>array(
 			'mission_type'=>rbac\Role::getRoleActions( $user->role_id ), 
 		), 
+		'session_id'=>session_id(), 
 	), 
+	'admin_id' => $user->adminid, 
 	'store'=> StoreModel::getAll(), 
 );
 echo json_encode( $app );

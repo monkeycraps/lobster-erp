@@ -16,6 +16,10 @@ class Request extends \Yaf\Request\Http {
 	private $_params;
 	private $_query;
 	private $_puts;
+
+	public function getHostName(){
+		return $_SERVER['HTTP_HOST'];
+	}
 	
 	public function isDelete(){
 		if( !isset($_SERVER['REQUEST_METHOD']) ){

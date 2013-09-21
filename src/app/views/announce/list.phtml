@@ -1,0 +1,52 @@
+<?php use Helper\Html ?>
+<div class="">
+	<ul id="myTab" class="nav nav-tabs">
+		<li class="active"><a href="#announce" data-toggle="tab">公告管理</a></li>
+		<li class='pull-right'>
+			<span href="#" class='btn announce-create'><i class='glyphicon glyphicon-gift'></i>&nbsp;&nbsp;新建公告</span>
+		</li>
+	</ul>
+	<div id="myTabContent" class="tab-content">
+		<div class="tab-pane fade active in" id="announce">
+			<table class='table table-hover'>
+				<thead>
+					<tr>
+						<th class='col-1'>#</th>
+						<th>标题</th>
+						<th class='col-2'>创建人</th>
+						<th class='col-3'>创建时间</th>
+						<th class='col-2'>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					$announce_list = $controller->announce_list; 
+					foreach( $announce_list as $one ){?>
+						<tr class='' id='listitem-announce-<?=$one['id']?>'>
+							<td><?=$one['id']?></td>
+							<td class='name'><?=$one['subject']?></td>
+							<td><?=$one['create_uname']?></td>
+							<td><?=Html::date( $one['created'] )?></td>
+							<td>
+								<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+								<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+							</td>
+						</tr>
+					<?php }?>
+				</tbody>
+				<script type='text/template' id='template-announce-listitem'>
+				<tr class='' id='listitem-announce-<%=id%>'>
+					<td><%=id%></td>
+					<td class='name'><%=subject%></td>
+					<td><%=create_uname%></td>
+					<td><%=created%></td>
+					<td>
+						<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+						<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+					</td>
+				</tr>
+				</script>
+			</table>
+		</div>
+	</div>
+</div>

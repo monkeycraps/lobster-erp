@@ -45,6 +45,11 @@ class ErrorController extends ApplicationController {
                 header('HTTP/1.1 404 Not Found');
                 echo $exception->getMessage();
                 break; 
+            case 403:
+                $this->forward('Index','application','accessDenied');
+                header('HTTP/1.1 403 Forbidden');
+                echo $exception->getMessage();
+                break; 
             default:
                 header("HTTP/1.1 500 Internal Server Error");
                 echo "\r\n";
@@ -61,7 +66,8 @@ class ErrorController extends ApplicationController {
         eYaf\Logger::stopLogging();
 
         // echo 1;die;
-
-        $this->show( 'error', array( 'controller'=>$this ) );
+        if( defined( 'LE_DEBUG' ) && LE_DEBUG ){
+            $this->show( 'error', array( 'controller'=>$this ) );
+        }
     }
 }

@@ -5,6 +5,6 @@ class IndexController extends AdminBaseController {
 
 	public function indexAction() {
 
-		$this->show( 'index' );
+		$this->redirect( '/admin/mission/analyse' );
 	}
 }

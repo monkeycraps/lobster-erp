@@ -178,7 +178,7 @@ define(function(require, exports, module){
 			var id = $( e.currentTarget ).parents( 'tr:first' ).attr( 'data-mission-id' )
 			this.$( '#message-inner' ).modal('hide')
 
-			app.Layout.list_view.go( id )
+			app.mission.list_view.go( id )
 			return false;
 		}
 	})

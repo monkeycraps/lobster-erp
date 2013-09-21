@@ -11,6 +11,7 @@ $app = array(
 		'role'=>array(
 			'mission_type'=>rbac\Role::getRoleActions( $user->role_id ), 
 		), 
+		'session_id'=>session_id(), 
 	), 
 	'store'=> StoreModel::getAll(), 
 	'now'=>Helper\Html::now(), 

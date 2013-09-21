@@ -4,8 +4,8 @@ define(function(require, exports, module){
 	var Backbone = require( 'backbone' );
 	var Util = require( '/src/app/util' );
 
-	var Layout = require( '/src/app/layout' );
-	var list = Layout.list;
+	var mission = app.mission;
+	var list = mission.list;
 
 	require( '/bootstrap/datepicker/js/bootstrap-datepicker' )
 	require( '/bootstrap/datepicker/js/locales/bootstrap-datepicker.zh-CN' )
@@ -107,7 +107,9 @@ define(function(require, exports, module){
 			'click .drawback_controller .do-drawback': 'applyDrawback', 
 			'click .drawback_controller .do-drawback-cancel': 'cancelDrawback', 
 			'click .refundment_controller .do-refundment': 'applyRefundment', 
-			'click .refundment_controller .do-refundment-cancel': 'cancelRefundment'
+			'click .refundment_controller .do-refundment-cancel': 'cancelRefundment', 
+			'input input[name="wanwan"]': 'checkWanwan'
+			// 'change input[name="wanwan"]': 'checkWanwan'
 		}, 
 		initialize_p: function(opt){
 
@@ -119,6 +121,31 @@ define(function(require, exports, module){
 		}, 
 		init_p: function(){
 
+		}, 
+		checkWanwan: function( e ){
+
+			var val = e.target.value;
+			var input = $(e.currentTarget)
+
+			if( $.trim( val ) != '' ){
+				$.get( '/mission/checkWanwan?wanwan='+ val, function( data ){
+
+					if( !_.isObject( data ) ) {
+						alert( '系统错误: '+ data )
+						return;
+					}
+					if( data.is_second ){
+						if( input.next( 'span.is_second_span' ).length == 1 ){
+							return;
+						}
+						input.after( '<span class="is_second_span" style="color: orange">该旺旺已有记录</span>' )
+					}else{
+						input.next( 'span.is_second_span' ).remove()
+					}
+
+				}, 'json' );
+			}
+			// return false;
 		}, 
 		reopenKF: function(){
 			var view = this
@@ -209,12 +236,24 @@ define(function(require, exports, module){
 
 			}
 
-			if( null != Layout.form_view.form_board ){
-				Layout.form_view.form_board.show();
+			if( parseInt( this.model.get( 'state' )) == 2 ){
+				view.$( '.do-flag' ).show();
+			}else{
+				view.$( '.do-flag' ).hide();
 			}
 
-			if( null != Layout.form_view.comment ){
-				Layout.form_view.comment.show();
+			var flag_list_tmp = this.model.get( 'flag_list' )
+			flag_list = []
+			_.each( flag_list_tmp, function(val){
+				view.$( '.flag-list' ).addClass( 'flag-list-'+ val );
+			} )
+			
+			if( null != mission.form_view.form_board ){
+				mission.form_view.form_board.show();
+			}
+
+			if( null != mission.form_view.comment ){
+				mission.form_view.comment.show();
 			}
 		},
 		resetDrawback: function(){
@@ -474,13 +513,13 @@ define(function(require, exports, module){
 
 			var view = this
 
-			if( Layout.form_view.issaving ){
-				Layout.form_toolbar_view.showMessage( '保存中，请稍候' );
+			if( mission.form_view.issaving ){
+				mission.form_toolbar_view.showMessage( '保存中，请稍候' );
 				return ;
 			}
 
-			Layout.form_toolbar_view.showMessage( '保存中，请稍候' );
-			Layout.form_view.issaving = true;
+			mission.form_toolbar_view.showMessage( '保存中，请稍候' );
+			mission.form_view.issaving = true;
 
 			var changed = {};
 			
@@ -520,12 +559,12 @@ define(function(require, exports, module){
 			this.model.save2(changed, {
 				success: function(model, response){
 					if( isnew ){
-						Layout.list_view.list_item_add( model );
+						mission.list_view.list_item_add( model );
 					}
-					Layout.form_view.form_history = null;
-					Layout.form_toolbar_view.showSuccess()
+					mission.form_view.form_history = null;
+					mission.form_toolbar_view.showSuccess()
 
-					Layout.form_view.issaving = false;
+					mission.form_view.issaving = false;
 
 					view.model.trigger( 'change', view.model );
 				}

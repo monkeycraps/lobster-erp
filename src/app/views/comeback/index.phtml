@@ -1,0 +1,34 @@
+<div id="layout">
+    <div class='layout-message-outer mchide'>
+    </div>
+    <div class='layout-message-inner mchide'>
+        <div class='layout-success bs-callout bs-callout-success mchide' style='margin: 0px;'>
+            保存成功
+        </div>
+        <div class='layout-message bs-callout bs-callout-info mchide' style='margin: 0px;'>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-2 border' id='front-menu'>
+            <?php echo $this->render( 'layouts/menu.phtml', array( 'controller'=>$controller ) ) ?>
+        </div>
+        <div class='col-10' id='front-body'>
+            <div class='row'>
+            	<div class='col-6 border' id='front-list'>
+            		<?php $this->display( 'comeback/list.phtml', array( 'controller'=>$controller ) ); ?>
+            	</div>
+            	<div class='col-6' id='front-form'>
+            		<?php $this->display( 'comeback/form.phtml', array( 'controller'=>$controller ) ); ?>
+            	</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var comeback_result_list = ['完整', '损坏'];
+var category_list = <?php echo json_encode( CategoryModel::getSelectList() ) ?>; 
+var product_list = <?php echo json_encode( ProductModel::getSelectList() ) ?>; 
+pageBind.comeback = function(){
+	seajs.use( '/src/app/comeback');
+}
+</script>

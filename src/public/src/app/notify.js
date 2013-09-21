@@ -2,7 +2,6 @@ define(function(require, exports, module){
 
 	var _ = require( 'underscore' );
 	var ModalManager = require( '/src/app/modal' )
-	var Layout = require( '/src/app/layout' );
 
 	require( '/html5-notify/desktop-notify' )
 	require( '/html5-notify/notifications.css' )
@@ -15,7 +14,7 @@ define(function(require, exports, module){
 			notify.createNotification( title, {body: content, icon: "/html5-notify/alert.ico", onclick: function(){
 			 	if( mission_id ){
 			 		app.Message.view.itemReaded( message_id )
-				 	Layout.list_view.go( mission_id )
+				 	app.mission.list_view.go( mission_id )
 			 	}
 			 	this.close();
 			}})

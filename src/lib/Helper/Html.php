@@ -204,4 +204,18 @@ class Html {
 		}
 		return mb_substr( $str, $beg, $limit, 'utf-8' ). $fix;
 	}
+
+	static function dateOfWeek( $date ){
+		$off = date( 'w', strtotime($date) );
+		$week = array(
+			'星期日', 
+			'星期一', 
+			'星期二', 
+			'星期三', 
+			'星期四', 
+			'星期五', 
+			'星期六', 
+		);
+		return $week[$off];
+	}
 }

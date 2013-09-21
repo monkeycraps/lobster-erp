@@ -28,6 +28,10 @@ class Bootstrap extends \Yaf\Bootstrap_Abstract {
 
 	public function _initRequest(Yaf\Dispatcher $dispatcher) {
 
+		if( isset( $_POST['session_id'] ) ){
+			session_id( $_POST['session_id'] );
+		}
+
 		$dispatcher->setRequest ( new Request () );
 	}
 

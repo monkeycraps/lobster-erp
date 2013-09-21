@@ -15,13 +15,39 @@ define(function(require, exports, module) {
 			require.async(['/src/admin/layout'], function(Layout){
 				app.layout = new Layout.Layout();
 				app.menu = new Layout.Menu();
+
+				$('body').tooltip({
+			      selector: "[data-toggle=tooltip]",
+			      container: "body"
+			    })
+
+			    $('body').popover({
+			      selector: "[data-toggle=popover]",
+			      container: "body", 
+			      html: true, 
+			      placement: function( wrapper, trigger ){
+			      	return $(trigger).attr('data-placement');
+			      }, 
+			      content: function(){
+			      	return $(this).next('.popover').html();
+			      }
+			    })
+			    
 			});
 		}
 	}
 	
 	$.ajaxSetup({
-		'error': function(){
-			alert( '系统错误' );
+		'error': function( jqXHR, textStatus, errorThrown ){
+
+			try{
+				alert( '保存出错：'+ jqXHR.status + ':' + eval( "\'" + jqXHR.responseText + "\'") )
+			}catch(ex){
+				alert( '保存出错：'+ jqXHR.status + ':' + jqXHR.responseText )
+			}
+			console.log( jqXHR )
+			console.log( textStatus )
+			console.log( errorThrown )
 		}
 	});
 	
@@ -35,6 +61,7 @@ define(function(require, exports, module) {
 				}
 			}
 		}
+		options.wait = true
 		return Backbone.Model.prototype.save.apply( this, arguments );
 	}
 	

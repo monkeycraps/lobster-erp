@@ -5,9 +5,8 @@ define(function(require, exports, module) {
 
 	var App = {
 		init: function(){
-			require.async(['/src/app/user', '/src/app/header', '/src/app/layout', '/src/app/notify'], function(User, header, Layout, Notify){
+			require.async(['/src/app/user', '/src/app/header', '/src/app/notify'], function(User, header, Notify){
 				app.User = User;
-				app.Layout = Layout;
 				app.header = header;
 
 				Notify.checkDesktopNotification();
@@ -44,9 +43,9 @@ define(function(require, exports, module) {
 	$.ajaxSetup({
 		'error': function( jqXHR, textStatus, errorThrown ){
 			try{
-				alert( '保存出错：'+ jqXHR.status + ':' + eval( "\'" + jqXHR.responseText + "\'") )
+				console.log( '访问出错：'+ jqXHR.status + ':' + eval( "\'" + jqXHR.responseText + "\'") )
 			}catch(ex){
-				alert( '保存出错：'+ jqXHR.status + ':' + jqXHR.responseText )
+				console.log( '访问出错：'+ jqXHR.status + ':' + jqXHR.responseText )
 			}
 			console.log( jqXHR )
 			console.log( textStatus )
@@ -62,7 +61,9 @@ define(function(require, exports, module) {
 				}catch(ex){
 					alert( '保存出错：'+ response.status + ':' + response.responseText )
 				}
-				app.Layout.form_view.issaving = false;
+				if( app.mission ){
+					app.mission.form_view.issaving = false;
+				}
 			}
 		}
 		options.wait = true
@@ -77,7 +78,9 @@ define(function(require, exports, module) {
 				}catch(ex){
 					alert( '删除出错：'+ response.status + ':' + response.responseText )
 				}
-				app.Layout.form_view.issaving = false;
+				if( app.mission ){
+					app.mission.form_view.issaving = false;
+				}
 			}
 		}
 		return Backbone.Model.prototype.destroy.apply( this, arguments );

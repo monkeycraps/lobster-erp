@@ -1,106 +1,68 @@
 <div class="bs-sidebar" style=''>
 	<ul class="nav">
-		<li class="active">
-			<a href="/mission">
-				<i class='glyphicon glyphicon-th-list'></i>&nbsp;&nbsp;我的任务
-				<i class='glyphicon glyphicon-chevron-right pull-right'></i>
-		</a>
-		</li>
 		<?php if( $controller->user->role_id == UserModel::ROLE_FCG ){?>
 
+			<li class="<?php echo $controller->nav == 'mission' ? 'tuihuo' : ''?>">
+				<a class='' href="/comeback"><i
+					class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;所有退货
+					<i class='glyphicon glyphicon-chevron-right pull-right'></i>
+				</a>
+			</li>
+
+		<?php }else{?>
+
 			<li class="<?php echo $controller->nav == 'mission' ? 'active' : ''?>">
-				<a class='' href="#"><i
-					class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;分仓管录入</a>
+				<a href="/mission">
+					<i class='glyphicon glyphicon-th-list'></i>&nbsp;&nbsp;我的任务
+					<i class='glyphicon glyphicon-chevron-right pull-right'></i>
+				</a>
 			</li>
 		<?php }?>
+
+		<?php if( in_array( $controller->user->role_id, array( UserModel::ROLE_FCG, UserModel::ROLE_CG, UserModel::ROLE_DZ ) ) ){ ?>
+
+			<li class="<?php echo $controller->nav == 'announce' ? 'active' : ''?>">
+				<a class='mission-add' href='/announce/index' ><i
+					class='glyphicon glyphicon-list-alt'></i>&nbsp;&nbsp;公告管理
+					<i class='glyphicon glyphicon-chevron-right pull-right'></i>
+				</a>
+			</li>
+
+		<?php } ?> 
+
+		<?php if( in_array( $controller->user->role_id, array( UserModel::ROLE_FCG, UserModel::ROLE_CG, UserModel::ROLE_DZ ) ) ){ ?>
+
+			<!-- <li class="<?php echo $controller->nav == 'stackout' ? 'active' : ''?>">
+				<a class='mission-add' href='/stackout/index' ><i
+					class='glyphicon glyphicon-list-alt'></i>&nbsp;&nbsp;缺货管理
+					<i class='glyphicon glyphicon-chevron-right pull-right'></i>
+				</a>
+			</li> -->
+		<?php } ?> 
+
+
+		<?php if( in_array( $controller->user->role_id, array( UserModel::ROLE_CG, UserModel::ROLE_DZ ) ) ){ ?>
+
+			<li class="<?php echo $controller->nav == 'mission' ? 'tuihuo' : ''?>">
+				<a class='' href="/comeback"><i
+					class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;查看退货
+					<i class='glyphicon glyphicon-chevron-right pull-right'></i>
+				</a>
+			</li>
+
+		<?php } ?> 
+
 	</ul>
 
 	<div class='split-line'></div>
 
-	<?php if( $controller->user->role_id == UserModel::ROLE_KF ){?>
-		<div class='col-lg-12 text-center'>
-			<a class='btn btn-sm btn-success mission-add' href='#' data-toggle='popover' data-placement='right' ><i
-						class='glyphicon glyphicon-plus'></i>&nbsp;&nbsp;新建任务</a>
+	<?php switch( $controller->nav ) {
+		case 'mission':
+			echo $controller->renderPartial( 'mission/_menu' );
+			break;
+		default: 
+			break;
 
-				<div class="popover mchide">
-					<div class="arrow"></div>
-					<h3 class="popover-title" >新建任务</h3>
-					<div class="popover-content" style='width: 550px;'>
-						<form class='form-horizantal'>
-							<ul class="nav nav-tabs" id="myTab">
-								<?php 
-								$mission_type_list = rbac\Role::getRoleActions( $controller->user->role_id );
-								$first = true; foreach( $mission_type_list as $one ) { ?>
-							  		<li class="<?php echo $first ? 'active' : '' ?>">
-							  			<a href="#mission-type-<?php echo $one['data']['id'] ?>" 
-							  				data-id='<?php echo $one['data']['id']?>'
-							  				>
-							  				<?php echo $one['data']['name'] ?></a></li>
-								<?php $first = false; }?>
-							</ul>
-							<div class="tab-content" style='padding: 10px 0 40px 0;'>
-								<?php $first = true; foreach( $mission_type_list as $one ) { ?>
-							  		<div class="tab-pane <?php echo $first ? 'active' : '' ?>" 
-							  			id="mission-type-<?php echo $one['data']['id']?>">
-							  			<?php 
-							  			sort( $one['children'] );
-							  			$children = $one['children'];
-							  			foreach( $children as $one1 ){ 
-							  				?>
-							  				<input class="btn btn-xs btn-default" type="button" value="<?php echo $one1['name'] ?>" 
-							  				data-id='<?php echo $one1['id'] ?>'>
-							  			<?php } ?>
-							  		</div>
-								<?php $first = false; }?>
-							</div>
-							<div class='form-group '>
-								<input type='button' class='btn btn-xs btn-primary btn-mission-add'
-									value='创建' /> 
-								<input type='button'
-									class='btn btn-xs btn-mission-add-cancel' value='取消' />
-							</div>
-						</form>
-					</div>
-				</div>
-
-			</div>
-		<div class='split-line' style='clear: both; margin-top: 63px'></div>
-	<?php } ?>
-
-	<div class='menu-form col-lg-12'>
-		<form class='form' id='menu-form-search' onsubmit='return false;'>
-			<div class="form-group">
-				<label>任务ID：</label>
-				<div>
-					<input type="text" name='id' class="form-control" value='' placeholder="" />
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label>订单号：</label>
-				<div>
-					<input type="text" name='order_num' class="form-control" value='' placeholder="" />
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label>旺旺：</label>
-				<div>
-					<input type="text" name='wanwan' class="form-control" value='' placeholder="" />
-				</div>
-			</div>
-
-			<div class="form-group">
-				<div class='col-lg-12 text-center'>
-					<button type="submit" class="btn btn-sm btn-primary" placeholder="" 
-						style='width: 100px; margin-top: 20px;' >
-						<i class='glyphicon glyphicon-search'></i>&nbsp;&nbsp;
-						搜索
-					</button>
-				</div>
-			</div>
-
-		</form>
-	</div>
+	}?>
 
 </div>

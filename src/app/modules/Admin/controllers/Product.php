@@ -27,14 +27,14 @@ class ProductController extends AdminBaseController {
 			}
 			$model->name = $this->put ( 'name' );
 			$model->category_id = $this->put ( 'category_id' );
-			$model->updated = date ( 'Y-m-d' );
+			$model->updated = Helper\Html::now();
 			$id = R::store ( $model );
 		} elseif ($request->isPost ()) {
 			$model = R::dispense ( 'product' );
 			$model->name = $this->post ( 'name' );
 			$model->category_id = $this->post ( 'category_id' );
-			$model->created = date ( 'Y-m-d' );
-			$model->updated = date ( 'Y-m-d' );
+			$model->created = Helper\Html::now();
+			$model->updated = Helper\Html::now();
 			$id = R::store ( $model );
 		} elseif( $request->isDelete() ) {
 			$id = $this->get ( 'id' );
@@ -66,13 +66,13 @@ class ProductController extends AdminBaseController {
 				throw new Exception ( 'model not found' );
 			}
 			$model->name = $this->put ( 'name' );
-			$model->updated = date ( 'Y-m-d' );
+			$model->updated = Helper\Html::now();
 			$id = R::store ( $model );
 		} elseif ($request->isPost ()) {
 			$model = R::dispense ( 'category' );
 			$model->name = $this->post ( 'name' );
-			$model->created = date ( 'Y-m-d' );
-			$model->updated = date ( 'Y-m-d' );
+			$model->created = Helper\Html::now();
+			$model->updated = Helper\Html::now();
 			$id = R::store ( $model );
 		} elseif( $request->isDelete() ) {
 			$id = $this->get ( 'id' );

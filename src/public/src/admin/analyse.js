@@ -7,7 +7,6 @@ define(function(require, exports, module){
 	require( '/bootstrap/datepicker/js/locales/bootstrap-datepicker.zh-CN' )
 	require( '/bootstrap/datepicker/css/datepicker.css' )
 
-	
 	var Analyse = Backbone.View.extend({
 		model: null, 
 		el: $( '#analyse-wrapper' ),

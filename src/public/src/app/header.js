@@ -15,6 +15,31 @@ define(function(require, exports, module){
 			'keydown input[name="search"]': 'check_search'
 		},
 		initialize: function(){
+
+			this.initAnnounce();
+		}, 
+		initAnnounce: function(){
+			function autoScroll( scroll ){ 
+
+				var current = $( 'li.current', scroll ).animate({
+					bottom: '17px'
+				}, function(){
+					$(this).removeClass( 'current' ).css( 'bottom', '-17px' );
+				});
+				var next = current.next( 'li' );
+				if( next.length == 0 ){
+					next = $( 'li:first', scroll );
+				}
+				next.animate({ 
+			        bottom : "0px" 
+			    }, function(){
+			    	$(this).addClass( 'current' )
+			    })
+			} 
+			// autoScroll( this.$( '.scroll' ) );
+			setInterval(function(){
+				autoScroll( this.$( '.scroll' ) );
+			},5000) 
 		}, 
 		login: function(){
 			ModalManager.modal( 'login' )

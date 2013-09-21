@@ -10,10 +10,18 @@
 			<?php }?>
 
 			<?php if( $controller->user->role_id == UserModel::ROLE_DZ ){ ?>
-				<li><a href='#' class='mission-type-flag' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="插旗"><i class='glyphicon glyphicon-flag'></i></a></li>
-			<?php }?>
+				<li style='display: none;' class='do-flag'><a href='#' class='mission-type-flag' data-toggle="tooltip" data-placement="bottom" title="" data-original-title="插旗">插旗</a>
+				</li>
+			<?php } ?>
+			<li class='flag-list'>
+				<i class='glyphicon glyphicon-flag flag-1' style='color: red'></i>
+				<i class='glyphicon glyphicon-flag flag-2' style='color: blue'></i>
+				<i class='glyphicon glyphicon-flag flag-3' style='color: rgb(240, 201, 0)'></i>
+				<i class='glyphicon glyphicon-flag flag-4' style='color: green'></i>
+			</li>
 
 			<li><a class='form-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
+
 		</ul>
 	</li>
 </ul>

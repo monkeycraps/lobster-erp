@@ -3,7 +3,12 @@ class TestController extends ApplicationController {
 	protected $layout = null;
 
 	public function indexAction() {
+
+
+		echo Helper\Html::dateOfWeek( '2013-09-23' );
 		
+		echo $this->getRequest()->getHostName();die;
+
 		// $ext = R::dispense( 'mission_ext' );
 		// $ext->mission_id  = 4;
 		// R::store($ext);
@@ -42,12 +47,10 @@ class TestController extends ApplicationController {
 		// $sql = 'update mission_drawback set state = '. MissionDrawbackModel::STATE_DONE . ' where mission_id = ? and state = '. MissionDrawbackModel::STATE_APPLY;
 		// dump( R::exec( $sql, array( 189 ) ) );
 		
-		$mission = R::load( 'mission', 188 );
+		// $mission = R::load( 'mission', 188 );
 		
-		$mission_new = $mission->copyMission( 19 );
-		echo $mission_new->id;
+		// $mission_new = $mission->copyMission( 19 );
+		// echo $mission_new->id;
 
-
-		// $this->show( 'test' );
 	}
 }

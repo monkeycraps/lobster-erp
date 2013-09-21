@@ -8,7 +8,7 @@ class LoginController extends ApplicationController {
 		if( $this->post('username') ){
 			$name = $this->post('username');
 			$pwd = $this->post('password');
-			if( !$user = R::findOne('user', 'username = ?', array( $name ) ) ){
+			if( !$user = R::findOne('user', 'username = ? and state = 0', array( $name ) ) ){
 				$this->addError( '找不到用户' );
 			}
 

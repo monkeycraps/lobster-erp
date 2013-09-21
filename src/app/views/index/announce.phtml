@@ -1,0 +1,12 @@
+<div style='height: 20px; margin-top: 10px;'>
+	<h1 class='pull-left' style='margin: 0px;' >【公告】<?php echo $model->subject ?></h1>
+	<div class='pull-right hint' >
+		<span><?php echo date( 'm月d日', strtotime( $model->created ) ) ?></span>
+		<span><?php echo Helper\Html::dateOfWeek( $model->created ) ?></span>
+		<span><?php echo UserModel::getName( $model->create_uid ) ?></span>
+	</div>
+</div>
+<div class='split-line' ></div>
+<div>
+	<?php echo AnnounceModel::parse( $model->content )  ?>
+</div>

@@ -52,7 +52,7 @@ class UserController extends AdminBaseController {
 					$model->pwd = user\Auth::encrypt( $this->put( 'pwd' ) );
 				} 
 				$model->role_id = $this->put ( 'role_id' );
-				$model->updated = date ( 'Y-m-d' );
+				$model->updated = Helper\Html::now();
 				$id = R::store ( $model );
 			} elseif ($request->isPost ()) {
 				$model = R::dispense ( 'user' );
@@ -62,8 +62,8 @@ class UserController extends AdminBaseController {
 					$model->pwd = user\Auth::encrypt( $this->post( 'pwd' ) );
 				} 
 				$model->role_id = $this->post ( 'role_id' );
-				$model->created = date ( 'Y-m-d' );
-				$model->updated = date ( 'Y-m-d' );
+				$model->created = Helper\Html::now();
+				$model->updated = Helper\Html::now();
 				$model->state = 0;
 				$id = R::store ( $model );
 			} elseif ($request->isDelete ()) {

@@ -50,7 +50,7 @@ define(function(require, exports, module){
 				alert( '还没选择具体任务' )
 				return ;
 			}
-			app.Layout.form_view.add( cate_id, sub_cate_id );
+			app.mission.form_view.add( cate_id, sub_cate_id );
 
 			this.do_mission_add_cancel();
 		}, 
@@ -61,7 +61,7 @@ define(function(require, exports, module){
 		searchMissoin: function(){
 
 			try{
-				app.Layout.list_view.search( 
+				app.mission.list_view.search( 
 					$.trim( this.$( 'input[name="id"]' ).val() ), 
 					$.trim( this.$( 'input[name="order_num"]' ).val() ), 
 					$.trim( this.$( 'input[name="wanwan"]' ).val() ) );

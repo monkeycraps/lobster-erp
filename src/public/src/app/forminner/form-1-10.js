@@ -4,7 +4,7 @@ define(function(require, exports, module){
 	var Backbone = require( 'backbone' );
 	var Util = require( '/src/app/util' );
 
-	var Layout = require( '/src/app/layout' );
+	var Layout = app.mission
 	var list = Layout.list;
 	var FormInner = require( '/src/app/forminner' );
 

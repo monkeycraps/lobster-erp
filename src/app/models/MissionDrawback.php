@@ -15,7 +15,7 @@ class MissionDrawbackModel extends RedBean_SimpleModel {
 				return '申请返现中';
 				break;
 			case self::STATE_DONE:
-				return '已打款';
+				return '店长已返现';
 				break;
 		}
 	}

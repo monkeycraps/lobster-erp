@@ -4,6 +4,7 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 
 	public $id;
 	public $adminid;
+	public $adminname;
 	public $role_id;
 	public $name; 
 	public $username; 
@@ -26,6 +27,7 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 		$this->username = $session->get( 'username' );
 		$this->role_id = $session->get( 'role_id' );
 		$this->adminid = $session->get( 'adminid' );
+		$this->adminname = $session->get( 'adminname' );
 	}
 
 	function login( $user ){
@@ -47,11 +49,14 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 		$this->update();
 	}
 
-	function loginAdmin(){
+	function loginAdmin( $user = null ){
 
 		$session = Yaf\Session::getInstance();
 
-		$session->set( 'adminid', 1 );
+		$uid = $user ? $user->id : 999999;
+		$name = $user ? $user->name : 'admin';
+		$session->set( 'adminid', $uid );
+		$session->set( 'adminname', $name );
 		$this->update();
 	}
 
@@ -60,6 +65,7 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 		$session = Yaf\Session::getInstance();
 
 		$session->set( 'adminid', null );
+		$session->set( 'adminname', null );
 		$this->update();
 	}
 
@@ -71,17 +77,33 @@ class UserPlugin extends Yaf\Plugin_Abstract{
 					$pass = false;
 				}
 				break;
+			case 'comeback':
+
+				if( !in_array( $this->role_id, array(
+						UserModel::ROLE_DZ, 
+						UserModel::ROLE_CG, 
+						UserModel::ROLE_FCG, 
+					) ) ){
+					$pass = false;
+				}
+
+				break;
+			case 'announce':
+
+				if( !in_array( $this->role_id, array(
+						UserModel::ROLE_DZ, 
+						UserModel::ROLE_CG, 
+						UserModel::ROLE_FCG, 
+					) ) ){
+					$pass = false;
+				}
+
+				break;
 			default: 
+				$pass = fasle;
 				break;
 		}
-
-		if( !$pass ){
-			if( yaf\Application::app()->controller->isAjax() ){
-				throw new Exception( '登录时间超时，请重新登录！' );
-			}
-			Yaf\Application::app ()->controller->redirect( '/login/index' );
-			exit();
-		}
+		return $pass;
 	}
 
 	function __get( $key ){

@@ -14,7 +14,7 @@
         <script>
          var pageBind = {};
         </script>
-</head>
+    </head>
 <body>
         <?php $this->display( 'layouts/header.phtml', array( 'controller'=>$controller ) ); ?>
     	
@@ -42,8 +42,9 @@
           }
         })
         // 加载入口模块
+        var app_data = <?php echo $controller->renderPartial( 'app_json.phtml', array( 'controller'=>$controller ) ); ?>;
         var app = {};
-        var app_data = <?php $this->display( 'app_json.phtml', array( 'controller'=>$controller ) ); ?>;
+
 		$().ready(function(){
 			seajs.use("backbone", function(Backbone){	
 				seajs.use("bootstrap", function(){

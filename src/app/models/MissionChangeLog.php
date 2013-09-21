@@ -3,6 +3,7 @@
 class MissionChangeLogModel extends RedBean_SimpleModel {
 
 	static $label;
+	static $label_ext;
 	static $mission_type;
 
 	static function saveChangeAction( $mission_id, $action, $state ){
@@ -45,14 +46,21 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 		$yaml = yaml_parse_file( APP_PATH. '/config/form.ini' );
 		if( is_array( $yaml['form'. $mission_type] ) ){
 
-			if( !is_array( $yaml['form'. $mission_type]['ext'] ) ){
-				$yaml['form'. $mission_type]['ext'] = array();
+			if( !is_array( $yaml['form'. $mission_type]['data'] ) ){
+				$yaml['form'. $mission_type]['data'] = array();
 			}
 			self::$label = array_merge(
 				$yaml['form'], 
-				$yaml['form'. $mission_type]['data'], 
-				$yaml['form'. $mission_type]['ext']
+				$yaml['form'. $mission_type]['data']
 			);
+		}
+
+		if( is_array( $yaml['form'. $mission_type] ) ){
+
+			if( !is_array( $yaml['form'. $mission_type]['ext'] ) ){
+				$yaml['form'. $mission_type]['ext'] = array();
+			}
+			self::$label_ext = $yaml['form'. $mission_type]['ext'];
 		}
 
 		$user = Yaf\Application::app()->user;
@@ -179,6 +187,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 	}
 
 	static function checkDelete( $changed, $before, $now ){
+
 		foreach( $before as $key=>$one ){
 			switch( $key ){
 				case 'ext':
@@ -263,24 +272,24 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 				case 'other':
 					foreach( $before['ext']['other'] as $key1=>$one1 ){
-						if( !self::getLabel($key1) ){
+						if( !self::getLabelExt($key1) ){
 							continue;
 						}
 						if( !isset( $now['ext']['other'][$key1] ) ){
 							$changed[] = array(
-								'key'=>self::getLabel($key1),
+								'key'=>self::getLabelExt($key1),
 								'delete'=>$one1, 
 							);
 						}
 					}
 					break;
 				default:
-					if( !self::getLabel($key) ){
+					if( !self::getLabelExt($key) ){
 						continue;
 					}
 					if( !isset( $now['ext'][$key] ) ){
 						$changed[] = array(
-							'key'=>self::getLabel($key),
+							'key'=>self::getLabelExt($key),
 							'delete'=>$one, 
 						);
 					}
@@ -307,19 +316,19 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 					foreach( $now['ext']['other'] as $key1=>$one1 ){
 
-						if( !self::getLabel($key1) ){
+						if( !self::getLabelExt($key1) ){
 							continue;
 						}
 
 						if( !isset( $before['ext']['other'][$key1] ) ){
 							$changed[] = array(
-								'key'=>self::getLabel($key1), 
+								'key'=>self::getLabelExt($key1), 
 								'add'=>$one, 
 							);
 						}else{
 							if( self::diff( $before['ext']['other'][$key1], $one1 ) ){
 								$changed[] = array(
-									'key'=>self::getLabel($key1), 
+									'key'=>self::getLabelExt($key1), 
 									'change'=>$before['ext']['other'][$key1]. '=>'. $one, 
 								);
 							}
@@ -328,18 +337,18 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 
 					break;
 				default:
-					if( !self::getLabel($key) ){
+					if( !self::getLabelExt($key) ){
 						continue;
 					}
 					if( !isset( $before['ext'][$key] ) ){
 						$changed[] = array(
-							'key'=>self::getLabel($key), 
+							'key'=>self::getLabelExt($key), 
 							'add'=>$one, 
 						);
 					}else{
 						if( self::diff( $before['ext'][$key], $one ) ){
 							$changed[] = array(
-								'key'=>self::getLabel($key), 
+								'key'=>self::getLabelExt($key), 
 								'change'=>$before['ext'][$key]. '=>' .$one, 
 							);
 						}
@@ -525,6 +534,13 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 	static function getLabel( $key ){
 		if( isset( self::$label[$key] )){
 			return self::$label[$key];
+		}
+		return false;
+	}
+
+	static function getLabelExt( $key ){
+		if( isset( self::$label_ext[$key] )){
+			return self::$label_ext[$key];
 		}
 		return false;
 	}

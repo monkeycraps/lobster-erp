@@ -6,7 +6,18 @@ class MissionController extends ApplicationController {
 	function init(){
 
 		parent::init();
-		$this->user->checkPermission( 'mission' );
+
+		$this->nav = 'mission';
+		
+		$pass = $this->user->checkPermission( 'mission' );
+
+		if( !$pass ){
+			if( yaf\Application::app()->controller->isAjax() ){
+				throw new Exception( '登录时间超时，请重新登录！' );
+			}
+			Yaf\Application::app ()->controller->redirect( '/login/index' );
+			exit();
+		}
 
 	}
 
@@ -597,6 +608,18 @@ class MissionController extends ApplicationController {
 				);
 				break;
 		}
+	}
+
+	function checkWanwanAction(){
+		if( !$wanwan = $this->get( 'wanwan' ) ){
+			return $this->renderJson(array('is_second'=>0));
+		}
+
+		if( R::findOne( 'mission', 'wanwan = ?', array( $wanwan ) ) ){
+			return $this->renderJson(array('is_second'=>1));
+		}
+
+		$this->renderJson(array('is_second'=>0));
 	}
 }
 
