@@ -27,6 +27,7 @@ define(function(require, exports, module){
 			remarks: null, 
 			flag_list: [], 
 			flag_remarks: '', 
+			state: '',  
 
 			mail_person_name: '', 
 	        mail_person_bank: '', 
