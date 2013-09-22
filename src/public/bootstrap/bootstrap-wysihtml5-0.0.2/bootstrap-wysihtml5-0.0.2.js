@@ -102,6 +102,7 @@ define(function(require, exports, module) {
 				"h1": {},
 				"h2": {},
 				"u": 1,
+				'span': {},
 				"img": {
 					check_attributes: {
 			            width: "numbers",

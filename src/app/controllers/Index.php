@@ -2,6 +2,16 @@
 class IndexController extends ApplicationController {
 	protected $layout = 'frontend';
 
+	function init(){
+
+		parent::init();
+
+		if( !$this->user->id ) {
+			Yaf\Application::app ()->controller->redirect( '/login/index' );
+			exit();
+		}
+	}
+
 	public function indexAction() {
 		
 		$this->ishome = 1;

@@ -39,7 +39,7 @@ define(function(require, exports, module){
 			form.showModel();
 		}, 
 		add: function(model){
-			this.$( 'table tbody' ).append( _.template( $('#template-announce-listitem').html(), model.toJSON() ) );
+			this.$( 'table tbody' ).prepend( _.template( $('#template-announce-listitem').html(), model.toJSON() ) );
 			this.listenTo( model, 'change', this.renderItem );
 		}, 
 		renderItem: function( model ){

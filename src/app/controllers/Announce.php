@@ -4,6 +4,8 @@ class AnnounceController extends ApplicationController {
 
 	function init(){
 
+		throw new Exception( '没有权限', 403 );
+
 		$this->nav= 'announce';
 
 		parent::init();

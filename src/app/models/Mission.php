@@ -28,7 +28,7 @@ class MissionModel extends RedBean_SimpleModel {
 			$model->pid = 0;
 
 			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
-			if( isset( $arr['wanwan'] )){
+			if( isset( $arr['wanwan'] ) && $arr['wanwan'] ){
 				$model->wanwan = $arr['wanwan'];
 				if( $arr['wanwan'] && R::findOne( 'mission', 'wanwan = ?', array( $arr['wanwan'] ) ) ){
 					$model->is_second = 1;
@@ -201,7 +201,7 @@ class MissionModel extends RedBean_SimpleModel {
 			
 			isset( $arr['store_id'] ) && $model->store_id = $arr['store_id'];
 
-			if( isset( $arr['wanwan'] )){
+			if( isset( $arr['wanwan'] ) && $arr['wanwan'] ){
 				$model->wanwan = $arr['wanwan'];
 				if( R::findOne( 'mission', 'wanwan = ? and id <> ?', array( $arr['wanwan'], $model->id ) ) ){
 					$model->is_second = 1;

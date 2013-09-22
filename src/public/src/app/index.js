@@ -98,6 +98,13 @@ define(function(require, exports, module){
 	var display = new Display();
 
 
-	$( '#index-list tbody tr:first' ).click();
+	if( announce_id > 0 ){
+
+		$( '#index-list tbody tr[data-id="'+ announce_id +'"]' ).click();
+
+	}else{
+		
+		$( '#index-list tbody tr:first' ).click();
+	}
 
 });

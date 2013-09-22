@@ -12,22 +12,22 @@
 					<li><a href='/'>公告板</a></li>
 					<li><a href='/tools'>工具箱</a></li>
 					<li><a href='http://112.124.17.199:8000/' target='_blank'>合道百科</a></li>
-					<li><a href='/admin'>后台</a></li>
+					<!-- <li><a href='/admin'>后台</a></li> -->
 				</ul>
 			</div>
 			<div class='col-5 row' style='padding-right: 0px;'>
-				<div class='col-lg-6 pull-left announce-and-stackout' style='margin: 8px; overflow: hidden; padding: 0px;'>
-					<ul class='announce scroll'>
-						<?php list( $announce_list ) = AnnounceModel::getListHeader( 10 ); 
-							$first = true; foreach( $announce_list as $one ){ ?>
-							<li class='<?php echo $first ? 'current' : '' ?>'>
-								<b>【公告】</b><?php echo $one['subject'] ?> <?php echo date( 'm月d日', strtotime($one['created']) ) ?> 
-								<?php echo Helper\Html::dateOfWeek( $one['created'] ) ?></li>
-						<?php $first = false; } ?>
-					</ul>
-					<!-- <ul class='stackout'>
-						<li class='current'><b>【库存】</b>缺货产品 AR160 XXXX 7月23日 星期五</li>
-					</ul> -->
+				<div class='col-lg-6 pull-left announce-and-stackout' style='margin: 3px 8px;; overflow: hidden; padding: 0px;'>
+					<?php if( $controller->user->id ) {?>
+
+						<ul class='announce' style='height: 40px;'>
+							<?php list( $announce_list ) = AnnounceModel::getListHeader( 2 ); 
+								$first = true; foreach( $announce_list as $one ){ ?>
+								<li class='<?php echo $first ? 'current' : '' ?>'>
+									<a href='/index?id=<?php echo $one['id']?>'><?php echo $one['subject'] ?> <?php echo date( 'm月d日', strtotime($one['created']) ) ?> 
+									<?php echo Helper\Html::dateOfWeek( $one['created'] ) ?></a></li>
+							<?php $first = false; } ?>
+						</ul>
+					<?php }?>
 				</div>
 				<div class='col-lg-5' style='padding: 0px; height: 34px;'>
 					<?php if( $controller->user->id ){

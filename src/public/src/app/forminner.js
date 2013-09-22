@@ -129,7 +129,7 @@ define(function(require, exports, module){
 			var input = $(e.currentTarget)
 
 			if( $.trim( val ) != '' ){
-				$.get( '/mission/checkWanwan?wanwan='+ val, function( data ){
+				$.get( '/mission/checkWanwan?wanwan='+ val+ '&id='+ this.model.id, function( data ){
 
 					if( !_.isObject( data ) ) {
 						alert( '系统错误: '+ data )

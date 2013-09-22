@@ -614,8 +614,15 @@ class MissionController extends ApplicationController {
 		if( !$wanwan = $this->get( 'wanwan' ) ){
 			return $this->renderJson(array('is_second'=>0));
 		}
+		$params = array( $wanwan ) ;
 
-		if( R::findOne( 'mission', 'wanwan = ?', array( $wanwan ) ) ){
+		$sql_id = '';
+		if( $id = $this->get( 'id' ) ){
+			$params[] = $id;
+			$sql_id = ' and id <> ? ';
+		}
+
+		if( R::findOne( 'mission', 'wanwan = ?'. $sql_id, $params) ){
 			return $this->renderJson(array('is_second'=>1));
 		}
 

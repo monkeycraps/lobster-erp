@@ -7394,6 +7394,8 @@ wysihtml5.Commands = Base.extend(
         composer.selection.insertNode(textNode);
         composer.selection.setAfter(textNode);
       } else {
+        textNode = doc.createTextNode(wysihtml5.INVISIBLE_SPACE);
+        composer.selection.insertNode(textNode);
         composer.selection.setAfter(image);
       }
     },
