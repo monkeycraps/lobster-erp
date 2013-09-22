@@ -11,7 +11,7 @@
 					<li><a href='/mission'>任务堂</a></li>
 					<li><a href='/'>公告板</a></li>
 					<li><a href='/tools'>工具箱</a></li>
-					<li><a href='http://112.124.17.199:8000/' target='_blank'>合道百科</a></li>
+					<li><a href='/' target='_blank'>合道百科</a></li>
 					<!-- <li><a href='/admin'>后台</a></li> -->
 				</ul>
 			</div>
