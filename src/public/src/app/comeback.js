@@ -82,7 +82,6 @@ define(function(require, exports, module){
 		search: function(){
 			var key = this.$( 'form input[name="mail_num"]' ).val()
 			this.$( 'tbody' ).load( '/comeback/search?key='+ key, function(){
-
 			} )
 		}, 
 		create: function(){
@@ -278,6 +277,7 @@ define(function(require, exports, module){
 		defaults: {
 		    "create_uid": app_data.admin_id,
 		    "create_uname": app_data.admin_name,
+		    "mail_company": '', 
 		    "mail_num": '', 
 		    "created": '', 
 		    "deleted": '', 

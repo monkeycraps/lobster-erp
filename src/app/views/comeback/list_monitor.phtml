@@ -20,7 +20,8 @@
 			<table class='table table-hover'>
 				<thead>
 					<tr>
-						<th class='col-1'>#</th>
+						<th class=''>#</th>
+						<th class='col-1'>快递公司</th>
 						<th class='col-1'>快递单号</th>
 						<th class='col-2'>产品</th>
 						<th class='col-1'>检测结果</th>
@@ -35,6 +36,7 @@
 					foreach( $comeback_list as $one ){?>
 						<tr class='' id='listitem-comeback-<?=$one['id']?>'>
 							<td><?=$one['id']?></td>
+							<td><?=$one['mail_company']?></td>
 							<td class='name'><?=$one['mail_num']?></td>
 							<td class='name'><?=$one['product_list']?></td>
 							<td class=''><?=$one['result']?></td>

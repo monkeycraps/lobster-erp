@@ -3,6 +3,7 @@ $comeback_list = $controller->comeback_list;
 foreach( $comeback_list as $one ){?>
 	<tr class='' id='listitem-comeback-<?=$one['id']?>'>
 		<td><?=$one['id']?></td>
+		<td><?=$one['mail_company']?></td>
 		<td class='name'><?=$one['mail_num']?></td>
 		<td class='name'><?=$one['product_list']?></td>
 		<td class=''><?=$one['result']?></td>

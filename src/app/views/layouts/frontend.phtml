@@ -13,6 +13,7 @@
         <?= Html::javascript('/sea-modules/seajs/seajs/2.1.1/sea.js')?>
         <script>
          var pageBind = {};
+         var pageSync = {};
         </script>
     </head>
     <body>
@@ -55,14 +56,22 @@
  		$().ready(function(){
  			seajs.use("backbone", function(Backbone){	
  				seajs.use("bootstrap", function(){
- 					seajs.use("/src/app", function(App){	
- 						App.init();
+ 					seajs.use("/src/app", function(App){
 
- 						for( key in pageBind ){
- 							if( typeof pageBind[key] == 'function' ){
- 								pageBind[key]();
- 							}
- 						}
+                        var intval = setInterval(function(){
+                            if( Object.keys(pageSync).length == 0 ){
+
+ 						         App.init();
+                                 clearInterval( intval );
+                            }
+                        }, 100);
+
+                        for( key in pageBind ){
+                            if( typeof pageBind[key] == 'function' ){
+                                pageBind[key]();
+                            }
+                        }
+
  					})
  				})
  			})

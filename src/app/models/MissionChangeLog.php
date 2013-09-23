@@ -211,7 +211,7 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 					}
 					if( !isset( $now[$key] ) ){
 						$changed[] = array(
-							'key'=>self::getLabel($key1),
+							'key'=>self::getLabel($key),
 							'delete'=>$one, 
 						);
 					}

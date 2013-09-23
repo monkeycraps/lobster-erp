@@ -99,6 +99,7 @@ class ComebackController extends ApplicationController {
 					$model->result = $this->put ( 'result' );
 					$model->comment = $this->put ( 'comment' );
 					$model->mail_num = $this->put ( 'mail_num' );
+					$model->mail_company = $this->put ( 'mail_company' );
 					$model->create_uid = $this->user->id;
 					$model->updated = Helper\Html::now();
 
@@ -121,6 +122,7 @@ class ComebackController extends ApplicationController {
 					$model = R::dispense ( 'comeback' );
 					$model->result = $this->post ( 'result' );
 					$model->mail_num = $this->post ( 'mail_num' );
+					$model->mail_company = $this->post ( 'mail_company' );
 					$model->comment = $this->post ( 'comment' );
 					$model->created = Helper\Html::now();
 					$model->updated = Helper\Html::now();

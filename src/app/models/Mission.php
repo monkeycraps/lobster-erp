@@ -9,6 +9,13 @@ class MissionModel extends RedBean_SimpleModel {
 
 	static function createMission( $arr ){
 
+		$formC = new \FormCustomer\Form( $arr['mission_type_id'] );
+		foreach( $arr as $key=>$one ){
+			if( !$formC->getLabel( $key ) && !$formC->getLabelExt( $key ) ){
+				unset( $arr[$key] );
+			}
+		}
+
 		$user = Yaf\Application::app()->user;
 
 		R::begin();
@@ -33,6 +40,8 @@ class MissionModel extends RedBean_SimpleModel {
 				if( $arr['wanwan'] && R::findOne( 'mission', 'wanwan = ?', array( $arr['wanwan'] ) ) ){
 					$model->is_second = 1;
 				}
+			}else{
+				$model->wanwan = '';
 			}
 			isset( $arr['remarks'] ) && $model->remarks = $arr['remarks'];
 
@@ -149,7 +158,6 @@ class MissionModel extends RedBean_SimpleModel {
 
 			R::store($model);
 
-
 			$changed = array();
 
 			if( $mission_user->state != MissionUserModel::STATE_DRAFT ){
@@ -172,6 +180,13 @@ class MissionModel extends RedBean_SimpleModel {
 
 	function updateMission( $arr ){
 
+		$formC = new \FormCustomer\Form( $arr['mission_type_id'] );
+		foreach( $arr as $key=>$one ){
+			if( !$formC->getLabel( $key ) && !$formC->getLabelExt( $key ) ){
+				unset( $arr[$key] );
+			}
+		}
+
 		$model = $this->unbox();
 		$user = Yaf\Application::app()->user;
 
@@ -183,10 +198,9 @@ class MissionModel extends RedBean_SimpleModel {
 			}
 		}
 
+		$model_original = null;
 		if( isset( $arr['user_state'] ) && $arr['user_state'] != MissionUserModel::STATE_DRAFT ){
-			if( isset( $arr['do_publish'] ) && $arr['do_publish'] ){
-				$model_original = null;	
-			}else{
+			if( !isset( $arr['do_publish'] ) or !$arr['do_publish'] ){
 				$model_original = MissionChangeLogModel::getAttrs( $model->id );
 			}
 		}
@@ -208,6 +222,8 @@ class MissionModel extends RedBean_SimpleModel {
 				}else{
 					$model->is_second = 0;
 				}
+			}else{
+				$model->wanwan = '';
 			}
 
 			isset( $arr['remarks'] ) && $model->remarks = $arr['remarks'];

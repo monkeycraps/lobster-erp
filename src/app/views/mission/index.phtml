@@ -33,9 +33,11 @@ var huanhuo_reason_list = ['个人原因', '价格原因', '产品原因', '物�
 var tuihuo_reason_list = ['个人原因', '价格原因', '产品原因', '物流原因', '发货原因', '发票原因']; 
 var receipt_list = ['普票', '增票']; 
 var sub_mail_type_list = ['产品损坏', '产品漏发', '安抚顾客']; 
+pageSync.mission = 1;
 pageBind.product = function(){
     seajs.use( '/src/app/mission.js', function( mission ){
         app.mission = mission
+        delete( pageSync.mission )
     } )
 }
 </script>

@@ -22,6 +22,7 @@
 				<thead>
 					<tr>
 						<th class='col-1'>#</th>
+						<th>快递公司</th>
 						<th>快递单号</th>
 						<th class='col-2'>检测结果</th>
 						<th class='col-3'>登记时间</th>
@@ -34,6 +35,7 @@
 					foreach( $comeback_list as $one ){?>
 						<tr class='' id='listitem-comeback-<?=$one['id']?>'>
 							<td><?=$one['id']?></td>
+							<td><?=$one['mail_company']?></td>
 							<td class='name'><?=$one['mail_num']?></td>
 							<td class=''><?=$one['result']?></td>
 							<td><?=Helper\Html::date( $one['created'] )?></td>
@@ -47,6 +49,7 @@
 				<script type='text/template' id='template-comeback-listitem'>
 				<tr class='' id='listitem-comeback-<%=id%>'>
 					<td><%=id%></td>
+					<td><%=mail_company%></td>
 					<td class='name'><%=mail_num%></td>
 					<td><%=result%></td>
 					<td><%=created%></td>

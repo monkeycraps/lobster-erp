@@ -29,6 +29,7 @@ define(function(require, exports, module){
 			flag_remarks: '', 
 			state: '',  
 
+			send_to_product_input: '', 
 			mail_person_name: '', 
 	        mail_person_bank: '', 
 	        mail_person_bank_address: '', 
@@ -535,9 +536,6 @@ define(function(require, exports, module){
 			changed = Util.formJson( this.$( 'form' ) );
 
 			switch( action ){
-				case 'save':
-					changed.do_publish = 0;
-					break;
 				case 'to_dealing':
 					changed.user_state = 2;
 					changed.do_publish = 0;
@@ -552,6 +550,9 @@ define(function(require, exports, module){
 					break;
 				case 'to_close': 
 					changed.action = 'close';
+					changed.do_publish = 0;
+					break;
+				default:
 					changed.do_publish = 0;
 					break;
 			}

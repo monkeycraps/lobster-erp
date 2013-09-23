@@ -76,6 +76,10 @@ define(function(require, exports, module){
 			this.$el.empty();
 		}, 
 		add: function( cate_id, sub_cate_id, callback ){
+
+			if( list_view.loading )return;
+			list_view.loading = true;
+
 			this.clear();
 			this.$el.load( '/mission/form?cate='+ cate_id+'&subcate=' + sub_cate_id, null, function( data ){
 				require.async( '/src/app/forminner/form-'+cate_id+'-'+ sub_cate_id, function(FormInner){
@@ -91,10 +95,15 @@ define(function(require, exports, module){
 					if( typeof( callback ) == 'function' ){
 						callback( form_view.form_model )
 					}
+					list_view.loading = false;
 				} );
 			} );
 		}, 
 		load: function( id, cate_id, sub_cate_id, callback ){
+
+			if( list_view.loading )return;
+			list_view.loading = true;
+
 			this.clear();
 			this.$el.load( '/mission/form?cate='+ cate_id+'&subcate=' + sub_cate_id, null, function( data ){
 				require.async( '/src/app/forminner/form-'+cate_id+'-'+ sub_cate_id, function(FormInner){
@@ -110,6 +119,7 @@ define(function(require, exports, module){
 					if( typeof( callback ) == 'function' ){
 						callback( form_view.form_model )
 					}
+					list_view.loading = false;
 				} );
 			} );
 		}, 
@@ -181,6 +191,7 @@ define(function(require, exports, module){
 
 	var ListView = Backbone.View.extend({
 		el: $('#front-list'), 
+		loading: false, 
 		events: {
 			'change thead .checkall': 'checkALlChange', 
 			'click tbody tr': 'list_item_select', 
@@ -359,6 +370,11 @@ define(function(require, exports, module){
 			list_view.listenTo( model, 'change', list_view.renderItem )
 		}, 
 		list_item_select: function( event ){
+
+			if( this.loading ){
+				this.showListMessage( '您操作太频繁了，请稍候' );
+				return false;
+			}
 
 			this.list_item_stopListening();
 
