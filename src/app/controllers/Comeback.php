@@ -230,7 +230,7 @@ class ComebackController extends ApplicationController {
 					}
 
 					$sql = 'select cp.category_id as category, cp.product_id as product, pc.name as category_name, pp.name as product_name, sum( cp.cnt ) as cnt from comeback c 
-							inner join comeback_product cp on c.id = cp.comeback_id and cp.deleted is null and cp.state = '. ComebackProductModel::STATE_NEW .'
+							inner join comeback_product cp on c.id = cp.comeback_id and cp.deleted is null and cp.state = '. ComebackProductModel::STATE_DEALWITH .'
 							inner join category pc on cp.category_id = pc.id
 							inner join product pp on cp.product_id = pp.id
 						where c.state = '. ComebackModel::STATE_DONE .' and c.deleted is null '. $sqlFcg .'
@@ -254,6 +254,15 @@ class ComebackController extends ApplicationController {
 		$model->updated = Helper\Html::now();
 		R::store( $model );
 
+		foreach( $model->ownComebackProduct as $one ){
+			if( $one->state == ComebackProductModel::STATE_NEW ){
+
+				$one->state = ComebackProductModel::STATE_DEALWITH;
+				$one->updated = Helper\Html::now();
+				R::store( $one );
+			}
+		}
+
 		$this->renderModel( $model );
 	}
 
@@ -268,7 +277,7 @@ class ComebackController extends ApplicationController {
 			$sql = 'select cp.id, c.id as comeback_id from comeback c 
 					inner join comeback_product cp on c.id = cp.comeback_id 
 				where c.state = '. ComebackModel::STATE_DONE .' and cp.category_id = ? and cp.product_id = ? 
-					and cp.state = '. ComebackProductModel::STATE_NEW;
+					and cp.state = '. ComebackProductModel::STATE_DEALWITH;
 			$list = R::getAll( $sql, array(
 				$category, 
 				$product, 
@@ -290,9 +299,9 @@ class ComebackController extends ApplicationController {
 
 				$sql = 'select c.id from comeback c left join ( 
 							select c.id from comeback c inner join comeback_product cp on 
-								c.id = cp.comeback_id and cp.state = 1 and cp.deleted is null 
+								c.id = cp.comeback_id and ( cp.state = '. ComebackProductModel::STATE_DEALWITH .' or cp.state = '. ComebackProductModel::STATE_NEW .' ) and cp.deleted is null 
 							where c.id in ( '. implode( ', ', $ids_comeback ) .' ) group by c.id
-						)t on c.id = t.id where t.id is null and c.state = 2 and 
+						)t on c.id = t.id where t.id is null and c.state = '. ComebackModel::STATE_DONE .' and 
 							c.deleted is null and 
 							c.id in ( '. implode( ', ', $ids_comeback ) .' )';
 				if( $ids_comeback_done = R::getCol( $sql ) ){

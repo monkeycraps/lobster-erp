@@ -1,0 +1,26 @@
+<table class='table'>
+	<thead>
+		<tr>
+			<th class='col-1'>#</th>
+			<th>姓名</th>
+			<th>身份</th>
+			<th class='col-2'>新增</th>
+			<th class='col-2'>二次</th>
+			<th class='col-2'>变更</th>
+			<th class='col-2'>关闭</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach( $user_list as $one ) { ?>
+			<tr>
+				<td class=''><?php echo $one['id'] ?></td>
+				<td class=''><?php echo $one['name'] ?></td>
+				<td class=''><?php echo RoleModel::getRoleName( $one['role_id'] ) ?></td>
+				<td class=''><?php echo $one['new'] ?></td>
+				<td class=''><?php echo $one['second'] ?></td>
+				<td class=''><?php echo $one['has_pid'] ?></td>
+				<td class=''><?php echo $one['closed'] ?></td>
+			</tr>
+		<?php }?>
+	</tbody>
+</table>

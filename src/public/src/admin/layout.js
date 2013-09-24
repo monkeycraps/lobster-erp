@@ -9,6 +9,7 @@ define(function(require, exports, module){
 		var wh = $(window).height()
 		var board_height = (wh - $("header").height() ) + "px";
 		$( '#admin-menu' ).css( 'height', board_height );
+		$( '#admin-body' ).css( 'height', board_height );
 		$( '#admin-list' ).css( 'height', board_height );
 		$( '#admin-form' ).css( 'height', board_height );
 	}

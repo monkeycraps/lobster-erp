@@ -7,11 +7,16 @@ define(function(require, exports, module){
 	require( '/bootstrap/datepicker/js/locales/bootstrap-datepicker.zh-CN' )
 	require( '/bootstrap/datepicker/css/datepicker.css' )
 
+	var mscroll = require( '/mcustomscrollbar/jquery.mCustomScrollbar.concat.min' );
+	require( '/mcustomscrollbar/jquery.mCustomScrollbar.css' );
+
 	var Analyse = Backbone.View.extend({
 		model: null, 
 		el: $( '#analyse-wrapper' ),
 		events: {
-			'click .btn-time': 'chooseTime'
+			'click .btn-time': 'chooseTime', 
+			'submit .form-all': 'searchAll', 
+			'submit .form-person': 'searchPerson'
 		}, 
 		initialize: function(){
 
@@ -19,14 +24,44 @@ define(function(require, exports, module){
 			this.initMissionType();
 			this.initDatePicker();
 
+			this.searchAll();
+			this.searchPerson();
+
+			$( '#admin-body' ).mCustomScrollbar({
+				advanced:{
+			        updateOnContentResize: true, 
+			        autoScrollOnFocus: false
+			    }, 
+			    scrollInertia : 150
+			});
+
 		}, 
+		searchAll: function(){
+			this.search( 'all' );
+		}, 
+		searchPerson: function(){
+			this.search( 'person' );
+		}, 
+		search: function( type ){
+			switch( type ){
+				case 'all':
+					var params = this.$( '.form-all' ).serialize();
+					this.$( '.all-wrapper' ).load( '/admin/analyse/search?t='+ (new Date().getTime()) + '&' + params );
+					break;
+				case 'person':
+					var params = this.$( '.form-person' ).serialize();
+					this.$( '.person-wrapper' ).load( '/admin/analyse/searchPerson?t='+ (new Date().getTime()) + '&' + params );
+					break;
+			}
+		},
 		chooseTime: function( e ){
-			this.$( '.btn-time' ).removeClass( 'active' );
+			var wrapper = $( e.currentTarget ).parents( 'div:first' );
+			wrapper.find( '.btn-time' ).removeClass( 'active' );
 			$( e.currentTarget ).addClass( 'active' );
-			this.$( '.ipt_time' ).val( $( e.currentTarget ).attr( 'data' ) )
-			this.$('.datepicker[name="from"]').val( '' )
-			this.$('.datepicker[name="to"]').val( '' )
-			this.$( 'form' ).submit();
+			wrapper.find( '.ipt_time' ).val( $( e.currentTarget ).attr( 'data' ) )
+			$('.datepicker[name="from"]', wrapper).val( '' )
+			$('.datepicker[name="to"]', wrapper).val( '' )
+			$( e.currentTarget ).parents( 'form:first' ).submit();
 		}, 
 		initDatePicker: function(){
 
