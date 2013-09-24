@@ -30,6 +30,7 @@ class MissionModel extends RedBean_SimpleModel {
 			$model->kf_uid = $user->id;
 			$model->create_uid = $user->id;
 			$model->state = $arr['user_state'] == MissionUserModel::STATE_DRAFT ? self::STATE_DRAFT : self::STATE_ON;
+			$model->is_new = 0;
 			$model->is_changed = 0;
 			$model->is_second = 0;
 			$model->pid = 0;
@@ -611,7 +612,11 @@ class MissionModel extends RedBean_SimpleModel {
 		return R::getCell( $sql, $param );
 	}
 
-	static function getList( $uid, $type, $search=array(), $goto = 0 ){
+	static function search( $uid, $type, $search=array(), $goto = 0 ){
+		return self::getList( $uid, $type, $search, $goto, true );
+	}
+
+	static function getList( $uid, $type, $search=array(), $goto = 0, $dosearch = false ){
 
 		$pager = new \pager\Pager();
 
@@ -621,7 +626,11 @@ class MissionModel extends RedBean_SimpleModel {
 		$pager->setSize( $controller->get( 'size', 20 ) );
 		$pager->setItemCount( $cnt );
 
-		list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $search, $goto, $pager );
+		if( $dosearch ){
+			list( $sql, $param ) = self::getListSql( 'search', $uid, $type, $search, $goto, $pager );
+		}else{
+			list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $search, $goto, $pager );
+		}
 
 		$tmp = R::getAll( $sql, $param );
 		$list = $ids = array();
@@ -655,34 +664,61 @@ class MissionModel extends RedBean_SimpleModel {
 
 	static function getListSql( $sql_data_type, $uid, $type, $search_opt = array(), $goto = 0, $pager=null ){
 
-		$param = array( $uid );
+		$param = array();
+		if( $sql_data_type != 'search' ){
+			$param[] = $uid;
+		}
 
 		$sql_type = '';
 
 		switch( $type ){
 			case 'waiting':
-				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and ( mu.state = '. MissionUserModel::STATE_DRAFT .' or mu.state = '. MissionUserModel::STATE_WAITING .' ) ';
+				if( $sql_data_type != 'search' ){
+					$param = array_merge( $param, array( $uid ) );
+					$sql_type = ' and mu.uid = ? and ( mu.state = '. MissionUserModel::STATE_DRAFT .' or mu.state = '. MissionUserModel::STATE_WAITING .' ) ';
+				}else{
+					$sql_type = ' and ( mu.state = '. MissionUserModel::STATE_DRAFT .' or mu.state = '. MissionUserModel::STATE_WAITING .' ) ';
+				}
 				break;
 			case 'dealing':
-				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_DEALING .' ';
+				if( $sql_data_type != 'search' ){
+					$param = array_merge( $param, array( $uid ) );
+					$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_DEALING .' ';
+				}else{
+					$sql_type = ' and mu.state = '. MissionUserModel::STATE_DEALING .' ';
+				}
 				break;
 			case 'done':
-				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_DONE .' ';
+				if( $sql_data_type != 'search' ){
+					$param = array_merge( $param, array( $uid ) );
+					$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_DONE .' ';
+				}else{
+					$sql_type = ' and mu.state = '. MissionUserModel::STATE_DONE .' ';
+				}
 				break;
 			case 'closed':
-				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_CLOSED .' ';
+				if( $sql_data_type != 'search' ){
+					$param = array_merge( $param, array( $uid ) );
+					$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_CLOSED .' ';
+				}else{
+					$sql_type = ' and mu.state = '. MissionUserModel::STATE_CLOSED .' ';
+				}
 				break;
 			case 'waiting_drawback':
-				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_DRAWING .' ';
+				if( $sql_data_type != 'search' ){
+					$param = array_merge( $param, array( $uid ) );
+					$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_DRAWING .' ';
+				}else{
+					$sql_type = ' and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_DRAWING .' ';
+				}
 				break;
 			case 'waiting_refundment':
-				$param = array_merge( $param, array( $uid ) );
-				$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
+				if( $sql_data_type != 'search' ){
+					$param = array_merge( $param, array( $uid ) );
+					$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
+				}else{
+					$sql_type = ' and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
+				}
 				break;
 			case 'dz_unclosed':
 				$sql_type = ' and m.state <> '. self::STATE_CLOSED .' and (
@@ -779,6 +815,27 @@ class MissionModel extends RedBean_SimpleModel {
 		}
 
 		switch( $sql_data_type ){
+			case 'search':
+
+				$off = ( $pager->getPage() - 1 ) * $pager->getSize();
+				$sqlPager = ' limit '. $off. ', '. $pager->getSize(). ' ';
+
+				$sql = 'select m.*, s.name store, mu.state user_state, c.name category, sc.name sub_category, 
+					c.id as category_id, sc.id as sub_category_id, 
+					u.name create_uname, kf.name kf_uname, 
+					md.zhifubao as drawback_zhifubao, md.money as drawback_money
+					from mission m 
+					inner join mission_user mu on m.id = mu.mission_id
+					inner join mission_type sc on m.mission_type_id = sc.id
+					inner join mission_type c on sc.pid = c.id
+					left join store s on s.id = m.store_id
+					left join mission_drawback md on m.id = md.mission_id
+					inner join user u on u.id = m.create_uid
+					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
+					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
+				 order by m.id desc '. $sqlPager;
+				break;
+
 			case 'list':
 
 				$off = ( $pager->getPage() - 1 ) * $pager->getSize();

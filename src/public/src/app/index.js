@@ -52,6 +52,14 @@ define(function(require, exports, module){
 			    scrollInertia : 150
 			});
 
+			$( '#index-content' ).mCustomScrollbar({
+				advanced:{
+			        updateOnContentResize: true, 
+			        autoScrollOnFocus: false
+			    }, 
+			    scrollInertia : 150
+			});
+
 		}, 
 		create: function(){
 			form.showModel();

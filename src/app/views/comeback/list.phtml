@@ -8,7 +8,7 @@
 	</ul>
 
 	<div class='form form-inline' style='margin: 10px;height: 25px;'>
-		<form onsubmit='return false;' class='pull-right form-tuihuo'>
+		<form onsubmit='return false;' class='pull-left form-tuihuo'>
 			<input name='mail_num' placeholder='快递单号' style='width: 300px;' />
 			<button class='btn btn-warning btn-xs'>查询</button>
 		</form>
@@ -23,7 +23,7 @@
 					<th class='col-1'>#</th>
 					<th>快递公司</th>
 					<th>快递单号</th>
-					<th class='col-2'>检测结果</th>
+					<th class='col-2'>备注</th>
 					<th class='col-3'>登记时间</th>
 					<th class='col-2'>操作</th>
 				</tr>
@@ -35,7 +35,7 @@
 				<td><%=id%></td>
 				<td><%=mail_company%></td>
 				<td class='name'><%=mail_num%></td>
-				<td><%=result%></td>
+				<td><%=comment%></td>
 				<td><%=created%></td>
 				<td>
 					<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>

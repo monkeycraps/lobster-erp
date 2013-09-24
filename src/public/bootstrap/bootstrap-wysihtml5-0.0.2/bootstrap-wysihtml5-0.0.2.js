@@ -293,7 +293,7 @@ define(function(require, exports, module) {
 				assume_success_timeout : 0,
 				file_types : "*.jpg;*.png;*.gif",
 				file_types_description : 'JPG,PNG,GIF文件',
-				file_size_limit : "3 MB",
+				file_size_limit : "5 MB",
 				file_queue_limit : 1,
 				file_upload_limit : 9999,
 				debug: false, 

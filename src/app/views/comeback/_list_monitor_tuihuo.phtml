@@ -1,0 +1,38 @@
+<table class='table table-hover'>
+	<thead>
+		<tr>
+			<th class=''>#</th>
+			<th class='col-1'>快递公司</th>
+			<th class='col-1'>快递单号</th>
+			<th class='col-3'>产品</th>
+			<th class='col-1'>登记人</th>
+			<th class='col-2'>登记时间</th>
+			<th class=''>备注</th>
+			<th class=''>状态</th>
+			<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+				<th>操作</th>
+			<?php }?>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+		$comeback_list = $controller->comeback_list; 
+		foreach( $comeback_list as $one ){?>
+			<tr class='' id='listitem-comeback-<?=$one['id']?>' data-id='<?php echo $one['id']?>'>
+				<td><?=$one['id']?></td>
+				<td><?=$one['mail_company']?></td>
+				<td class='name'><?=$one['mail_num']?></td>
+				<td class='name'><?=$one['product_list']?></td>
+				<td class=''><?=$one['create_uname']?></td>
+				<td><?=Helper\Html::date( $one['created'] )?></td>
+				<td class=''><?= nl2br($one['comment'])?></td>
+				<td class=''><?= ComebackModel::getStateName( $one['state'] )?></td>
+				<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+				<td class='btn-state-<?php echo $one['state']?>' >
+					<span class='btn btn-default btn-xs btn-dealwith'>处理</span>
+				</td
+				<?php } ?>
+			</tr>
+		<?php }?>
+	</tbody>
+</table>

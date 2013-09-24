@@ -2,7 +2,7 @@
 	<ul class="nav">
 		<?php if( $controller->user->role_id == UserModel::ROLE_FCG ){?>
 
-			<li class="<?php echo $controller->nav == 'mission' ? 'tuihuo' : ''?>">
+			<li class="<?php echo $controller->nav == 'comeback' ? 'active' : ''?>">
 				<a class='' href="/comeback"><i
 					class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;所有退货
 					<i class='glyphicon glyphicon-chevron-right pull-right'></i>
@@ -43,7 +43,7 @@
 
 		<?php if( in_array( $controller->user->role_id, array( UserModel::ROLE_CG, UserModel::ROLE_DZ ) ) ){ ?>
 
-			<li class="<?php echo $controller->nav == 'mission' ? 'tuihuo' : ''?>">
+			<li class="<?php echo $controller->nav == 'comeback' ? 'active' : ''?>">
 				<a class='' href="/comeback"><i
 					class='glyphicon glyphicon-th-large'></i>&nbsp;&nbsp;查看退货
 					<i class='glyphicon glyphicon-chevron-right pull-right'></i>

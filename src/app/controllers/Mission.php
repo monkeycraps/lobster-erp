@@ -103,46 +103,24 @@ class MissionController extends ApplicationController {
 		$order_num = $this->get( 'order_num' );
 		$wanwan = $this->get( 'wanwan' );
 
-		if( $id ){
+		if( $id or $order_num or $wanwan  ){
 
 			switch( $this->user->role_id ){
 				case UserModel::ROLE_DZ:
-					list( $this->waiting_list_drawback, $this->pager_waiting_list_drawback ) = MissionModel::getList( $this->user->id, 'waiting_drawback', array( 'id'=>$id ) );
-					list( $this->waiting_list_refundment, $this->pager_waiting_list_refundment ) = MissionModel::getList( $this->user->id, 'waiting_refundment', array( 'id'=>$id ) );
-					list( $this->unclosed_list, $this->pager_unclosed_list ) = MissionModel::getList( $this->user->id, 'dz_unclosed', array( 'id'=>$id ) );
-					list( $this->closed_list, $this->pager_closed_list ) = MissionModel::getList( $this->user->id, 'dz_closed', array( 'id'=>$id ) );
+					list( $this->waiting_list_drawback, $this->pager_waiting_list_drawback ) = MissionModel::search( $this->user->id, 'waiting_drawback', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->waiting_list_refundment, $this->pager_waiting_list_refundment ) = MissionModel::search( $this->user->id, 'waiting_refundment', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->unclosed_list, $this->pager_unclosed_list ) = MissionModel::search( $this->user->id, 'dz_unclosed', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->closed_list, $this->pager_closed_list ) = MissionModel::search( $this->user->id, 'dz_closed', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
 					echo $this->renderPartial( 'mission/search' );
 					break;	
 				case UserModel::ROLE_FCG:
 					$this->show( 'index' );
 					break;
 				default: 
-					list( $this->waiting_list, $this->pager_waiting_list ) = MissionModel::getList( $this->user->id, 'waiting', array( 'id'=>$id ) );
-					list( $this->dealing_list, $this->pager_dealing_list ) = MissionModel::getList( $this->user->id, 'dealing', array( 'id'=>$id ) );
-					list( $this->done_list, $this->pager_done_list ) = MissionModel::getList( $this->user->id, 'done', array( 'id'=>$id ) );
-					list( $this->closed_list, $this->pager_closed_list ) = MissionModel::getList( $this->user->id, 'closed', array( 'id'=>$id ) );
-					echo $this->renderPartial( 'mission/search' );
-					break;
-			}
-
-		}elseif( $order_num or $wanwan ){
-
-			switch( $this->user->role_id ){
-				case UserModel::ROLE_DZ:
-					list( $this->waiting_list_drawback, $this->pager_waiting_list_drawback ) = MissionModel::getList( $this->user->id, 'waiting_drawback', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					list( $this->waiting_list_refundment, $this->pager_waiting_list_refundment ) = MissionModel::getList( $this->user->id, 'waiting_refundment', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					list( $this->unclosed_list, $this->pager_unclosed_list ) = MissionModel::getList( $this->user->id, 'dz_unclosed', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					list( $this->closed_list, $this->pager_closed_list ) = MissionModel::getList( $this->user->id, 'dz_closed', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					echo $this->renderPartial( 'mission/search' );
-					break;	
-				case UserModel::ROLE_FCG:
-					$this->show( 'index' );
-					break;
-				default: 
-					list( $this->waiting_list, $this->pager_waiting_list ) = MissionModel::getList( $this->user->id, 'waiting', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					list( $this->dealing_list, $this->pager_dealing_list ) = MissionModel::getList( $this->user->id, 'dealing', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					list( $this->done_list, $this->pager_done_list ) = MissionModel::getList( $this->user->id, 'done', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
-					list( $this->closed_list, $this->pager_closed_list ) = MissionModel::getList( $this->user->id, 'closed', array( 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->waiting_list, $this->pager_waiting_list ) = MissionModel::search( $this->user->id, 'waiting', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->dealing_list, $this->pager_dealing_list ) = MissionModel::search( $this->user->id, 'dealing', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->done_list, $this->pager_done_list ) = MissionModel::search( $this->user->id, 'done', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
+					list( $this->closed_list, $this->pager_closed_list ) = MissionModel::search( $this->user->id, 'closed', array( 'id'=>$id, 'order_num'=>$order_num, 'wanwan'=>$wanwan ) );
 					echo $this->renderPartial( 'mission/search' );
 					break;
 			}

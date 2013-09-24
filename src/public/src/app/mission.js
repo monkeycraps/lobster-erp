@@ -218,14 +218,23 @@ define(function(require, exports, module){
 
 			var view = this
 			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
 				filter = new Filter();
 				var tabpane = view.$( $(e.target).attr( 'href' ) )
+
 				var attrs = {
 					show_type: tabpane.attr( 'data-type' ),
 					page: tabpane.attr( 'data-page' ),
 					size: tabpane.attr( 'data-size' ),
 					sort: tabpane.attr( 'data-sort' )
 				};
+
+				if( attrs.show_type == 6 || attrs.show_type == 7 ){
+					$( '.filter-btn-wrapper' ).hide();
+				}else{
+					$( '.filter-btn-wrapper' ).show();
+				}
+
 				_.each( attrs, function( val, key ){
 					if( null == val || val == '' ){
 						delete( attrs[key] )
@@ -243,6 +252,13 @@ define(function(require, exports, module){
 				size: tabpane.attr( 'data-size' ),
 				sort: tabpane.attr( 'data-sort' )
 			};
+
+			if( attrs.show_type == 6 || attrs.show_type == 7 ){
+				$( '.filter-btn-wrapper' ).hide();
+			}else{
+				$( '.filter-btn-wrapper' ).show();
+			}
+			
 			_.each( attrs, function( val, key ){
 				if( null == val || val == '' ){
 					delete( attrs[key] )
@@ -358,6 +374,10 @@ define(function(require, exports, module){
 			} );
 		}, 
 		renderItem: function( model ){
+
+			if( app_data.user.role_id == 1 && model.get( 'kf_uid' ) != app_data.user.id ){
+				return;
+			}
 
 			var user_state = model.get( 'user_state' )
 			// 草稿 和 待处理放一起
@@ -577,6 +597,6 @@ define(function(require, exports, module){
 
 	// form_view.load( 315, 2, 14 )
 
-	list_view.gotoList( 9 )
+	// list_view.gotoList( 9 )
 
 });

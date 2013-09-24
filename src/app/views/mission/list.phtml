@@ -14,9 +14,9 @@
 				<span class='cnt'></span></a></li>
 			<li class='pull-right'>
 				<ul class='pull-right list-inline'>
-					<li><a class='word-btn word-btn-info do-filter'> 过滤 </a></li>
-					<li><a class='word-btn word-btn-success batch-submit'> 提交 </a></li>
+					<li class='filter-btn-wrapper'><a class='word-btn word-btn-info do-filter'> 过滤 </a></li>
 					<li><a class='list-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
+					<li><a class='word-btn word-btn-success batch-submit'> 提交 </a></li>
 				</ul>
 			</li>
 		</ul>
@@ -70,7 +70,7 @@
 			<li class='pull-right'>
 				<ul class='pull-right list-inline'>
 					<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
-						<li><a class='word-btn word-btn-info do-filter'> 过滤 </a></li>
+						<li class='filter-btn-wrapper'><a class='word-btn word-btn-info do-filter'> 过滤 </a></li>
 					<?php }?>
 					
 					<li><a class='list-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>

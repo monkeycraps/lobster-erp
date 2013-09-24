@@ -49,15 +49,15 @@ class AttachController extends AdminBaseController {
 				$w = intval( $src_w );
 				$h = intval( $src_h );
 
-				if( $w > 800 || $h > 800 ){
+				if( $w > 1000 || $h > 1000 ){
 
 					$filename = uniqid( 'atta_' ). md5( time() ). '.'. $ext;
 					$path_new = APP_PATH. "/public/attach/img/". $filename;
 
 					if( $w > $h ){
-						$scale = 800/$w;
+						$scale = 1000/$w;
 					}else{
-						$scale = 800/$h;
+						$scale = 1000/$h;
 					}
 
 					$final_w = intval( $w * $scale );
@@ -123,7 +123,7 @@ class AttachController extends AdminBaseController {
 
 		$this->renderJson ( array(
 			'err'=> 0, 
-			'url'=> 'http://'. $this->getRequest()->getHostName(). $small_url, 
+			'url'=> 'http://'. $this->getRequest()->getHostName(). $url, 
 		));
 	}
 

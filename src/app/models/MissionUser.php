@@ -66,6 +66,7 @@ class MissionUserModel extends RedBean_SimpleModel {
 					$mission_user->created = Helper\Html::now();
 
 					$mission->is_new = 1;
+					$mission->is_changed = 0;
 				}else{
 					if( $mission_user->state == self::STATE_CLOSED ){
 						return;

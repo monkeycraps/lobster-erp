@@ -193,7 +193,7 @@ define(function(require, exports, module){
 
 			var view = this;
 
-			if( ( app_data.user.role_id == 3 || app_data.user.role_id == 4 ) || this.model.get( 'user_state' ) == 4 || this.model.get( 'state' ) == 2 ){
+			if( ( app_data.user.role_id == 3 || app_data.user.role_id == 4 ) || this.model.get( 'user_state' ) == 4 || this.model.get( 'state' ) == 2 || this.model.get( 'kf_uid' ) != app_data.user.id ){
 
 				// 已关闭
 				this.$('#forminner-view').html( this.template_close( _.extend( this.model.toJSON(), {} ) ));

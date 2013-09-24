@@ -102,7 +102,7 @@ define(function(require, exports, module){
 			var view = this;
 			$.post( '/comeback/fanchan', {category: category, product: product}, function( rs ){
 				if( parseInt( rs.err ) == 0 ) {
-					alert( '完成入库' )
+					alert( '完成返厂' )
 					tr.remove();
 				}
 			}, 'json' );

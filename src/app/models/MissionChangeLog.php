@@ -82,7 +82,8 @@ class MissionChangeLogModel extends RedBean_SimpleModel {
 			);
 
 			// kefu mission 修改，记录为 is_changed
-			if( $user->role_id == UserModel::ROLE_KF ){
+			$controller = Yaf\Application::app()->controller;
+			if( $user->role_id == UserModel::ROLE_KF && !$controller->post( 'do_publish' ) && !$controller->put( 'do_publish' ) ){
 
 				$mission = R::findOne( 'mission', 'id = ?', array( $now['id'] ) );
 				if( $mission->state > 0 ){
