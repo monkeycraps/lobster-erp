@@ -604,16 +604,24 @@ class MissionModel extends RedBean_SimpleModel {
 		return $this;
 	}
 
-	static function getListCnt( $uid, $type ){
+	static function getListCnt( $uid, $type, $search = array() ){
 
-		list( $sql, $param ) = self::getListSql( 'cnt', $uid, $type );
+		list( $sql, $param ) = self::getListSql( 'cnt', $uid, $type, $search );
 
 		return R::getCell( $sql, $param );
 	}
 
 	static function getList( $uid, $type, $search=array(), $goto = 0 ){
 
-		list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $search, $goto );
+		$pager = new \pager\Pager();
+
+		$cnt = self::getListCnt( $uid, $type, $search );
+		$controller = Yaf\Application::app()->controller;
+		$pager->setPage( $controller->get( 'page', 1 ) );
+		$pager->setSize( $controller->get( 'size', 20 ) );
+		$pager->setItemCount( $cnt );
+
+		list( $sql, $param ) = self::getListSql( 'list', $uid, $type, $search, $goto, $pager );
 
 		$tmp = R::getAll( $sql, $param );
 		$list = $ids = array();
@@ -642,14 +650,15 @@ class MissionModel extends RedBean_SimpleModel {
 			}
 		}
 
-		return $list;
+		return array( $list, $pager );
 	}
 
-	static function getListSql( $sql_data_type, $uid, $type, $search_opt = array(), $goto = 0 ){
+	static function getListSql( $sql_data_type, $uid, $type, $search_opt = array(), $goto = 0, $pager=null ){
 
 		$param = array( $uid );
 
 		$sql_type = '';
+
 		switch( $type ){
 			case 'waiting':
 				$param = array_merge( $param, array( $uid ) );
@@ -693,6 +702,17 @@ class MissionModel extends RedBean_SimpleModel {
 			foreach( $search_opt as $key=>$one ){
 				if( !$one )continue;
 				switch( $key ){
+
+					case 'category':
+						$sql_where_order .= ' and c.id = ? ';
+						$param[] = $one;
+						break;
+
+					case 'sub_category':
+						$sql_where_order .= ' and m.mission_type_id = ? ';
+						$param[] = $one;
+						break;
+
 					case 'id':
 						$sql_where_order .= ' and m.id = ? ';
 						$param[] = $one;
@@ -706,12 +726,64 @@ class MissionModel extends RedBean_SimpleModel {
 						$sql_where_order .= ' and m.wanwan like( ? ) ';
 						$param[] = '%'. $one. '%';
 						break;
+					case 'state':
+						if( !in_array( 'all', $one ) ){
+							if( in_array( 'is_second', $one ) ){
+								$sql_where_order_arr_tmp[] = ' m.is_second = 1 ';
+							}
+							if( in_array( 'has_pid', $one ) ){
+								$sql_where_order_arr_tmp[] = ' m.pid <> 0 ';
+							}
+							$sql_where_order .= ' and ('. implode( ' or ', $sql_where_order_arr_tmp ) .') ';
+						}
+						break;
+					case 'type':
+						if( !in_array( 0, $one ) ){
+							$sql_where_order_arr_tmp = array();
+							foreach( $one as $mission_type ){
+								$sql_where_order_arr_tmp[] = ' c.id = ? ';
+								$param[] = $mission_type;
+							}
+							$sql_where_order .= ' and ('. implode( ' or ', $sql_where_order_arr_tmp ) .') ';
+						}
+
+						break;
+					case 'mistake':
+						if( !in_array( 0, $one ) ){
+
+							$sql_join_order .= ' inner join mission_flag mf on mf.mission_id = m.id ';
+
+							$sql_where_order_arr_tmp = array();
+							foreach( $one as $flag ){
+								switch( $flag ){
+									case MissionFlagModel::MIST_KF:
+										$sql_where_order_arr_tmp[] = ' mf.kf_mistake = 1 ';
+										break;
+									case MissionFlagModel::MIST_CG:
+										$sql_where_order_arr_tmp[] = ' mf.cg_mistake = 1 ';
+										break;
+									case MissionFlagModel::MIST_CK:
+										$sql_where_order_arr_tmp[] = ' mf.ck_mistake = 1 ';
+										break;
+									case MissionFlagModel::MIST_OTHER:
+										$sql_where_order_arr_tmp[] = ' mf.other_mistake = 1 ';
+										break;
+								}
+							}
+							$sql_where_order .= ' and ('. implode( ' or ', $sql_where_order_arr_tmp ) .') ';
+						}
+
+						break;
 				}
 			}
 		}
 
 		switch( $sql_data_type ){
 			case 'list':
+
+				$off = ( $pager->getPage() - 1 ) * $pager->getSize();
+				$sqlPager = ' limit '. $off. ', '. $pager->getSize(). ' ';
+
 				$sql = 'select m.*, s.name store, mu.state user_state, c.name category, sc.name sub_category, 
 					c.id as category_id, sc.id as sub_category_id, 
 					u.name create_uname, kf.name kf_uname, 
@@ -725,7 +797,7 @@ class MissionModel extends RedBean_SimpleModel {
 					inner join user u on u.id = m.create_uid
 					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
 					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
-				 order by m.id desc';
+				 order by m.id desc '. $sqlPager;
 				break;
 			case 'cnt':
 				$sql = 'select count(1)
@@ -763,8 +835,8 @@ class MissionModel extends RedBean_SimpleModel {
 			case UserModel::ROLE_CG:
 				$one['is_new'] && $arr[] = 'is_new';
 				$one['is_changed'] && $arr[] = 'is_changed';
-				($one['pid'] > 0 ) && $arr[] = 'has_pid';
 			default:
+				($one['pid'] > 0 ) && $arr[] = 'has_pid';
 				break;
 		}
 		$one['is_second'] && $arr[] = 'is_second';

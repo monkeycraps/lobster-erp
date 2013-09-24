@@ -62,11 +62,14 @@ define(function(require, exports, module){
 		el: $( '#front-list' ), 
 		events: {
 			'click .comeback-create': 'create', 
-			'click tbody tr': 'list_item_select', 
+			'click .tuihuo-wrapper tbody tr': 'list_item_select', 
 			'mouseover tbody tr': 'list_item_mouseover', 
 			'mouseleave tbody tr': 'list_item_mouseleave', 
 			'click tr .delete': 'list_item_delete', 
-			'submit form': 'search'
+			'submit .form-tuihuo': 'searchTuihuo', 
+			'submit .form-fanchan': 'searchFanchan', 
+			'click .btn-dealwith': 'dealwith', 
+			'click .btn-fanchan': 'fanchan'
 		}, 
 		initialize: function(){
 
@@ -78,11 +81,72 @@ define(function(require, exports, module){
 			    scrollInertia : 150
 			});
 
+			var view = this
+			this.$( 'a[data-toggle="tab"]' ).click(function(){
+				if( !$(this).hasClass( 'active' ) ){
+					view.search( $(this).attr( 'data-type' ) );
+				}
+			});
+
+			this.search();
+
 		}, 
-		search: function(){
-			var key = this.$( 'form input[name="mail_num"]' ).val()
-			this.$( 'tbody' ).load( '/comeback/search?key='+ key, function(){
-			} )
+		fanchan: function( e ){
+			var tr = $( e.currentTarget ).parents( 'tr:first' );
+			if( tr.length < 1 ){
+				return;
+			}
+
+			var category = tr.attr( 'data-category' )
+			var product = tr.attr( 'data-product' )
+			var view = this;
+			$.post( '/comeback/fanchan', {category: category, product: product}, function( rs ){
+				if( parseInt( rs.err ) == 0 ) {
+					alert( '完成入库' )
+					tr.remove();
+				}
+			}, 'json' );
+		}, 
+		dealwith: function( e ){
+			var tr = $( e.currentTarget ).parents( 'tr:first' );
+			if( tr.length < 1 ){
+				return;
+			}
+
+			var id = tr.attr( 'data-id' )
+			var view = this;
+			$.post( '/comeback/dealwith', {id: id}, function( model ){
+				view.$( '#listitem-comeback-' + model.id ).html( $(_.template( $('#template-comeback-listitem-monitor').html(), model )).html() );
+			}, 'json' );
+		}, 
+		searchTuihuo: function(){
+			this.search( 'tuihuo' )
+		}, 
+		searchFanchan: function(){
+			this.search( 'fanchan' )
+		}, 
+		search: function( type ){
+
+			if( !type ){
+				type = 'tuihuo'
+			}
+
+			switch( type ){
+				case 'tuihuo':
+					
+					var key = this.$( '.form-tuihuo input[name="mail_num"]' ).val()
+					var state = this.$( '.form-tuihuo select[name="state"]' ).val()
+					var fcg = this.$( '.form-tuihuo select[name="fcg"]' ).val()
+					this.$( '.tuihuo-wrapper tbody' ).load( '/comeback/search?type=tuihuo&key='+ key+ '&state='+ state + '&fcg='+ fcg + '&t='+ (new Date().getTime()), function(){
+					} )
+					break;
+				case 'fanchan':
+
+					var fcg = this.$( '.form-fanchan select[name="fcg"]' ).val()
+					this.$( '.fanchan-wrapper tbody' ).load( '/comeback/search?type=fanchan&fcg='+ fcg + '&t='+ (new Date().getTime()), function(){
+					} )
+					break;
+			}
 		}, 
 		create: function(){
 			form.showModel();
@@ -284,6 +348,8 @@ define(function(require, exports, module){
 		    "updated": '', 
 		    "comment": '', 
 		    "result": '', 
+		    "state": 0, 
+		    "state_name": '', 
 		    'comeback_product_list': null
 		}, 
 		urlRoot: '/comeback/comeback/id/'

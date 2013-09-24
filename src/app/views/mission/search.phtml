@@ -9,28 +9,28 @@
 			<h1>待返现</h1>
 			<div class="tab-pane fade active in" id="listitem-1" >
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>6, 'list'=>$controller->waiting_list_drawback ) ); ?>
+					'type'=>6, 'list'=>$controller->waiting_list_drawback, 'pager'=>$controller->pager_waiting_list_drawback ) ); ?>
 			</div>
 		</div>
 		<div class='list-item'>
 			<h1>处退款</h1>
 			<div class="tab-pane fade in" id="listitem-2">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>7, 'list'=>$controller->waiting_list_refundment ) ); ?>
+					'type'=>7, 'list'=>$controller->waiting_list_refundment, 'pager'=>$controller->pager_waiting_list_refundment ) ); ?>
 			</div>
 		</div>
 		<div class='list-item'>
 			<h1>未关闭</h1>
 			<div class="tab-pane fade in" id="listitem-3">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>8, 'list'=>$controller->unclosed_list ) ); ?>
+					'type'=>8, 'list'=>$controller->unclosed_list, 'pager'=>$controller->pager_unclosed_list ) ); ?>
 			</div>
 		</div>
 		<div class='list-item'>
 			<h1>已关闭</h1>
 			<div class="tab-pane fade in" id="listitem-4">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>9, 'list'=>$controller->closed_list ) ); ?>
+					'type'=>9, 'list'=>$controller->closed_list, 'pager'=>$controller->pager_closed_list ) ); ?>
 			</div>
 		</div>
 
@@ -46,28 +46,28 @@
 			<h1>待处理</h1>
 			<div class="tab-pane fade active in" id="listitem-1" >
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>1, 'list'=>$controller->waiting_list ) ); ?>
+					'type'=>1, 'list'=>$controller->waiting_list, 'pager'=>$controller->pager_waiting_list ) ); ?>
 			</div>
 		</div>
 		<div class='list-item'>
 			<h1>处理中</h1>
 			<div class="tab-pane fade in" id="listitem-2">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>2, 'list'=>$controller->dealing_list ) ); ?>
+					'type'=>2, 'list'=>$controller->dealing_list, 'pager'=>$controller->pager_dealing_list ) ); ?>
 			</div>
 		</div>
 		<div class='list-item'>
 			<h1>已处理</h1>
 			<div class="tab-pane fade in" id="listitem-3">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>3, 'list'=>$controller->done_list ) ); ?>
+					'type'=>3, 'list'=>$controller->done_list, 'pager'=>$controller->pager_done_list ) ); ?>
 			</div>
 		</div>
 		<div class='list-item'>
 			<h1>已关闭</h1>
 			<div class="tab-pane fade in" id="listitem-4">
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>4, 'list'=>$controller->closed_list ) ); ?>
+					'type'=>4, 'list'=>$controller->closed_list, 'pager'=>$controller->pager_closed_list ) ); ?>
 			</div>
 		</div>
 

@@ -1,7 +1,7 @@
 <?php
 $comeback_list = $controller->comeback_list; 
 foreach( $comeback_list as $one ){?>
-	<tr class='' id='listitem-comeback-<?=$one['id']?>'>
+	<tr class='' id='listitem-comeback-<?=$one['id']?>' data-id='<?php echo $one['id']?>'>
 		<td><?=$one['id']?></td>
 		<td><?=$one['mail_company']?></td>
 		<td class='name'><?=$one['mail_num']?></td>
@@ -10,5 +10,11 @@ foreach( $comeback_list as $one ){?>
 		<td class=''><?=$one['create_uname']?></td>
 		<td><?=Helper\Html::date( $one['created'] )?></td>
 		<td class=''><?=$one['comment']?></td>
+		<td class=''><?= ComebackModel::getStateName( $one['state'] ) ?></td>
+		<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+		<td class='btn-state-<?php echo $one['state']?>' >
+			<span class='btn btn-default btn-xs btn-dealwith'>处理</span>
+		</td>
+		<?php } ?>
 	</tr>
 <?php }?>

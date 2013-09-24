@@ -36,8 +36,14 @@ html > body{
 	      width: 100%;
 	    }
 	}
+	form.form-inline{
+		input[type="text"], input[type="password"], input[type="email"], select{
+	      margin-right: 10px;
+	      width: 177px;
+	    }
+	}
 	input, .form-control{
-		font-size: 13px;
+		font-size: 12px;
 		line-height: 18px;
 		color: #55555s5;
 		height: 25px;
@@ -132,6 +138,24 @@ html > body{
 	}
 	.m-hide{
 		display: none;
+	}
+
+	.pager{
+		a{
+			display: inline-block;
+			background: #eee;
+			// color: black;
+			display: inline-block;
+			line-height: 23px;
+			padding: 0 10px;
+			margin: 0 3px;
+			text-decoration: none;
+			&.current{
+				color: white;
+				background: #4276a9;
+				cursor: default;
+			}
+		}
 	}
 }
 

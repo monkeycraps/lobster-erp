@@ -12,7 +12,7 @@ class ComebackProductModel extends RedBean_SimpleModel {
 				return '新建';
 				break;
 			case self::STATE_DONE:
-				return '已入库';
+				return '已返厂';
 				break;
 			case self::STATE_DELETE:
 				return '删除';

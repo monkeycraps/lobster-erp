@@ -1,0 +1,13 @@
+<?php
+$fanchan_list = $controller->fanchan_list; 
+foreach( $fanchan_list as $one ){?>
+	<tr class='' data-category='<?php echo $one['category']?>' 
+		data-product='<?php echo $one['product']?>' >
+		<td><?=$one['category_name']?></td>
+		<td><?=$one['product_name']?></td>
+		<td><?=$one['cnt']?></td>
+		<td class='btn-state' >
+			<span class='btn btn-default btn-xs btn-fanchan'>全部返厂</span>
+		</td>
+	</tr>
+<?php }?>

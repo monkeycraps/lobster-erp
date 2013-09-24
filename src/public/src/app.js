@@ -43,9 +43,9 @@ define(function(require, exports, module) {
 	$.ajaxSetup({
 		'error': function( jqXHR, textStatus, errorThrown ){
 			try{
-				console.log( '访问出错：'+ jqXHR.status + ':' + eval( "\'" + jqXHR.responseText + "\'") )
+				alert( '访问出错：'+ jqXHR.status + ':' + eval( "\'" + jqXHR.responseText + "\'") )
 			}catch(ex){
-				console.log( '访问出错：'+ jqXHR.status + ':' + jqXHR.responseText )
+				alert( '访问出错：'+ jqXHR.status + ':' + jqXHR.responseText )
 			}
 			console.log( jqXHR )
 			console.log( textStatus )

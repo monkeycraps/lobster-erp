@@ -14,28 +14,41 @@
 				<span class='cnt'></span></a></li>
 			<li class='pull-right'>
 				<ul class='pull-right list-inline'>
-					<li><a class='word-btn word-btn-success batch-submit'>提交</a></li>
+					<li><a class='word-btn word-btn-info do-filter'> 过滤 </a></li>
+					<li><a class='word-btn word-btn-success batch-submit'> 提交 </a></li>
 					<li><a class='list-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
 				</ul>
 			</li>
 		</ul>
 
 		<div id="myTabContent" class="tab-content">
-			<div class="tab-pane fade active in" id="listitem-6" data-type='6'>
+			<div class="tab-pane fade active in" id="listitem-6" data-type='6' data-page='' data-size='' data-sort=''>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>6 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table-batch', array( 
-					'type'=>6, 'list'=>$controller->waiting_list_drawback ) ); ?>
+					'type'=>6, 'list'=>$controller->waiting_list_drawback, 'pager'=>$controller->pager_waiting_list_drawback ) ); ?>
+				</div>
 			</div>
-			<div class="tab-pane fade in" id="listitem-7" data-type='7'>
+			<div class="tab-pane fade in" id="listitem-7" data-type='7' data-page='' data-size='' data-sort=''>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>7 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table-batch', array( 
-					'type'=>7, 'list'=>$controller->waiting_list_refundment ) ); ?>
+					'type'=>7, 'list'=>$controller->waiting_list_refundment, 'pager'=>$controller->pager_waiting_list_refundment ) ); ?>
+				</div>
 			</div>
-			<div class="tab-pane fade in" id="listitem-8" data-type='8'>
+			<div class="tab-pane fade in" id="listitem-8" data-type='8' data-page='' data-size='' data-sort=''>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>8 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>8, 'list'=>$controller->unclosed_list ) ); ?>
+					'type'=>8, 'list'=>$controller->unclosed_list, 'pager'=>$controller->pager_unclosed_list ) ); ?>
+				</div>
 			</div>
-			<div class="tab-pane fade in" id="listitem-9" data-type='9'>
+			<div class="tab-pane fade in" id="listitem-9" data-type='9' data-page='' data-size='' data-sort=''>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>9 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>9, 'list'=>$controller->closed_list ) ); ?>
+					'type'=>9, 'list'=>$controller->closed_list, 'pager'=>$controller->pager_closed_list ) ); ?>
+				</div>
 			</div>
 		</div>
 
@@ -56,6 +69,10 @@
 				<span class='cnt'></span></a></li>
 			<li class='pull-right'>
 				<ul class='pull-right list-inline'>
+					<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+						<li><a class='word-btn word-btn-info do-filter'> 过滤 </a></li>
+					<?php }?>
+					
 					<li><a class='list-refresh' href='#' data-toggle="" data-placement="bottom" title="" data-original-title="刷新"><i class='glyphicon glyphicon-refresh'></i></a></li>
 				</ul>
 			</li>
@@ -63,20 +80,32 @@
 
 		<div id="myTabContent" class="tab-content">
 			<div class="tab-pane fade active in" id="listitem-1" data-type='1'>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>1 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>1, 'list'=>$controller->waiting_list ) ); ?>
+					'type'=>1, 'list'=>$controller->waiting_list, 'pager'=>$controller->pager_waiting_list ) ); ?>
+				</div>
 			</div>
 			<div class="tab-pane fade in" id="listitem-2" data-type='2'>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>2 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>2, 'list'=>$controller->dealing_list ) ); ?>
+					'type'=>2, 'list'=>$controller->dealing_list, 'pager'=>$controller->pager_dealing_list ) ); ?>
+				</div>
 			</div>
 			<div class="tab-pane fade in" id="listitem-3" data-type='3'>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>3 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>3, 'list'=>$controller->done_list ) ); ?>
+					'type'=>3, 'list'=>$controller->done_list, 'pager'=>$controller->pager_done_list ) ); ?>
+				</div>
 			</div>
 			<div class="tab-pane fade in" id="listitem-4" data-type='4'>
+				<?php echo $controller->renderPartial( 'mission/_mission_filter', array( 'type'=>4 ) ) ?>
+				<div class='wrapper'>
 				<?php echo $controller->renderPartial( 'mission/list-table', array( 
-					'type'=>4, 'list'=>$controller->closed_list ) ); ?>
+					'type'=>4, 'list'=>$controller->closed_list, 'pager'=>$controller->pager_closed_list ) ); ?>
+				</div>
 			</div>
 		</div>
 	<?php 

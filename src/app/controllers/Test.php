@@ -5,9 +5,9 @@ class TestController extends ApplicationController {
 	public function indexAction() {
 
 
-		echo Helper\Html::dateOfWeek( '2013-09-23' );
+		// echo Helper\Html::dateOfWeek( '2013-09-23' );
 		
-		echo $this->getRequest()->getHostName();die;
+		// echo $this->getRequest()->getHostName();die;
 
 		// $ext = R::dispense( 'mission_ext' );
 		// $ext->mission_id  = 4;
@@ -51,6 +51,11 @@ class TestController extends ApplicationController {
 		
 		// $mission_new = $mission->copyMission( 19 );
 		// echo $mission_new->id;
+
+		$rs = R::getCol( 'select c.id from comeback c left join ( 
+	select c.id from comeback c inner join comeback_product cp on c.id = cp.comeback_id and cp.state = 1 and cp.deleted is null where c.id in ( 41 ) group by c.id
+)t on c.id = t.id where t.id is null and c.state = 2 and c.deleted is null and c.id in ( 41 )' );
+		dump( $rs );die;
 
 	}
 }

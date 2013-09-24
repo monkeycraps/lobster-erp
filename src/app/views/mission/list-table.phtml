@@ -1,34 +1,4 @@
-<?php $user = $controller->user; ?>
-<?php switch( $type ){
-	case 8:
-	case 9: ?>
-		<form class='form form-inline'>
-			<div>
-				<div class=''>
-					<div class='col-lg-2'>
-						状态：
-					</div>
-					<div class='col-lg-10'>
-						<label class='checkbox'>
-							<input class='checkbox' type='checkbox' name='all' value='all' />
-							全部
-						</label>
-						<label class='checkbox'>
-							<input class='checkbox' type='checkbox' name='is_second' value='is_second' />
-							二次售后
-						</label>
-						<label class='checkbox'>
-							<input class='checkbox' type='checkbox' name='has_pid' value='has_pid' />
-							售后更改
-						</label>
-					</div>
-				</div>
-			</div>
-		</form>
-	<?php
-		break;
-}?>
-<table class='table table-hover'>
+<table class='table table-hover' >
 	<thead>
 		<tr>
 			<th class=''>#</th>
@@ -75,3 +45,6 @@
 		</tr>
 	</script>
 </table>
+<?php echo $pager->render(); ?>
+
+

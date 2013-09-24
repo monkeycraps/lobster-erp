@@ -42,11 +42,21 @@ class MessagePlugin extends Yaf\Plugin_Abstract {
 		$uid = Yaf\Application::app()->user->id;
 		if( !$uid )return array( null, null );
 
+		$sql_deleted = $with_deleted ? '' : ' and deleted is null ';
+
+		$sql = 'select count(1) from message where uid = ? '. $sql_deleted;
+		$cnt = R::getCell( $sql, array( $uid ) );
+
 		$limit = 10;
 		$offset = ($page-1) * $limit;
-		$sql_deleted = $with_deleted ? '' : ' and deleted is null ';
-		$sql = 'select * from message where uid = ? '. $sql_deleted. ' limit '. $offset. ', '. ($limit + 1);
+
 		$pager = new pager\Pager();
+		$pager->setSize( $limit );
+		$pager->setPage( $page );
+		$pager->setItemCount( $cnt );
+
+		$sql = 'select * from message where uid = ? '. $sql_deleted. ' limit '. $offset. ', '. ($limit + 1);
+
 		if( $list = R::getAll( $sql, array( $uid ) ) ){
 			if( count( $list ) > $limit ){
 				$pager->has_next = true;

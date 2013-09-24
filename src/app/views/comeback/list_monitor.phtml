@@ -1,52 +1,126 @@
 <?php use Helper\Html ?>
 <div class="">
 	<ul id="myTab" class="nav nav-tabs">
-		<li class="active"><a href="#comeback" data-toggle="tab">退货管理</a></li>
+		<li class="active"><a href="#comeback" data-toggle="tab" data-type='tuihuo'>退货管理</a></li>
+		<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+			<li><a href="#comeback_done" data-toggle="tab" data-type='fanchan'>退货库存</a></li>
+		<?php } ?>
 		<li class='pull-right'>
 		</li>
 	</ul>
 
-	<div class='form form-inline' style='margin: 10px;height: 25px;'>
-		<form onsubmit='return false;' class='pull-right'>
-			<input name='mail_num' placeholder='快递单号' style='width: 300px;' />
-			<button class='btn btn-warning btn-xs'>查询</button>
-		</form>
-	</div>
+	<div class="tab-content">
+		<div class="tab-pane active" id='comeback'>
 
-	<div class='split-line'></div>
+			<div class='' style='margin: 10px;height: 25px;'>
+				<form onsubmit='return false;' class='pull-right form-inline form-tuihuo'>
+					<label>分仓管：</label>
+					<select name='fcg' class='form-control'>
+						<option value='0'>全部</option>
+						<?php $fcg_list = UserModel::getFcgList();
+						foreach( $fcg_list as $one ){ ?>
+							<option value='<?php echo $one['id'] ?>'><?php echo $one['name']?></option>
+						<?php } ?>
+					</select>
+					<label>状态：</label>
+					<select name='state' class='form-control'>
+						<option value='0'>全部</option>
+						<?php $stateName = ComebackModel::$_stateName;
+						foreach( $stateName as $key=>$one ){ ?>
+							<option value='<?php echo $key ?>'><?php echo $one ?></option>
+						<?php } ?>
+					</select>
+					<input name='mail_num' placeholder='快递单号' style='width: 300px;' />
+					<button class='btn btn-warning btn-xs'>查询</button>
+				</form>
+			</div>
 
-	<div id="myTabContent" class="tab-content">
-		<div class="tab-pane fade active in" id="comeback">
-			<table class='table table-hover'>
-				<thead>
-					<tr>
-						<th class=''>#</th>
-						<th class='col-1'>快递公司</th>
-						<th class='col-1'>快递单号</th>
-						<th class='col-2'>产品</th>
-						<th class='col-1'>检测结果</th>
-						<th class='col-1'>登记人</th>
-						<th class='col-1'>登记时间</th>
-						<th class=''>备注</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					$comeback_list = $controller->comeback_list; 
-					foreach( $comeback_list as $one ){?>
-						<tr class='' id='listitem-comeback-<?=$one['id']?>'>
-							<td><?=$one['id']?></td>
-							<td><?=$one['mail_company']?></td>
-							<td class='name'><?=$one['mail_num']?></td>
-							<td class='name'><?=$one['product_list']?></td>
-							<td class=''><?=$one['result']?></td>
-							<td class=''><?=$one['create_uname']?></td>
-							<td><?=Helper\Html::date( $one['created'] )?></td>
-							<td class=''><?=$one['comment']?></td>
+			<div class='split-line'></div>
+
+			<div class='tuihuo-wrapper'>
+				<table class='table table-hover'>
+					<thead>
+						<tr>
+							<th class=''>#</th>
+							<th class='col-1'>快递公司</th>
+							<th class='col-1'>快递单号</th>
+							<th class='col-3'>产品</th>
+							<th class='col-1'>检测结果</th>
+							<th class='col-1'>登记人</th>
+							<th class='col-2'>登记时间</th>
+							<th class=''>备注</th>
+							<th class=''>状态</th>
+							<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+								<th>操作</th>
+							<?php }?>
 						</tr>
-					<?php }?>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
 		</div>
+
+			
+		<?php if( $controller->user->role_id == UserModel::ROLE_CG ){ ?>
+			<div class="tab-pane" id='comeback_done'>
+
+				<div class='' style='margin: 10px;height: 25px;'>
+
+					<form onsubmit='return false;' class='pull-right form-inline form-fanchan'>
+						<label>分仓管：</label>
+						<select name='fcg' class='form-control'>
+							<option value='0'>全部</option>
+							<?php $fcg_list = UserModel::getFcgList();
+							foreach( $fcg_list as $one ){ ?>
+								<option value='<?php echo $one['id'] ?>'><?php echo $one['name']?></option>
+							<?php } ?>
+						</select>
+						<button class='btn btn-warning btn-xs'>查询</button>
+					</form>
+				</div>
+
+				<div class='split-line'></div>
+
+				<div class='fanchan-wrapper'>
+					<table class='table table-hover' style=''>
+						<thead>
+							<tr>
+								<th class='col-1'>产品类型</th>
+								<th class='col-1'>型号</th>
+								<th class='col-3'>数量</th>
+								<th class='col-1'>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+
+
+		<?php } ?>
 	</div>
+
 </div>
+
+<script type='text/template' id='template-comeback-listitem-monitor'>
+<tr class='' id='listitem-comeback-<%=id%>'>
+	<td><%=id%></td>
+	<td><%=mail_company%></td>
+	<td class='name'><%=mail_num%></td>
+	<td><%=product_list_show%></td>
+	<td><%=result%></td>
+	<td><%=create_uname%></td>
+	<td><%=created%></td>
+	<td><%=comment%></td>
+	<td><%=state_name%></td>
+	<td class='btn-state-<%=state%>'>
+		<span class='btn btn-default btn-xs btn-dealwith'>处理</span>
+	</td>
+</tr>
+</script>
+

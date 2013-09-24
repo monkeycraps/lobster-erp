@@ -13,6 +13,7 @@ $app = array(
 		), 
 		'session_id'=>session_id(), 
 	), 
+	'mission_type_list'=>MissionTypeModel::getMissionTypeList(), 
 	'store'=> StoreModel::getAll(), 
 	'now'=>Helper\Html::now(), 
 );

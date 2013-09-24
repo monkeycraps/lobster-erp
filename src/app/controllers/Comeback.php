@@ -21,44 +21,12 @@ class ComebackController extends ApplicationController {
 
 	function indexAction(){
 
-		list ( $comeback_list, $pager_product ) = ComebackModel::getList ( $this->get ( 'pp' ) );
-		$comeback_list;
 
 		if( $this->user->role_id == UserModel::ROLE_FCG ){
 
-			$this->comeback_list = $comeback_list;
 			$this->show( 'index' );
 		}else{
 
-			$ids = array();
-			foreach( $comeback_list as $one ){
-				$ids[] = $one['id'];
-			}
-
-			$product_list = array();
-			if( $ids ){
-
-				if( $product_list_tmp = R::getAll( 'select * from comeback_product where comeback_id in ( '. implode( ', ', $ids ) .' ) and deleted is null' ) ){
-					foreach( $product_list_tmp as $one ){
-						!isset( $product_list[$one['comeback_id']] ) && $product_list[$one['comeback_id']] = array();
-						$product_list[$one['comeback_id']][] = $one;
-					}
-				}
-			}
-
-			foreach( $comeback_list as $key=>$one ){
-
-				$product_list_show = array();
-				if( isset( $product_list[$one['id']] ) ){
-					foreach( $product_list[$one['id']] as $one1 ){
-						$product_list_show[] = CategoryModel::getName( $one1['category_id'] ). ' - '. ProductModel::getName( $one1['product_id'] ). ' - '. $one1['cnt'];
-					}
-				}
-				$one['product_list'] = implode( '<br/>', $product_list_show );
-
-				$comeback_list[$key] = $one;
-			}
-			$this->comeback_list = $comeback_list;
 			$this->show( 'monitor' );
 		}
 	}
@@ -76,10 +44,6 @@ class ComebackController extends ApplicationController {
 				throw new Exception ( 'model not found' );
 			}
 			switch( $action ){
-				case 'publish':
-					$model->state = ComebackModel::STATE_PUBLISHED;
-					R::store( $model );
-					break;
 				default: 
 					throw new Exception( 'no action' );
 			}
@@ -127,7 +91,7 @@ class ComebackController extends ApplicationController {
 					$model->created = Helper\Html::now();
 					$model->updated = Helper\Html::now();
 					$model->create_uid = $this->user->id;
-					$model->state = ComebackModel::STATE_DRAFT;
+					$model->state = ComebackModel::STATE_NORMAL;
 
 					$id = R::store ( $model );
 
@@ -155,28 +119,7 @@ class ComebackController extends ApplicationController {
 			}
 		}
 		
-		$model->created = Helper\Html::date( $model->created );
-
-		$comeback_product_list = array();
-		if( $model_list = $model->withCondition( 'deleted is null' )->ownComebackProduct ){
-
-			foreach( $model_list as $one ){
-				switch( $one['type'] ){
-					default:
-						$comeback_product_list[] = array_merge( $one->getIterator ()->getArrayCopy (), array(
-							'category'=>CategoryModel::getName( $one->category_id ), 
-							'product'=>ProductModel::getName( $one->product_id ), 
-							'state_name'=>ComebackProductModel::getStateName( $one->state ), 
-						));
-						break;
-				}
-			}
-		}
-
-		$this->renderJson ( array_merge ( $model->getIterator ()->getArrayCopy (), array (
-			'create_uname' => $model->create_uid ? UserModel::getName( $model->create_uid ) : 'admin', 
-			'comeback_product_list' => $comeback_product_list, 
-		) ) );
+		$this->renderModel( $model );
 	}
 
 	public function updateProduct( $model, $arr ){
@@ -225,48 +168,183 @@ class ComebackController extends ApplicationController {
 
 
 	function searchAction(){
-		if( !$key = $this->get( 'key' ) ){
-			// throw new Exception( '没有搜索条件', 412 );
-		}
-
-		list ( $comeback_list, $pager_product ) = ComebackModel::getList ( 1, 9999, $key );
+		$key = $this->get( 'key' );
+		$fcg = $this->get( 'fcg' );
+		$state = $this->get( 'state' );
+		$type = $this->get( 'type', 'tuihuo' );
 
 		if( $this->user->role_id == UserModel::ROLE_FCG ){
+
+			list ( $comeback_list, $pager_comeback ) = ComebackModel::getList ( 1, 9999, $key );
 
 			$this->comeback_list = $comeback_list;
 			echo $this->renderPartial( 'comeback/_search' );
 		}else{
 
-			$ids = array();
-			foreach( $comeback_list as $one ){
-				$ids[] = $one['id'];
-			}
+			list ( $comeback_list, $pager_comeback ) = ComebackModel::getList ( 1, 9999, $key, $fcg, $state );
 
-			$product_list = array();
-			if( $ids ){
+			switch( $type ){
+				case 'tuihuo':
 
-				if( $product_list_tmp = R::getAll( 'select * from comeback_product where comeback_id in ( '. implode( ', ', $ids ) .' ) and deleted is null' ) ){
-					foreach( $product_list_tmp as $one ){
-						!isset( $product_list[$one['comeback_id']] ) && $product_list[$one['comeback_id']] = array();
-						$product_list[$one['comeback_id']][] = $one;
+					$ids = array();
+					foreach( $comeback_list as $one ){
+						$ids[] = $one['id'];
 					}
-				}
-			}
 
-			foreach( $comeback_list as $key=>$one ){
+					$product_list = array();
+					if( $ids ){
 
-				$product_list_show = array();
-				if( isset( $product_list[$one['id']] ) ){
-					foreach( $product_list[$one['id']] as $one1 ){
-						$product_list_show[] = CategoryModel::getName( $one1['category_id'] ). ' - '. ProductModel::getName( $one1['product_id'] ). ' - '. $one1['cnt'];
+						if( $product_list_tmp = R::getAll( 'select * from comeback_product where comeback_id in ( '. implode( ', ', $ids ) .' ) and deleted is null' ) ){
+							foreach( $product_list_tmp as $one ){
+								!isset( $product_list[$one['comeback_id']] ) && $product_list[$one['comeback_id']] = array();
+								$product_list[$one['comeback_id']][] = $one;
+							}
+						}
 					}
-				}
-				$one['product_list'] = implode( '<br/>', $product_list_show );
 
-				$comeback_list[$key] = $one;
+					foreach( $comeback_list as $key=>$one ){
+
+						$product_list_show = array();
+						if( isset( $product_list[$one['id']] ) ){
+							foreach( $product_list[$one['id']] as $one1 ){
+								$product_list_show[] = CategoryModel::getName( $one1['category_id'] ). ' - '. 
+									ProductModel::getName( $one1['product_id'] ). ' - '. 
+									$one1['cnt']. ' - '. ComebackProductModel::getStateName( $one1['state'] );
+							}
+						}
+						$one['product_list'] = implode( '<br/>', $product_list_show );
+
+						$comeback_list[$key] = $one;
+					}
+					$this->comeback_list = $comeback_list;
+					echo $this->renderPartial( 'comeback/_search_monitor' );
+
+					break;
+				case 'fanchan':
+
+					$params = array();
+					$sqlFcg = '';
+					if( $fcg ){
+						$sqlFcg = ' and c.create_uid = ? ';
+						$params[] = $fcg;
+					}
+
+					$sql = 'select cp.category_id as category, cp.product_id as product, pc.name as category_name, pp.name as product_name, sum( cp.cnt ) as cnt from comeback c 
+							inner join comeback_product cp on c.id = cp.comeback_id and cp.deleted is null and cp.state = '. ComebackProductModel::STATE_NEW .'
+							inner join category pc on cp.category_id = pc.id
+							inner join product pp on cp.product_id = pp.id
+						where c.state = '. ComebackModel::STATE_DONE .' and c.deleted is null '. $sqlFcg .'
+						group by cp.category_id, cp.product_id';
+					$this->fanchan_list = R::getAll( $sql, $params );
+
+					echo $this->renderPartial( 'comeback/_search_monitor_fanchan' );
+
+					break;
 			}
-			$this->comeback_list = $comeback_list;
-			echo $this->renderPartial( 'comeback/_search_monitor' );
+
 		}
+	}
+
+	function dealwithAction(){
+		if( !($id = $this->post( 'id' )) or !( $model = R::findOne( 'comeback', 'id = ?', array( $id ) ) ) ){
+			throw new Exception( 'no id or no comeback', 412 );
+		}
+
+		$model->state = ComebackModel::STATE_DONE;
+		$model->updated = Helper\Html::now();
+		R::store( $model );
+
+		$this->renderModel( $model );
+	}
+
+	function fanchanAction(){
+		if( !($category = $this->post( 'category' )) or !($product = $this->post( 'product' )) ){
+			throw new Exception( 'no category or no product', 412 );
+		}
+
+		R::begin();
+		try{
+
+			$sql = 'select cp.id, c.id as comeback_id from comeback c 
+					inner join comeback_product cp on c.id = cp.comeback_id 
+				where c.state = '. ComebackModel::STATE_DONE .' and cp.category_id = ? and cp.product_id = ? 
+					and cp.state = '. ComebackProductModel::STATE_NEW;
+			$list = R::getAll( $sql, array(
+				$category, 
+				$product, 
+			) );
+
+			$ids_comeback = array();
+			$ids_comeback_product = array();
+			if( $list ){
+
+				foreach( $list as $one ){
+					$ids_comeback_product[] = $one['id'];
+					$ids_comeback[] = $one['comeback_id'];
+				}
+
+				$sql = 'update comeback_product set state = '. ComebackProductModel::STATE_DONE. ', 
+					updated = \''. Helper\Html::now() .'\'
+					where id in ('. implode( ', ', $ids_comeback_product ) .') ';
+				$rs = R::exec( $sql );
+
+				$sql = 'select c.id from comeback c left join ( 
+							select c.id from comeback c inner join comeback_product cp on 
+								c.id = cp.comeback_id and cp.state = 1 and cp.deleted is null 
+							where c.id in ( '. implode( ', ', $ids_comeback ) .' ) group by c.id
+						)t on c.id = t.id where t.id is null and c.state = 2 and 
+							c.deleted is null and 
+							c.id in ( '. implode( ', ', $ids_comeback ) .' )';
+				if( $ids_comeback_done = R::getCol( $sql ) ){
+					$sql = 'update comeback set state = '. ComebackModel::STATE_BACK. ', 
+					updated = \''. Helper\Html::now() .'\'
+					where id in ('. implode( ', ', $ids_comeback_done ) .') ';
+					R::exec( $sql );
+				}
+
+			}
+
+			R::commit();
+		}catch( Exception $e ){
+			R::rollback();
+			throw $e;
+		}
+
+		$this->renderJson(array('err'=>0));
+	}
+
+
+	private function renderModel( $model ){
+
+		$model->created = Helper\Html::date( $model->created );
+
+		$comeback_product_list = array();
+		if( $model_list = $model->withCondition( 'deleted is null' )->ownComebackProduct ){
+
+			foreach( $model_list as $one ){
+				switch( $one['type'] ){
+					default:
+						$comeback_product_list[] = array_merge( $one->getIterator ()->getArrayCopy (), array(
+							'category'=>CategoryModel::getName( $one->category_id ), 
+							'product'=>ProductModel::getName( $one->product_id ), 
+							'state_name'=>ComebackProductModel::getStateName( $one->state ), 
+						));
+						break;
+				}
+			}
+		}
+
+		$product_list_show = array();
+		foreach( $comeback_product_list as $key=>$one ){
+			$product_list_show[] = $one['category']. ' - '. $one['product']. ' - '. $one['cnt']. ' - '. $one['state_name'];
+		}
+
+		$this->renderJson ( array_merge ( $model->getIterator ()->getArrayCopy (), array (
+			'comment'=> nl2br( $model->comment ), 
+			'state_name'=>ComebackModel::getStateName( $model->state ), 
+			'create_uname' => $model->create_uid ? UserModel::getName( $model->create_uid ) : 'admin', 
+			'comeback_product_list' => $comeback_product_list, 
+			'product_list_show' => implode( '<br/>', $product_list_show ), 
+		) ) );
 	}
 }

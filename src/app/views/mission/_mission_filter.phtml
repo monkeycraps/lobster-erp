@@ -1,0 +1,135 @@
+<?php $user = $controller->user; 
+if( $user->role_id == UserModel::ROLE_DZ ){?>
+<form class='form form-inline mission-filter-form' style='margin: 5px 3px;'>
+	<?php switch( $type ){
+			case 8:
+			case 9: ?>
+				<div class='form-group'>
+					<div class='col-lg-2'>
+						<label>状态：</label>
+					</div>
+					<div class='col-lg-2'>
+						<label class='checkbox'>
+							<input class='checkbox' type='checkbox' name='state[]' value='all' />
+							全部
+						</label>
+					</div>
+					<div class='col-lg-8'>
+						<label class='checkbox'>
+							<input class='checkbox' type='checkbox' name='state[]' value='is_second' />
+							二次售后
+						</label>
+						<label class='checkbox'>
+							<input class='checkbox' type='checkbox' name='state[]' value='has_pid' />
+							售后更改
+						</label>
+					</div>
+				</div>
+				<div class='form-group'>
+					<div class='col-lg-2'>
+						<label>类型：</label>
+					</div>
+					<div class='col-lg-2'>
+						<label class='checkbox'>
+							<input class='checkbox' type='checkbox' name='type[]' value='0' />
+							全部
+						</label>
+					</div>
+					<div class='col-lg-8'>
+						<?php $type_list = MissionTypeModel::getMissionTypeList(); 
+						foreach( $type_list as $one ){ ?>
+
+							<label class='checkbox'>
+								<input class='checkbox' type='checkbox' name='type[]' value='<?php echo $one['data']['id'] ?>' />
+								<?php echo $one['data']['name'] ?>
+							</label>
+						<?php }?>
+					</div>
+				</div>
+			<?php
+				break;
+		}
+	?>
+
+	<?php switch( $type ){
+			case 9: ?>
+				<div class='form-group'>
+					<div class='col-lg-2'>
+						<label>任务备注：</label>
+					</div>
+					<div class='col-lg-2'>
+						<label class='checkbox'>
+                            <input type='checkbox' class='checkbox' value='0' name='mistake[]' />
+                            全部
+                        </label>
+					</div>
+					<div class='col-lg-8'>
+						<label class='checkbox'>
+                            <i class='glyphicon glyphicon-flag' style='color: red'></i>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_KF ?>' name='mistake[]' />
+                            客服失误
+                        </label>
+                        <label class='checkbox'>
+                            <i class='glyphicon glyphicon-flag' style='color: blue'></i>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_CG ?>' name='mistake[]' />
+                            仓管失误
+                        </label>
+                        <label class='checkbox'>
+                            <i class='glyphicon glyphicon-flag' style='color: rgb(240, 201, 0)'></i>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_CK ?>' name='mistake[]' />
+                            仓库失误
+                        </label>
+                        <label class='checkbox'>
+                            <i class='glyphicon glyphicon-flag' style='color: green'></i>
+                            <input type='checkbox' class='checkbox' value='<?php echo MissionFlagModel::MIST_OTHER ?>' name='mistake[]' />
+                            其他情况
+                        </label>
+                    </div>
+				</div>
+			<?php
+				break;
+	 }?>
+
+</form>
+<?php }?>
+
+
+<?php $user = $controller->user; 
+if( $user->role_id == UserModel::ROLE_CG ){?>
+<form class='form form-inline mission-filter-form pull-right' style='margin: 5px 3px;'>
+	<?php switch( $type ){ 
+		default: 
+		?>
+
+		<div>
+			<label>任务类型：</label>
+			<select class='form-control' style='width: 100px;' name='category'>
+				<option value='0'>全部</option>
+				<?php 
+                $mission_type_list = rbac\Role::getRoleActions( $controller->user->role_id );
+                $first = true; foreach( $mission_type_list as $one ) { ?>
+                    <option value='<?php echo $one['data']['id'] ?>' ><?php echo $one['data']['name'] ?></option>
+                <?php $first = false; }?>
+			</select>
+			<select class='form-control' style='width: 100px;' name='sub_category'>
+				<option value='0'>全部</option>
+			</select>
+			<label>店铺：</label>
+			<select class='form-control' name='store' style='width: 70px;'>
+				<option value='0'>全部</option>
+				<?php 
+                $storeList = StoreModel::getAll();
+                foreach( $storeList as $one ) { ?>
+                    <option value='<?php echo $one['id'] ?>' ><?php echo $one['name'] ?></option>
+                <?php $first = false; }?>
+			</select>
+		</div>
+
+		<?php
+				break;
+	}?>
+
+</form>
+<?php }?>
+
+

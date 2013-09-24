@@ -10,7 +10,7 @@ define(function(require, exports, module){
 	var Mission = require( '/src/app/mission_ext' );
 	var FormBoard = require( '/src/app/form_board' );
 	var Comment = require( '/src/app/comment' );
-	var MissionFilter = require( '/src/app/mission_filter' );
+	var Filter = require( '/src/app/filter' );
 
 	function resize(){
 		var wh = $(window).height()
@@ -199,8 +199,11 @@ define(function(require, exports, module){
 			'mouseleave tbody tr': 'list_item_mouseleave', 
 			'mouseleave tbody tr': 'list_item_mouseleave', 
 			'click .batch-submit': 'batchSubmit', 
+			'click .do-filter': 'btnDoFilter', 
+			'click .pager a': 'btnGoPage', 
 			'click .list-refresh': 'listReload'
 		}, 
+		filter: null, 
 		initialize: function(){
 			this.$el.mCustomScrollbar({
 				advanced:{
@@ -212,6 +215,61 @@ define(function(require, exports, module){
 			if( app_data.user.id ){
 				this.reloadCnt();
 			}
+
+			var view = this
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				filter = new Filter();
+				var tabpane = view.$( $(e.target).attr( 'href' ) )
+				var attrs = {
+					show_type: tabpane.attr( 'data-type' ),
+					page: tabpane.attr( 'data-page' ),
+					size: tabpane.attr( 'data-size' ),
+					sort: tabpane.attr( 'data-sort' )
+				};
+				_.each( attrs, function( val, key ){
+					if( null == val || val == '' ){
+						delete( attrs[key] )
+					}
+				})
+				filter.params = _.extend( filter.defaults, attrs );
+				list_view.filter = filter;
+			})
+
+			var filter = new Filter();
+			var tabpane = view.$( '.tab-pane.active' )
+			var attrs = {
+				show_type: tabpane.attr( 'data-type' ),
+				page: tabpane.attr( 'data-page' ),
+				size: tabpane.attr( 'data-size' ),
+				sort: tabpane.attr( 'data-sort' )
+			};
+			_.each( attrs, function( val, key ){
+				if( null == val || val == '' ){
+					delete( attrs[key] )
+				}
+			})
+			filter.params = _.extend( filter.defaults, attrs );
+			this.filter = filter;
+		}, 
+		btnDoFilter: function(){
+			this.filter.params.page = 1
+			this.doFilter();
+		},
+		btnGoPage: function( e ){
+			var dom = $( e.currentTarget );
+			if( dom.hasClass( 'current' ) ){
+				return false;
+			}
+			this.filter.params.page = dom.attr( 'data-page' )
+			this.doFilter();
+			return false;
+		}, 
+		doFilter: function( callback ){
+
+			var params = this.filter.getParams();
+
+			this.$( '.tab-pane.active .wrapper' ).load( 'mission/filter?'+ params+ '&t='+ (new Date().getTime()), function(){
+			} )
 		},
 		listReload: function(){
 			this.reload();

@@ -8,7 +8,7 @@
 	</ul>
 
 	<div class='form form-inline' style='margin: 10px;height: 25px;'>
-		<form onsubmit='return false;' class='pull-right'>
+		<form onsubmit='return false;' class='pull-right form-tuihuo'>
 			<input name='mail_num' placeholder='快递单号' style='width: 300px;' />
 			<button class='btn btn-warning btn-xs'>查询</button>
 		</form>
@@ -16,50 +16,33 @@
 
 	<div class='split-line'></div>
 
-	<div id="myTabContent" class="tab-content">
-		<div class="tab-pane fade active in" id="comeback">
-			<table class='table table-hover'>
-				<thead>
-					<tr>
-						<th class='col-1'>#</th>
-						<th>快递公司</th>
-						<th>快递单号</th>
-						<th class='col-2'>检测结果</th>
-						<th class='col-3'>登记时间</th>
-						<th class='col-2'>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					$comeback_list = $controller->comeback_list; 
-					foreach( $comeback_list as $one ){?>
-						<tr class='' id='listitem-comeback-<?=$one['id']?>'>
-							<td><?=$one['id']?></td>
-							<td><?=$one['mail_company']?></td>
-							<td class='name'><?=$one['mail_num']?></td>
-							<td class=''><?=$one['result']?></td>
-							<td><?=Helper\Html::date( $one['created'] )?></td>
-							<td>
-								<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
-								<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
-							</td>
-						</tr>
-					<?php }?>
-				</tbody>
-				<script type='text/template' id='template-comeback-listitem'>
-				<tr class='' id='listitem-comeback-<%=id%>'>
-					<td><%=id%></td>
-					<td><%=mail_company%></td>
-					<td class='name'><%=mail_num%></td>
-					<td><%=result%></td>
-					<td><%=created%></td>
-					<td>
-						<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
-						<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
-					</td>
+	<div class='tuihuo-wrapper'>
+		<table class='table table-hover'>
+			<thead>
+				<tr>
+					<th class='col-1'>#</th>
+					<th>快递公司</th>
+					<th>快递单号</th>
+					<th class='col-2'>检测结果</th>
+					<th class='col-3'>登记时间</th>
+					<th class='col-2'>操作</th>
 				</tr>
-				</script>
-			</table>
-		</div>
+			</thead>
+			<tbody>
+			</tbody>
+			<script type='text/template' id='template-comeback-listitem'>
+			<tr class='' id='listitem-comeback-<%=id%>'>
+				<td><%=id%></td>
+				<td><%=mail_company%></td>
+				<td class='name'><%=mail_num%></td>
+				<td><%=result%></td>
+				<td><%=created%></td>
+				<td>
+					<a href='#' class='op delete'><i class='glyphicon glyphicon-remove'></i></a>
+					<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
+				</td>
+			</tr>
+			</script>
+		</table>
 	</div>
 </div>
