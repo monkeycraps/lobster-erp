@@ -749,6 +749,11 @@ class MissionModel extends RedBean_SimpleModel {
 						$param[] = $one;
 						break;
 
+					case 'store':
+						$sql_where_order .= ' and m.store_id = ? ';
+						$param[] = $one;
+						break;
+
 					case 'id':
 						$sql_where_order .= ' and m.id = ? ';
 						$param[] = $one;
