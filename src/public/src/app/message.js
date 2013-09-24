@@ -45,7 +45,8 @@ define(function(require, exports, module){
 		events: {
 			'click tbody tr': 'itemToggle', 
 			'click tbody tr .op-remove': 'itemRemove', 
-			'click tbody tr .op-check-message': 'goto_message'
+			'click tbody tr .op-check-message': 'goto_message',
+			'click .pager a': 'goPage'
 		}, 
 		initialize: function(){
 
@@ -63,6 +64,16 @@ define(function(require, exports, module){
 			notified_message.showList( this.list );
 
 			this.startCheckMessageInterval();
+		}, 
+		goPage: function( e ){
+			var dom = $( e.currentTarget );
+			if( dom.hasClass( 'current' ) ){
+				return false;
+			}
+			var page = dom.attr( 'data-page' )
+			this.$( '.modal-body' ).load('/message/page?t='+ (new Date().getTime()) +'&page='+ page, function(){
+				// view.open( id, callback );
+			})
 		}, 
 		startCheckMessageInterval: function(){
 			var view = this;
@@ -118,7 +129,7 @@ define(function(require, exports, module){
 			})
 			if( !got ){
 				var view = this;
-				this.$( 'tbody' ).load('/message/page?id='+ id, function(){
+				this.$( '.modal-body' ).load('/message/page?t='+ (new Date().getTime()) +'&id='+ id, function(){
 					view.open( id, callback );
 				})
 			}else{

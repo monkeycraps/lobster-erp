@@ -55,17 +55,9 @@ class MessagePlugin extends Yaf\Plugin_Abstract {
 		$pager->setPage( $page );
 		$pager->setItemCount( $cnt );
 
-		$sql = 'select * from message where uid = ? '. $sql_deleted. ' limit '. $offset. ', '. ($limit + 1);
+		$sql = 'select * from message where uid = ? '. $sql_deleted. ' limit '. $offset. ', '. $limit;
 
-		if( $list = R::getAll( $sql, array( $uid ) ) ){
-			if( count( $list ) > $limit ){
-				$pager->has_next = true;
-			}
-			if( $page > 1 ){
-				$pager->has_prev = true;
-			}
-			unset( $list[count( $list )] );
-		}
+		$list = R::getAll( $sql, array( $uid ) );
 
 		return array( $list, $pager );
 	}

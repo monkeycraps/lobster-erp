@@ -9,7 +9,7 @@ class MessageController extends ApplicationController {
 
 	function pageAction(){
 
-		echo $this->renderPartial( 'message/index' );
+		echo $this->renderPartial( 'message/_page' );
 	}
 
 	function deleteAction(){
