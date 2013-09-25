@@ -33,18 +33,22 @@ class AnalyseController extends AdminBaseController {
 			select count(1) cnt, \'new\' type, uid from ( 
 				select m.id, mu.uid from mission m left join mission_product mt on mt.mission_id = m.id and mt.deleted is null
 					inner join mission_user mu on mu.mission_id = m.id
+					inner join user u on mu.uid = u.id and u.role_id = '. UserModel::ROLE_KF .'
 					where m.closed is null '. $condition .' group by m.id, mu.uid ) t group by uid union 
 			select count(1) cnt, \'second\' type, uid from ( 
 				select m.id, mu.uid from mission m left join mission_product mt on mt.mission_id = m.id and mt.deleted is null
 					inner join mission_user mu on mu.mission_id = m.id
+					inner join user u on mu.uid = u.id and u.role_id = '. UserModel::ROLE_KF .'
 					where m.is_second = 1 '. $condition .' group by m.id, mu.uid ) t1 group by uid union 
 			select count(1) cnt, \'has_pid\' type, uid from ( 
 				select m.id, mu.uid from mission m left join mission_product mt on mt.mission_id = m.id and mt.deleted is null
 					inner join mission_user mu on mu.mission_id = m.id
+					inner join user u on mu.uid = u.id and u.role_id = '. UserModel::ROLE_KF .'
 					where m.pid > 0 '. $condition .' group by m.id, mu.uid ) t2 group by uid union 
 			select count(1) cnt, \'closed\' type, uid from ( 
 				select m.id, mu.uid from mission m left join mission_product mt on mt.mission_id = m.id and mt.deleted is null
 					inner join mission_user mu on mu.mission_id = m.id
+					inner join user u on mu.uid = u.id and u.role_id = '. UserModel::ROLE_KF .'
 					where m.closed is not null '. $condition .' group by m.id, mu.uid ) t3 group by uid
 		', $params );
 
@@ -55,7 +59,7 @@ class AnalyseController extends AdminBaseController {
 			$list[$uid][$one['type']] = $one['cnt'];
 		}
 
-		$user_list = R::getAll( 'select id, name, role_id from user where state = 0' );
+		$user_list = R::getAll( 'select id, name, role_id from user where state = 0 and role_id = '. UserModel::ROLE_KF );
 		$default = array(
 			'new'=>0, 
 			'second'=>0, 

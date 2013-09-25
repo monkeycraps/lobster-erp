@@ -55,9 +55,16 @@ class MissionUserModel extends RedBean_SimpleModel {
 
 		switch( $user_role ){
 			case UserModel::ROLE_KF:
-				$cg = RoleModel::getCG( $this->uid );
 
 				$mission = R::findOne( 'mission', 'id = ?', array( $this->mission_id ) );
+
+				// 纯返现逻辑
+				if( $mission->mission_type_id == 19 ){
+					return;
+				}
+
+				$cg = RoleModel::getCG( $this->uid );
+
 				
 				if( !$mission_user = R::findOne( 'mission_user', 'uid = ? and mission_id = ?', array( $cg->id, $this->mission_id ) ) ){
 					$mission_user = R::dispense( 'mission_user' );

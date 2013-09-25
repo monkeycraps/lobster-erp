@@ -361,7 +361,7 @@ define(function(require, exports, module){
 		}, 
 		search: function( id, order_num, wanwan ){
 			var view = this;
-			this.$el.load( '/mission/search?id='+ id +'&order_num='+ order_num+ '&wanwan='+ wanwan, function(){
+			this.$el.load( '/mission/search?t='+ (new Date().getTime()) +'&id='+ id +'&order_num='+ order_num+ '&wanwan='+ wanwan, function(){
 				view.$el.mCustomScrollbar({
 					advanced:{
 				        updateOnContentResize: true, 

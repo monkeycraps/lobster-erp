@@ -235,7 +235,27 @@ class ComebackController extends ApplicationController {
 							inner join product pp on cp.product_id = pp.id
 						where c.state = '. ComebackModel::STATE_DONE .' and c.deleted is null '. $sqlFcg .'
 						group by cp.category_id, cp.product_id';
-					$this->fanchan_list = R::getAll( $sql, $params );
+					$list1_tmp = R::getAll( $sql, $params );
+
+					$sql = 'select cp.category_id as category, cp.product_id as product, pc.name as category_name, pp.name as product_name, sum( cp.cnt ) as cnt_new from comeback c 
+							inner join comeback_product cp on c.id = cp.comeback_id and cp.deleted is null and cp.state = '. ComebackProductModel::STATE_NEW .'
+							inner join category pc on cp.category_id = pc.id
+							inner join product pp on cp.product_id = pp.id
+						where c.state = '. ComebackModel::STATE_NORMAL .' and c.deleted is null '. $sqlFcg .'
+						group by cp.category_id, cp.product_id';
+					$list2_tmp = R::getAll( $sql, $params );
+
+					$list1 = array();
+					$list2 = array();
+
+					foreach( $list1_tmp as $one ){
+						$list1[$one['category'].'-'.$one['product']] = $one;
+					}
+					foreach( $list2_tmp as $one ){
+						$list2[$one['category'].'-'.$one['product']] = $one;
+					}
+
+					$this->fanchan_list = array_merge( $list1, $list2 );
 
 					echo $this->renderPartial( 'comeback/_search_monitor_fanchan' );
 
@@ -276,8 +296,8 @@ class ComebackController extends ApplicationController {
 
 			$sql = 'select cp.id, c.id as comeback_id from comeback c 
 					inner join comeback_product cp on c.id = cp.comeback_id 
-				where c.state = '. ComebackModel::STATE_DONE .' and cp.category_id = ? and cp.product_id = ? 
-					and cp.state = '. ComebackProductModel::STATE_DEALWITH;
+				where cp.category_id = ? and cp.product_id = ? 
+					and ( cp.state = '. ComebackProductModel::STATE_DEALWITH .' or cp.state = '. ComebackProductModel::STATE_NEW .' ) ';
 			$list = R::getAll( $sql, array(
 				$category, 
 				$product, 
@@ -294,14 +314,19 @@ class ComebackController extends ApplicationController {
 
 				$sql = 'update comeback_product set state = '. ComebackProductModel::STATE_DONE. ', 
 					updated = \''. Helper\Html::now() .'\'
-					where id in ('. implode( ', ', $ids_comeback_product ) .') ';
+					where id in ('. implode( ', ', $ids_comeback_product ) .') and state = '. ComebackProductModel::STATE_DEALWITH;
+				$rs = R::exec( $sql );
+
+				$sql = 'update comeback_product set state = '. ComebackProductModel::STATE_DONE_NEW. ', 
+					updated = \''. Helper\Html::now() .'\'
+					where id in ('. implode( ', ', $ids_comeback_product ) .') and state = '. ComebackProductModel::STATE_NEW;
 				$rs = R::exec( $sql );
 
 				$sql = 'select c.id from comeback c left join ( 
 							select c.id from comeback c inner join comeback_product cp on 
 								c.id = cp.comeback_id and ( cp.state = '. ComebackProductModel::STATE_DEALWITH .' or cp.state = '. ComebackProductModel::STATE_NEW .' ) and cp.deleted is null 
 							where c.id in ( '. implode( ', ', $ids_comeback ) .' ) group by c.id
-						)t on c.id = t.id where t.id is null and c.state = '. ComebackModel::STATE_DONE .' and 
+						)t on c.id = t.id where t.id is null and 
 							c.deleted is null and 
 							c.id in ( '. implode( ', ', $ids_comeback ) .' )';
 				if( $ids_comeback_done = R::getCol( $sql ) ){

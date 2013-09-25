@@ -193,7 +193,7 @@ define(function(require, exports, module){
 
 			var view = this;
 
-			if( ( app_data.user.role_id == 3 || app_data.user.role_id == 4 ) || this.model.get( 'user_state' ) == 4 || this.model.get( 'state' ) == 2 || this.model.get( 'kf_uid' ) != app_data.user.id ){
+			if( ( app_data.user.role_id == 3 || app_data.user.role_id == 4 ) || this.model.get( 'user_state' ) == 4 || this.model.get( 'state' ) == 2 || ( app_data.user.role_id == 1 && this.model.get( 'kf_uid' ) != app_data.user.id ) ){
 
 				// 已关闭
 				this.$('#forminner-view').html( this.template_close( _.extend( this.model.toJSON(), {} ) ));
@@ -225,11 +225,11 @@ define(function(require, exports, module){
 					} )
 				}
 
-				if( this.model.get('profit') > 0 ){
+				if(app_data.user.role_id == 1 && this.model.get('profit') > 0 ){
 					this.$( '.fold-controller.profit .dounfold' ).click();
 				}
 
-				if( this.model.get('drawback') > 0 ){
+				if( app_data.user.role_id == 1 && this.model.get('drawback') > 0 ){
 					this.$( '.fold-controller.drawback .dounfold' ).click();
 					this.resetDrawback()
 				}
@@ -259,7 +259,7 @@ define(function(require, exports, module){
 			}
 		},
 		resetDrawback: function(){
-			if( !this.model.get( 'drawback_state' ) > 0 ){
+			if( !this.model.get( 'drawback_state' ) > 0 || (app_data.user.role_id != 1) ){
 				return;
 			}
 

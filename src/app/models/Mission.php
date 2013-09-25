@@ -570,7 +570,8 @@ class MissionModel extends RedBean_SimpleModel {
 			}else{
 				$mission_user_other = R::findOne( 'mission_user', 'mission_id = ? and uid = ?', array( $model->id, $model->kf_uid ) );
 			}
-			if( $mission_user_other['state'] == MissionUserModel::STATE_CLOSED ){
+
+			if( !$mission_user_other or $mission_user_other['state'] == MissionUserModel::STATE_CLOSED ){
 				$model->state = self::STATE_CLOSED;
 			}
 
@@ -664,8 +665,11 @@ class MissionModel extends RedBean_SimpleModel {
 
 	static function getListSql( $sql_data_type, $uid, $type, $search_opt = array(), $goto = 0, $pager=null ){
 
+		$user_role_id = R::getCell( ' select role_id from user where id = ? ', array( $uid ) );
+		$is_kf = $user_role_id == UserModel::ROLE_KF;
+
 		$param = array();
-		if( $sql_data_type != 'search' ){
+		if( !$is_kf or ($sql_data_type != 'search') ){
 			$param[] = $uid;
 		}
 
@@ -673,7 +677,7 @@ class MissionModel extends RedBean_SimpleModel {
 
 		switch( $type ){
 			case 'waiting':
-				if( $sql_data_type != 'search' ){
+				if( !$is_kf or ($sql_data_type != 'search') ){
 					$param = array_merge( $param, array( $uid ) );
 					$sql_type = ' and mu.uid = ? and ( mu.state = '. MissionUserModel::STATE_DRAFT .' or mu.state = '. MissionUserModel::STATE_WAITING .' ) ';
 				}else{
@@ -681,7 +685,7 @@ class MissionModel extends RedBean_SimpleModel {
 				}
 				break;
 			case 'dealing':
-				if( $sql_data_type != 'search' ){
+				if( !$is_kf or ($sql_data_type != 'search') ){
 					$param = array_merge( $param, array( $uid ) );
 					$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_DEALING .' ';
 				}else{
@@ -689,7 +693,7 @@ class MissionModel extends RedBean_SimpleModel {
 				}
 				break;
 			case 'done':
-				if( $sql_data_type != 'search' ){
+				if( !$is_kf or ($sql_data_type != 'search') ){
 					$param = array_merge( $param, array( $uid ) );
 					$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_DONE .' ';
 				}else{
@@ -697,7 +701,7 @@ class MissionModel extends RedBean_SimpleModel {
 				}
 				break;
 			case 'closed':
-				if( $sql_data_type != 'search' ){
+				if( !$is_kf or ($sql_data_type != 'search') ){
 					$param = array_merge( $param, array( $uid ) );
 					$sql_type = ' and mu.uid = ? and mu.state = '. MissionUserModel::STATE_CLOSED .' ';
 				}else{
@@ -705,7 +709,7 @@ class MissionModel extends RedBean_SimpleModel {
 				}
 				break;
 			case 'waiting_drawback':
-				if( $sql_data_type != 'search' ){
+				if( !$is_kf or ($sql_data_type != 'search') ){
 					$param = array_merge( $param, array( $uid ) );
 					$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_DRAWING .' ';
 				}else{
@@ -713,7 +717,7 @@ class MissionModel extends RedBean_SimpleModel {
 				}
 				break;
 			case 'waiting_refundment':
-				if( $sql_data_type != 'search' ){
+				if( !$is_kf or ($sql_data_type != 'search') ){
 					$param = array_merge( $param, array( $uid ) );
 					$sql_type = ' and mu.uid = ? and m.state <> '. self::STATE_CLOSED .' and mu.state = '. MissionUserModel::STATE_WAITING_REFUNDMENT .' ';
 				}else{
@@ -825,12 +829,15 @@ class MissionModel extends RedBean_SimpleModel {
 				$off = ( $pager->getPage() - 1 ) * $pager->getSize();
 				$sqlPager = ' limit '. $off. ', '. $pager->getSize(). ' ';
 
+				$sql_user_join = $is_kf ? ' inner join user muu on mu.uid = muu.id and muu.role_id = '. UserModel::ROLE_KF .' ' : ''; 
+
 				$sql = 'select m.*, s.name store, mu.state user_state, c.name category, sc.name sub_category, 
 					c.id as category_id, sc.id as sub_category_id, 
 					u.name create_uname, kf.name kf_uname, 
 					md.zhifubao as drawback_zhifubao, md.money as drawback_money
 					from mission m 
 					inner join mission_user mu on m.id = mu.mission_id
+					'. $sql_user_join .'
 					inner join mission_type sc on m.mission_type_id = sc.id
 					inner join mission_type c on sc.pid = c.id
 					left join store s on s.id = m.store_id
@@ -838,7 +845,7 @@ class MissionModel extends RedBean_SimpleModel {
 					inner join user u on u.id = m.create_uid
 					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
 					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
-				 order by m.id desc '. $sqlPager;
+				 order by m.updated desc '. $sqlPager;
 				break;
 
 			case 'list':
@@ -859,7 +866,7 @@ class MissionModel extends RedBean_SimpleModel {
 					inner join user u on u.id = m.create_uid
 					inner join user kf on kf.id = m.kf_uid '. $sql_join_order .'
 					where 1 and m.state <> '. self::STATE_TO_OTHER .' '. $sql_type. $sql_where_order .'
-				 order by m.id desc '. $sqlPager;
+				 order by m.updated desc '. $sqlPager;
 				break;
 			case 'cnt':
 				$sql = 'select count(1)

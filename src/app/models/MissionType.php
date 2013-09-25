@@ -32,4 +32,5 @@ class MissionTypeModel extends RedBean_SimpleModel {
 		// \eYaf\Logger::getLogger()->log( $mission_type );
 		return $mission_type;
 	}
+
 }

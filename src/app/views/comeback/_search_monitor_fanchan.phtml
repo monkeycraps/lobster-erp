@@ -5,7 +5,8 @@ foreach( $fanchan_list as $one ){?>
 		data-product='<?php echo $one['product']?>' >
 		<td><?=$one['category_name']?></td>
 		<td><?=$one['product_name']?></td>
-		<td><?=$one['cnt']?></td>
+		<td><?= isset( $one['cnt'] ) ? $one['cnt'] : 0?></td>
+		<td><?= isset( $one['cnt_new'] ) ? $one['cnt_new'] : 0?></td>
 		<td class='btn-state' >
 			<span class='btn btn-default btn-xs btn-fanchan'>全部返厂</span>
 		</td>

@@ -22,7 +22,7 @@
 				<td><?=isset( $one['order_num_list'] ) ? implode( "<br/>", $one['order_num_list'] ): ''?></td>
 				<td><?=$one['wanwan']?></td>
 				<td><?=StoreModel::getName( $one['store_id'] )?></td>
-				<td><?=Helper\Html::date( $one['created'] )?></td>
+				<td><?=Helper\Html::date( $one['updated'] )?></td>
 				<td>
 					<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
 				</td>
@@ -38,7 +38,7 @@
 			<td><%=order_num_list%></td>
 			<td><%=wanwan%></td>
 			<td><%=store%></td>
-			<td><%=created%></td>
+			<td><%=updated%></td>
 			<td>
 				<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
 			</td>

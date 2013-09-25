@@ -24,7 +24,7 @@
 				<td><?=$one['wanwan']?></td>
 				<td><?=isset( $one['drawback_zhifubao'] ) ? $one['drawback_zhifubao'] : ''?></td>
 				<td><?=isset( $one['drawback_money'] ) ? $one['drawback_money'] : ''?></td>
-				<td><?=Helper\Html::date( $one['created'] )?></td>
+				<td><?=Helper\Html::date( $one['updated'] )?></td>
 				<td>
 					<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
 				</td>
@@ -41,7 +41,7 @@
 			<td><%=wanwan%></td>
 			<td><%=typeof( drawback_zhifubao ) == 'undefined' ? '' : drawback_zhifubao %></td>
 			<td><%=typeof( drawback ) == 'undefined' ? '' : drawback %></td>
-			<td><%=created%></td>
+			<td><%=updated%></td>
 			<td>
 				<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
 			</td>
