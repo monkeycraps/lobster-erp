@@ -669,7 +669,7 @@ class MissionModel extends RedBean_SimpleModel {
 		$is_kf = $user_role_id == UserModel::ROLE_KF;
 
 		$param = array();
-		if( !$is_kf or ($sql_data_type != 'search') ){
+		if( $sql_data_type != 'search' ){
 			$param[] = $uid;
 		}
 

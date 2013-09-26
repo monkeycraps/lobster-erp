@@ -245,17 +245,26 @@ class ComebackController extends ApplicationController {
 						group by cp.category_id, cp.product_id';
 					$list2_tmp = R::getAll( $sql, $params );
 
-					$list1 = array();
-					$list2 = array();
+					$fanchan_list = array();
 
 					foreach( $list1_tmp as $one ){
-						$list1[$one['category'].'-'.$one['product']] = $one;
+						if( !isset( $fanchan_list[$one['category'].'-'.$one['product']] )){
+							$fanchan_list[$one['category'].'-'.$one['product']] = $one;
+						}else{
+							$fanchan_list[$one['category'].'-'.$one['product']]['cnt'] = $one['cnt'];
+						}
 					}
 					foreach( $list2_tmp as $one ){
-						$list2[$one['category'].'-'.$one['product']] = $one;
+						if( !isset( $fanchan_list[$one['category'].'-'.$one['product']] )){
+							$fanchan_list[$one['category'].'-'.$one['product']] = $one;
+						}else{
+							$fanchan_list[$one['category'].'-'.$one['product']]['cnt_new'] = $one['cnt_new'];
+						}
 					}
+					// dump( $list2 );die;
 
-					$this->fanchan_list = array_merge( $list1, $list2 );
+					$this->fanchan_list = $fanchan_list;
+					// array_merge_recursive( $list1, $list2 );
 
 					echo $this->renderPartial( 'comeback/_search_monitor_fanchan' );
 
