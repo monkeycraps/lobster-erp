@@ -546,10 +546,7 @@ class MissionModel extends RedBean_SimpleModel {
 		}
 
 		$mission_user = R::findOne( 'mission_user', 'mission_id = ? and uid = ?', array( $model->id, $user->id ) );
-		$model_original = array();
-		if( $mission_user->user_state != MissionUserModel::STATE_DRAFT ){
-			$model_original = MissionChangeLogModel::getAttrs( $model->id );
-		}
+		$model_original = MissionChangeLogModel::getAttrs( $model->id );
 
 		R::begin();
 		try{

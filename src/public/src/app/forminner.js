@@ -86,6 +86,7 @@ define(function(require, exports, module){
 		model: null, 
 		events_p: {
 			'submit form': 'save_block', 
+			'click .product-html-controller button': 'showProductHtml', 
 			'click .add_send_back_product': 'add_send_back_product',
 			'click .list_send_back_product .delete': 'delete_send_back_product', 
 			'change select[name="send_back_category_id"]': 'change_send_back_category', 
@@ -120,6 +121,11 @@ define(function(require, exports, module){
 			}else{
 				opt.model.trigger( 'change', opt.model );
 			}
+		}, 
+		showProductHtml: function( e ){
+			var control = $( e.currentTarget ).parents( '.product-html-controller' )
+			control.hide();
+			control.next( '.product-html-wrapper' ).show();
 		}, 
 		init_p: function(){
 
