@@ -9,24 +9,9 @@
 				<?php }?>
 			</div>
 		</div>
-		<table class='table table-hover' style='clear: both; margin-top: 10px;'>
-			<thead>
-			</thead>
-			<tbody>
-				<?php list( $announce_list ) = AnnounceModel::getListIndex(); 
-				foreach( $announce_list as $one ){ ?>
-					<tr id='listitem-announce-<?php echo $one['id']?>' data-id='<?php echo $one['id']?>'>
-						<td class='col-lg-1'>【公告】</td>
-						<td class=''><?php echo $one['subject'] ?></td>
-						<td class='col-lg-1'><?php echo date( 'm月d日', strtotime( $one['created'] ) ) ?></td>
-						<td class='col-lg-1'><?php echo Helper\Html::dateOfWeek( $one['created'] ) ?></td>
-						<td class='col-lg-1'>
-							<a href='#' class='op edit mchide'><i class='glyphicon glyphicon-chevron-right'></i></a>
-						</td>
-					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
+		<div class='announce-wrapper'>
+			<?php echo $controller->renderPartial( 'index/_announce_page' ) ?>
+		</div>
 	</div>
 	<div class='col-lg-8' id='index-content'>
 		<div class='content'>

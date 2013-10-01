@@ -126,5 +126,4 @@ class AttachController extends ApplicationController {
 			'url'=> 'http://'. $this->getRequest()->getHostName(). $url, 
 		));
 	}
-
 }

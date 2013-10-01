@@ -18,6 +18,11 @@ class IndexController extends ApplicationController {
 		$this->show( 'index' );
 	}
 
+	public function pageAction() {
+			
+		echo $this->renderPartial( 'index/_announce_page' );
+	}
+
 	function showAction(){
 		if( !( $type = $this->get( 'type' ) ) || !( $id = $this->get( 'id' ) ) ){
 			throw new Exception( 'nothing found', 404 );

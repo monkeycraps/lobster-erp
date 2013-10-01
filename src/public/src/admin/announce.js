@@ -22,7 +22,8 @@ define(function(require, exports, module){
 			'click tbody tr': 'list_item_select', 
 			'mouseover tbody tr': 'list_item_mouseover', 
 			'mouseleave tbody tr': 'list_item_mouseleave', 
-			'click tr .delete': 'list_item_delete'
+			'click tr .delete': 'list_item_delete', 
+			'click .pager a': 'goPage'
 		}, 
 		initialize: function(){
 
@@ -34,6 +35,17 @@ define(function(require, exports, module){
 			    scrollInertia : 150
 			});
 
+
+		}, 
+		goPage: function( e ){
+			var dom = $( e.currentTarget );
+			if( dom.hasClass( 'current' ) ){
+				return false;
+			}
+			var page = dom.attr( 'data-page' )
+			this.$( '.announce-wrapper' ).load('/index/page?t='+ (new Date().getTime()) +'&page='+ page, function(){
+				// view.open( id, callback );
+			})
 		}, 
 		create: function(){
 			form.showModel();

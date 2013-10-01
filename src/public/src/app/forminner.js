@@ -203,6 +203,9 @@ define(function(require, exports, module){
 
 				// 已关闭
 				this.$('#forminner-view').html( this.template_close( _.extend( this.model.toJSON(), {} ) ));
+				_.each( this.$( '.fold-controller' ), function( dom ){
+					Util.buildFold( $(dom) )
+				} )
 				
 			}else{
 

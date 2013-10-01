@@ -54,12 +54,21 @@ class AnnounceModel extends RedBean_SimpleModel {
 	static function getListIndex( $page = 1, $limit = 10 ){
 
 		$pager = new pager\Pager ();
+
+		$cnt = R::getCell ( 'select count(1)
+				from announce a left join user u on a.create_uid = u.id
+				where deleted is null ');
+
+		$pager->setSize( $limit );
+		$pager->setPage( $page );
+		$pager->setItemCount( $cnt );
+
 		$tmp = R::getAll ( 'select a.*, 
 				case when u.name is null then \'admin\' else u.name end as create_uname 
 				from announce a left join user u on a.create_uid = u.id
 				where deleted is null 
 				order by id desc limit :offset, :limit', array (
-			':offset' => 0,
+			':offset' => ($page - 1) * $limit,
 			':limit' => $limit 
 		) );
 		$list = array();
